@@ -1,6 +1,7 @@
 import { User } from "../models/user.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
+import { createToken } from '../core/helpers/createToken.js'
 
 export const registerUser = async (req) => {
   const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req.body;
@@ -27,8 +28,6 @@ export const registerUser = async (req) => {
   });
 
   const createdUser = await User.findById(user._id).select("-password");
-  console.log(createdUser);
-
 
   if (!createdUser) {
     return new CustomError(
@@ -37,7 +36,14 @@ export const registerUser = async (req) => {
       errorCodes?.service_unavailable,
     );
   }
-  return createdUser;
+
+  const payload = [{ Authorization: createdUser._id },];
+  const key = process.env.ACCESS_TOKEN_SECRET;
+  const expiresIn = '5d';
+
+  const jwtToken = createToken(payload, key, expiresIn);
+
+  return { createdUser, jwtToken };
 };
 
 export const loginUser = async (req) => {
@@ -64,6 +70,12 @@ export const loginUser = async (req) => {
 
   const loginUser = await User.findById(user._id).select("-password");
 
+  const payload = [{ Authorization: loginUser._id },];
+  const key = process.env.ACCESS_TOKEN_SECRET;
+  const expiresIn = '5d';
+
+  const jwtToken = createToken(payload, key, expiresIn);
+
   const options = {
     httpOnly: true,
     secure: true,
@@ -71,6 +83,49 @@ export const loginUser = async (req) => {
 
   return {
     options,
-    loginUser
+    loginUser,
+    jwtToken
   };
 };
+
+export const getUserDetails = async (req) => {
+
+  const { userid } = req.headers;
+
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+
+  const userData = await User.findById(userid).select("-password");
+
+  if (!userData) {
+    return new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+  return userData;
+}
+
+export const updateUserDetails = async (req) => {
+  const { userid } = req.headers;
+  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req.body;
+
+  const user = await User.findById(userid);
+
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+
+  const updatedData = await User.findByIdAndUpdate(userid, { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address })
+  return { updatedData }
+}

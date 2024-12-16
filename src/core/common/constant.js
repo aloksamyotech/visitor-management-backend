@@ -40,7 +40,7 @@ export const Message = {
   loginSuccessfully: "Login Successfully",
   loginError: "Login Error",
   notUpdate: "Update Failed",
-  serverError: "Intrnal Server Error",
+  serverError: "Internal Server Error",
 };
 
 export const errorCodes = Object.freeze({

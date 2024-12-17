@@ -14,7 +14,6 @@ export const userAuth = (req, res, next) => {
             errorCodes?.missing_auth_token,
         );
     }
-
     jwt.verify(token, verfifyToken, (err, user) => {
         if (err) {
             throw new CustomError(
@@ -23,7 +22,32 @@ export const userAuth = (req, res, next) => {
                 errorCodes?.invalid_authentication,
             );
         }
-        req.user = user;//attach decoded payload
+        req.user = user.payload//attach decoded user data in req
         next();
     })
+}
+
+export const adminAuth = (req, res, next) => {
+    const { role } = req.user;
+
+    if (role !== "admin") {
+        throw new CustomError(
+            statusCodes?.unauthorized,
+            Message?.inValid,
+            errorCodes?.access_denied,
+        );
+    }
+    next();
+}
+export const employeeAuth = (req, res, next) => {
+    const { role } = req.user;
+
+    if (role !== "admin" && role !== "hr" && role !== "security" && role !== "receptionist") {
+        throw new CustomError(
+            statusCodes?.unauthorized,
+            Message?.inValid,
+            errorCodes?.access_denied,
+        );
+    }
+    next();
 }

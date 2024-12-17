@@ -4,7 +4,7 @@ import CustomError from "../utils/exception.js";
 import { createToken } from '../core/helpers/createToken.js'
 
 export const registerUser = async (req) => {
-  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req.body;
+  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address, salary } = req.body;
 
   const isUserAlreadyExist = await User.findOne({ emailAddress });
   if (isUserAlreadyExist) {
@@ -24,7 +24,8 @@ export const registerUser = async (req) => {
     emailAddress,
     file,
     role,
-    address
+    address,
+    salary
   });
 
   const createdUser = await User.findById(user._id).select("-password");
@@ -70,9 +71,9 @@ export const loginUser = async (req) => {
 
   const loginUser = await User.findById(user._id).select("-password");
 
-  const payload = [{ Authorization: loginUser._id },];
+  const payload = { userid: loginUser._id, role: loginUser.role };
   const key = process.env.ACCESS_TOKEN_SECRET;
-  const expiresIn = '5d';
+  const expiresIn = process.env.ACCESS_TOKEN_EXPIRY;
 
   const jwtToken = createToken(payload, key, expiresIn);
 
@@ -90,7 +91,7 @@ export const loginUser = async (req) => {
 
 export const getUserDetails = async (req) => {
 
-  const { userid } = req.headers;
+  const { userid } = req.user;
 
   if (!userid) {
     throw new CustomError(
@@ -113,7 +114,7 @@ export const getUserDetails = async (req) => {
 }
 
 export const updateUserDetails = async (req) => {
-  const { userid } = req.headers;
+  const { userid } = req.user;
   const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req.body;
 
   const user = await User.findById(userid);

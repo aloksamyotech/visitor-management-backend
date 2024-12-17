@@ -1,34 +1,34 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
     prefix: {
       type: String,
-      enum: ["Mr.", "Ms.", "Dr.", "Mrs."],
-      required: true,
+      enum: ["mr.", "ms.", "dr.", "mrs."],
+      required: true
     },
     firstName: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     lastName: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
-      trim: true,
+      unique: true,
+      trim: true
     },
     emailAddress: {
       type: String,
       required: true,
-      trim: true,
       unique: true,
+      trim: true
     },
     password: {
       type: String,
@@ -36,12 +36,12 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "hr", "receptionist", "guard"],
+      enum: ["admin", "hr", "receptionist", "security"],
       required: true,
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["male", "female", "other"],
       required: true,
     },
     file: {
@@ -52,8 +52,21 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-  },
-  { timestamps: true },
+    salary: {
+      type: Number,
+      required: true,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    // permissiona: [
+    //   {
+    //     type: mongoose.Types.ObjectId,
+    //     ref: ""//pending
+    //   }
+    // ],
+  }, { timestamps: true },
 );
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

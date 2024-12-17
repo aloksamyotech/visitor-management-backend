@@ -1,3 +1,4 @@
 import userRouter from "./user.js";
-
-export { userRouter };
+import visitorRouter from "./visitor.js";
+import visitsRouter from "./visits.js"
+export { userRouter, visitorRouter, visitsRouter };

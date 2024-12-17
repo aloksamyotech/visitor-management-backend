@@ -19,6 +19,8 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.4",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "stack-trace": "^1.0.0-pre2",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"

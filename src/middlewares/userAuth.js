@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import CustomError from '../utils/exception.js';
-import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
+import { errorCodes, Message, statusCodes, checkRole } from "../core/common/constant.js";
 
 export const userAuth = (req, res, next) => {
     const { authorization } = req?.headers;
@@ -30,7 +30,7 @@ export const userAuth = (req, res, next) => {
 export const adminAuth = (req, res, next) => {
     const { role } = req?.user;
 
-    if (role !== "admin") {
+    if (role !== checkRole?.admin) {
         throw new CustomError(
             statusCodes?.unauthorized,
             Message?.inValid,
@@ -42,7 +42,7 @@ export const adminAuth = (req, res, next) => {
 export const employeeAuth = (req, res, next) => {
     const { role } = req?.user;
 
-    if (role !== "admin" && role !== "hr" && role !== "security" && role !== "receptionist") {
+    if (role !== checkRole?.admin && role !== checkRole?.hr && role !== checkRole?.security && role !== checkRole?.receptionist) {
         throw new CustomError(
             statusCodes?.unauthorized,
             Message?.inValid,

@@ -67,7 +67,7 @@ export const updateVisitor = async (req) => {
 
 export const getVisitorDetails = async (req) => {
 
-    const { visitorid } = req?.headers;
+    const { visitorid } = req?.params;
 
     if (!visitorid) {
         throw new CustomError(
@@ -113,7 +113,7 @@ export const getDetailsByNumber = async (req) => {
     if (!visitor) {
         throw new CustomError(
             statusCodes?.notFound,
-            "Visitor with this phone number not found.",
+            Message?.notFound,
             errorCodes?.user_not_found
         );
     }

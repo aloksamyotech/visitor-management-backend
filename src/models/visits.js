@@ -1,13 +1,15 @@
 import mongoose from 'mongoose';
 
+const objID = mongoose.Schema.Types.ObjectId;
+
 const visitSchema = new mongoose.Schema({
     visitor: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: objID,
         ref: 'Visitor',
         required: true
     },
     employee: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: objID,
         ref: 'User',
         required: true
     },
@@ -30,7 +32,7 @@ const visitSchema = new mongoose.Schema({
         required: true
     },
     relatedTo: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: objID,
         ref: 'User',
         required: true
     },

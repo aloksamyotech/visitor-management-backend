@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+const objID = mongoose.Schema.Types.ObjectId;
+
 const visitorSchema = new mongoose.Schema(
     {
         prefix: {
@@ -77,7 +79,7 @@ const visitorSchema = new mongoose.Schema(
             default: true,
         },
         createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
+            type: objID,
             ref: 'User',
             required: true,
         },

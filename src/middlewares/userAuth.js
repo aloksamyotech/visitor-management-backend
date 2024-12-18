@@ -3,7 +3,7 @@ import CustomError from '../utils/exception.js';
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 
 export const userAuth = (req, res, next) => {
-    const { authorization } = req.headers;
+    const { authorization } = req?.headers;
     const token = authorization && authorization.split(" ")[1];
     const verfifyToken = process.env.ACCESS_TOKEN_SECRET;
 
@@ -22,13 +22,13 @@ export const userAuth = (req, res, next) => {
                 errorCodes?.invalid_authentication,
             );
         }
-        req.user = user.payload//attach decoded user data in req
+        req.user = user?.payload//attach decoded user data in req
         next();
     })
 }
 
 export const adminAuth = (req, res, next) => {
-    const { role } = req.user;
+    const { role } = req?.user;
 
     if (role !== "admin") {
         throw new CustomError(
@@ -40,7 +40,7 @@ export const adminAuth = (req, res, next) => {
     next();
 }
 export const employeeAuth = (req, res, next) => {
-    const { role } = req.user;
+    const { role } = req?.user;
 
     if (role !== "admin" && role !== "hr" && role !== "security" && role !== "receptionist") {
         throw new CustomError(

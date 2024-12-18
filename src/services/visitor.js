@@ -3,7 +3,7 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
 export const createVisitor = async (req) => {
-    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req.body;
+    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req?.body;
     const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
     if (isVisitorEmailAlreadyExist) {
         throw new CustomError(
@@ -49,8 +49,8 @@ export const createVisitor = async (req) => {
 };
 
 export const updateVisitor = async (req) => {
-    const { visitorid } = req.headers;
-    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req.body;
+    const { visitorid } = req?.headers;
+    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req?.body;
 
     const visitor = await Visitor.findById(visitorid);
 
@@ -67,7 +67,7 @@ export const updateVisitor = async (req) => {
 
 export const getVisitorDetails = async (req) => {
 
-    const { visitorid } = req.headers;
+    const { visitorid } = req?.headers;
 
     if (!visitorid) {
         throw new CustomError(
@@ -98,7 +98,7 @@ export const getAllVisitor = async (req) => {
 
 export const getDetailsByNumber = async (req) => {
 
-    const { phoneNumber } = req.body;
+    const { phoneNumber } = req?.body;
 
     if (!phoneNumber) {
         throw new CustomError(

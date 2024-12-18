@@ -4,7 +4,7 @@ import CustomError from "../utils/exception.js";
 import { createToken } from '../core/helpers/createToken.js'
 
 export const registerUser = async (req) => {
-  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address, salary } = req.body;
+  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address, salary } = req?.body;
 
   const isUserAlreadyExist = await User.findOne({ emailAddress });
   if (isUserAlreadyExist) {
@@ -42,7 +42,7 @@ export const registerUser = async (req) => {
 };
 
 export const loginUser = async (req) => {
-  const { emailAddress, password } = req.body;
+  const { emailAddress, password } = req?.body;
 
   const user = await User.findOne({ emailAddress });
   if (!user) {
@@ -85,7 +85,7 @@ export const loginUser = async (req) => {
 
 export const getUserDetails = async (req) => {
 
-  const { userid } = req.user;
+  const { userid } = req?.user;
 
   if (!userid) {
     throw new CustomError(
@@ -108,8 +108,8 @@ export const getUserDetails = async (req) => {
 }
 
 export const updateUserDetails = async (req) => {
-  const { userid } = req.user;
-  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req.body;
+  const { userid } = req?.user;
+  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req?.body;
 
   const user = await User.findById(userid);
 

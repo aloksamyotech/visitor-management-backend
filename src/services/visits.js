@@ -3,8 +3,8 @@ import CustomError from "../utils/exception.js";
 import { Visit } from "../models/visits.js";
 
 export const createEntry = async (req) => {
-    const { visitor, duration, purpose, relatedTo, comment, visitorType } = req.body;
-    const { userid } = req.user;//fetching employee id
+    const { visitor, duration, purpose, relatedTo, comment, visitorType } = req?.body;
+    const { userid } = req?.user;//fetching employee id
 
     if (!visitor || !userid) {
         throw new CustomError(
@@ -35,7 +35,7 @@ export const createEntry = async (req) => {
     return { entryData };
 };
 export const exitVisitor = async (req) => {
-    const { visitid } = req.headers;
+    const { visitid } = req?.headers;
 
     if (!visitid) {
         throw new CustomError(

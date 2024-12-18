@@ -38,13 +38,7 @@ export const registerUser = async (req) => {
     );
   }
 
-  const payload = [{ Authorization: createdUser._id },];
-  const key = process.env.ACCESS_TOKEN_SECRET;
-  const expiresIn = '5d';
-
-  const jwtToken = createToken(payload, key, expiresIn);
-
-  return { createdUser, jwtToken };
+  return { createdUser };
 };
 
 export const loginUser = async (req) => {

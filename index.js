@@ -6,7 +6,7 @@ import logger from './src/core/config/logger.js';
 import "dotenv/config"
 import responseInterceptor from './src/utils/responseInterceptor.js';
 import passport from './src/core/config/passportConfig.js';
-import { userRouter, visitorRouter, visitsRouter } from './src/routes/routes.js';
+import AllRoutes from './src/routes/routes.js'
 
 const app = express();
 const PORT = (() => {
@@ -33,9 +33,7 @@ connectDB()
 
 // user Route
 app.use(responseInterceptor);
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/user', visitorRouter);
-app.use('/api/v1/user', visitsRouter);
+app.use('/api/v1', AllRoutes);
 app.use(globalExceptionHandler);
 
 app.listen(PORT, () => {

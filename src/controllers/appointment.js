@@ -32,3 +32,8 @@ export const getAppointmentByAptID = async (req, res, next) => {
     const getAppointmentByAptID = await appointmentService.getAppointmentByAptID(req, res, next);
     res.status(statusCodes?.ok).send(getAppointmentByAptID);
 };
+
+export const getAppointmentByName = async (req, res, next) => {
+    const getAppointmentByName = await appointmentService.getAppointmentByName(req, res, next);
+    res.status(statusCodes?.ok).send(getAppointmentByName);
+};

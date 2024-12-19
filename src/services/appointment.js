@@ -127,3 +127,28 @@ export const getAppointmentByAptID = async (req) => {
 
     return appointment
 }
+
+export const getAppointmentByName = async (req) => {
+
+    const { inputName } = req?.query;
+    if (!inputName) {
+        throw new CustomError(
+            statusCodes?.notFound,
+            Message?.notFound,
+            errorCodes?.not_found,
+        );
+    }
+    const appointment = await Appointment.find().populate({ path: "visitor", match: { firstName: inputName }, select: "firstName" });
+    // const appointment = await Appointment.find().populate({ path: "visitor", match: { firstName: { $regex: new RegExp(inputName, "i") } } });
+
+    const filteredAppointment = appointment.filter(app => app.visitor);
+
+    if (filteredAppointment.length === 0) {
+        throw new CustomError(
+            statusCodes?.notFound,
+            Message?.notFound,
+            errorCodes?.not_found,
+        );
+    }
+    return filteredAppointment
+}

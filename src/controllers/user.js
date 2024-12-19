@@ -18,7 +18,22 @@ export const userDetails = async (req, res, next) => {
   res.status(statusCodes?.found).send(userDetails);
 };
 
+export const getUserDetailsById = async (req, res, next) => {
+  const getUserDetailsById = await userService.getUserDetailsById(req, res, next);
+  res.status(statusCodes?.found).send(getUserDetailsById);
+};
+
 export const userUpdate = async (req, res, next) => {
   const updatedDetails = await userService.updateUserDetails(req, res, next);
   res.status(statusCodes?.ok).send(updatedDetails);
+};
+
+export const manageUserPermission = async (req, res, next) => {
+  const manageUserPermission = await userService.manageUserPermission(req, res, next);
+  res.status(statusCodes?.ok).send(manageUserPermission);
+};
+
+export const getAllUser = async (req, res, next) => {
+  const getAllUser = await userService.getAllUser(req, res, next);
+  res.status(statusCodes?.ok).send(getAllUser);
 };

@@ -157,3 +157,72 @@ export const updateUserDetails = async (req) => {
   });
   return { updatedData };
 };
+
+export const manageUserPermission = async (req) => {
+  const { userid } = req?.params;
+  const { permissions } = req?.body;
+
+  const user = await User.findById(userid);
+
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+
+  if (!permissions) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+  const updatePermission = await User.findByIdAndUpdate(userid, { permissions }, { new: true },)
+  if (!updatePermission) {
+    throw new CustomError(
+      statusCodes?.notModified,
+      Message?.notUpdate,
+      errorCodes?.operation_failed,
+    );
+  }
+  return updatePermission
+
+
+}
+
+export const getAllUser = async (req) => {
+  const allUser = await User.find().select("-password");
+  if (!allUser) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+  return { allUser };
+}
+
+export const getUserDetailsById = async (req) => {
+  const { userid } = req?.params;
+
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+
+  const userData = await User.findById(userid).select("-password");
+
+  if (!userData) {
+    return new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+  return userData;
+};

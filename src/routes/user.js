@@ -4,6 +4,9 @@ const router = Router();
 
 // controller
 import {
+  getAllUser,
+  getUserDetailsById,
+  manageUserPermission,
   userDetails,
   userLogin,
   userRegistration,
@@ -25,5 +28,17 @@ router.put(
   asyncHandler(adminAuth),
   asyncHandler(userUpdate),
 );
-
+router.put("/manageuserpermission/:userid", asyncHandler(userAuth), asyncHandler(adminAuth), asyncHandler(manageUserPermission))
+router.get(
+  "/getalluser",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getAllUser),
+);
+router.get(
+  "/getuserdetailsbyid/:userid",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getUserDetailsById),
+);
 export default router;

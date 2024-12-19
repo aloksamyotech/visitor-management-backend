@@ -60,12 +60,12 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    // permissiona: [
-    //   {
-    //     type: mongoose.Types.ObjectId,
-    //     ref: ""//pending
-    //   }
-    // ],
+    permissions: [
+      {
+        type: String,
+        enum: ["user", "manageEntry", "visitor", "appointment", "passes", "report", "calender"],
+      }
+    ],
   },
   { timestamps: true },
 );

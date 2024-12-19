@@ -4,43 +4,43 @@ const router = Router();
 
 // controller
 import {
-    createPass,
-    updatePassValidity,
-    getAllPass,
-    getPassByPassCode,
-    getPassByName
+  createPass,
+  updatePassValidity,
+  getAllPass,
+  getPassByPassCode,
+  getPassByName,
 } from "../controllers/pass.js";
 import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
 
 router.post(
-    "/createpass",
-    asyncHandler(userAuth),
-    asyncHandler(employeeAuth),
-    asyncHandler(createPass),
+  "/createpass",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(createPass),
 );
 router.put(
-    "/updatepassvalidity/:passId",
-    asyncHandler(userAuth),
-    asyncHandler(employeeAuth),
-    asyncHandler(updatePassValidity),
+  "/updatepassvalidity/:passId",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updatePassValidity),
 );
 router.get(
-    "/getallpass",
-    asyncHandler(userAuth),
-    asyncHandler(employeeAuth),
-    asyncHandler(getAllPass),
+  "/getallpass",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getAllPass),
 );
 router.get(
-    "/getpassbypasscode",
-    asyncHandler(userAuth),
-    asyncHandler(employeeAuth),
-    asyncHandler(getPassByPassCode),
+  "/getpassbypasscode",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getPassByPassCode),
 );
 router.get(
-    "/getpassbyname",
-    asyncHandler(userAuth),
-    asyncHandler(employeeAuth),
-    asyncHandler(getPassByName),
+  "/getpassbyname",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getPassByName),
 );
 
 export default router;

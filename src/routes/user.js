@@ -28,7 +28,12 @@ router.put(
   asyncHandler(adminAuth),
   asyncHandler(userUpdate),
 );
-router.put("/manageuserpermission/:userid", asyncHandler(userAuth), asyncHandler(adminAuth), asyncHandler(manageUserPermission))
+router.put(
+  "/manageuserpermission/:userid",
+  asyncHandler(userAuth),
+  asyncHandler(adminAuth),
+  asyncHandler(manageUserPermission),
+);
 router.get(
   "/getalluser",
   asyncHandler(userAuth),

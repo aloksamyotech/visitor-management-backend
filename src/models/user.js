@@ -63,8 +63,16 @@ const userSchema = new Schema(
     permissions: [
       {
         type: String,
-        enum: ["user", "manageEntry", "visitor", "appointment", "passes", "report", "calender"],
-      }
+        enum: [
+          "user",
+          "manageEntry",
+          "visitor",
+          "appointment",
+          "passes",
+          "report",
+          "calender",
+        ],
+      },
     ],
   },
   { timestamps: true },

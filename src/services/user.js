@@ -179,7 +179,11 @@ export const manageUserPermission = async (req) => {
       errorCodes?.not_found,
     );
   }
-  const updatePermission = await User.findByIdAndUpdate(userid, { permissions }, { new: true },)
+  const updatePermission = await User.findByIdAndUpdate(
+    userid,
+    { permissions },
+    { new: true },
+  );
   if (!updatePermission) {
     throw new CustomError(
       statusCodes?.notModified,
@@ -187,10 +191,8 @@ export const manageUserPermission = async (req) => {
       errorCodes?.operation_failed,
     );
   }
-  return updatePermission
-
-
-}
+  return updatePermission;
+};
 
 export const getAllUser = async (req) => {
   const allUser = await User.find().select("-password");
@@ -202,7 +204,7 @@ export const getAllUser = async (req) => {
     );
   }
   return { allUser };
-}
+};
 
 export const getUserDetailsById = async (req) => {
   const { userid } = req?.params;

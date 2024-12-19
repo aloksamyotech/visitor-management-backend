@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const objID = mongoose.Schema.Types.ObjectId;
 
-const visitSchema = new mongoose.Schema(
+const PassSchema = new mongoose.Schema(
   {
     visitor: {
       type: objID,
@@ -14,38 +14,35 @@ const visitSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    entryTime: {
-      type: Date,
-      default: Date.now,
+    passId: {
+      type: String,
+      unique: true,
       required: true,
     },
-    exitTime: {
-      type: Date,
-      default: null,
-    },
-    duration: {
+    passCode: {
       type: String,
       required: true,
     },
-    purpose: {
-      type: String,
-      trim: true,
+    startDate: {
+      type: Date,
       required: true,
     },
-    relatedTo: {
-      type: objID,
-      ref: "User",
+    endDate: {
+      type: Date,
       required: true,
+    },
+    setAccess: {
+      type: String,
+      enum: ["1stFloor", "2stFloor", "fullAccess"],
+    },
+    status: {
+      type: String,
+      enum: ["active", "expired", "cancelled", "blocked"],
+      default: "active",
     },
     comment: {
       type: String,
       trim: true,
-    },
-    visitorType: {
-      type: String,
-      enum: ["visitor", "appointment", "passes", "other"], //can be changed
-      default: "visitor",
-      required: true,
     },
     active: {
       type: Boolean,
@@ -56,4 +53,5 @@ const visitSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-export const Visit = mongoose.model("Visit", visitSchema);
+
+module.exports = mongoose.model("Pass", PassSchema);

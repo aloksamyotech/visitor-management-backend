@@ -3,119 +3,155 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
 export const createVisitor = async (req) => {
-    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req?.body;
-    const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
-    if (isVisitorEmailAlreadyExist) {
-        throw new CustomError(
-            statusCodes?.conflict,
-            Message?.alreadyExist,
-            errorCodes?.already_exist,
-        );
-    }
-    const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
-    if (isVisitorNumberAlreadyExist) {
-        throw new CustomError(
-            statusCodes?.conflict,
-            Message?.alreadyExist,
-            errorCodes?.already_exist,
-        );
-    }
-    const visitor = await Visitor.create({
-        prefix,
-        firstName,
-        lastName,
-        emailAddress,
-        phoneNumber,
-        visitorType,
-        identityType,
-        identityNumber,
-        gender,
-        address,
-        comment,
-        createdBy
-    });
+  const {
+    prefix,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    comment,
+    createdBy,
+  } = req?.body;
+  const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
+  if (isVisitorEmailAlreadyExist) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist,
+    );
+  }
+  const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
+  if (isVisitorNumberAlreadyExist) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist,
+    );
+  }
+  const visitor = await Visitor.create({
+    prefix,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    comment,
+    createdBy,
+  });
 
-    const createdVisitor = await Visitor.findById(visitor._id);
+  const createdVisitor = await Visitor.findById(visitor._id);
 
-    if (!createdVisitor) {
-        return new CustomError(
-            statusCodes?.serviceUnavailable,
-            Message?.serverError,
-            errorCodes?.service_unavailable,
-        );
-    }
+  if (!createdVisitor) {
+    return new CustomError(
+      statusCodes?.serviceUnavailable,
+      Message?.serverError,
+      errorCodes?.service_unavailable,
+    );
+  }
 
-    return { createdVisitor };
+  return { createdVisitor };
 };
 
 export const updateVisitor = async (req) => {
-    const { visitorid } = req?.headers;
-    const { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy } = req?.body;
+  const { visitorid } = req?.headers;
+  const {
+    prefix,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    comment,
+    createdBy,
+  } = req?.body;
 
-    const visitor = await Visitor.findById(visitorid);
+  const visitor = await Visitor.findById(visitorid);
 
-    if (!visitor) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.userNotGet,
-            errorCodes?.user_not_found,
-        );
-    }
-    const updatedData = await Visitor.findByIdAndUpdate(visitorid, { prefix, firstName, lastName, emailAddress, phoneNumber, visitorType, identityType, identityNumber, gender, address, comment, createdBy })
-    return { updatedData }
+  if (!visitor) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+  const updatedData = await Visitor.findByIdAndUpdate(visitorid, {
+    prefix,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    comment,
+    createdBy,
+  });
+  return { updatedData };
 };
 
 export const getVisitorDetails = async (req) => {
+  const { visitorid } = req?.params;
 
-    const { visitorid } = req?.params;
+  if (!visitorid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
 
-    if (!visitorid) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.notFound,
-            errorCodes?.not_found,
-        );
-    }
+  const visitorData = await Visitor.findById(visitorid);
 
-    const visitorData = await Visitor.findById(visitorid);
-
-    if (!visitorData) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.userNotGet,
-            errorCodes?.user_not_found,
-        );
-    }
-    return { visitorData };
-}
+  if (!visitorData) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+  return { visitorData };
+};
 
 export const getAllVisitor = async (req) => {
+  const allVisitors = await Visitor.find();
 
-    const allVisitors = await Visitor.find();
-
-    return { allVisitors }
-}
+  return { allVisitors };
+};
 
 export const getDetailsByNumber = async (req) => {
+  const { phoneNumber } = req?.body;
 
-    const { phoneNumber } = req?.body;
+  if (!phoneNumber) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
 
-    if (!phoneNumber) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.notFound,
-            errorCodes?.not_found
-        );
-    }
+  const visitor = await Visitor.findOne({ phoneNumber });
 
-    const visitor = await Visitor.findOne({ phoneNumber });
-
-    if (!visitor) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.notFound,
-            errorCodes?.user_not_found
-        );
-    }
-    return { visitor }
+  if (!visitor) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.user_not_found,
+    );
+  }
+  return { visitor };
 };

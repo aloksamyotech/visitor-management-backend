@@ -128,5 +128,5 @@ export const checkRole = {
   admin: "admin",
   hr: "hr",
   security: "security",
-  receptionist: "receptionist"
-}
+  receptionist: "receptionist",
+};

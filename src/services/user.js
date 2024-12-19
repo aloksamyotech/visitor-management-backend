@@ -1,10 +1,22 @@
 import { User } from "../models/user.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
-import { createToken } from '../core/helpers/createToken.js'
+import { createToken } from "../core/helpers/createToken.js";
 
 export const registerUser = async (req) => {
-  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address, salary } = req?.body;
+  const {
+    prefix,
+    firstName,
+    lastName,
+    password,
+    gender,
+    phoneNumber,
+    emailAddress,
+    file,
+    role,
+    address,
+    salary,
+  } = req?.body;
 
   const isUserAlreadyExist = await User.findOne({ emailAddress });
   if (isUserAlreadyExist) {
@@ -25,7 +37,7 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    salary
+    salary,
   });
 
   const createdUser = await User.findById(user._id).select("-password");
@@ -79,12 +91,11 @@ export const loginUser = async (req) => {
   return {
     options,
     loginUser,
-    jwtToken
+    jwtToken,
   };
 };
 
 export const getUserDetails = async (req) => {
-
   const { userid } = req?.user;
 
   if (!userid) {
@@ -105,11 +116,22 @@ export const getUserDetails = async (req) => {
     );
   }
   return userData;
-}
+};
 
 export const updateUserDetails = async (req) => {
   const { userid } = req?.user;
-  const { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address } = req?.body;
+  const {
+    prefix,
+    firstName,
+    lastName,
+    password,
+    gender,
+    phoneNumber,
+    emailAddress,
+    file,
+    role,
+    address,
+  } = req?.body;
 
   const user = await User.findById(userid);
 
@@ -121,6 +143,17 @@ export const updateUserDetails = async (req) => {
     );
   }
 
-  const updatedData = await User.findByIdAndUpdate(userid, { prefix, firstName, lastName, password, gender, phoneNumber, emailAddress, file, role, address })
-  return { updatedData }
-}
+  const updatedData = await User.findByIdAndUpdate(userid, {
+    prefix,
+    firstName,
+    lastName,
+    password,
+    gender,
+    phoneNumber,
+    emailAddress,
+    file,
+    role,
+    address,
+  });
+  return { updatedData };
+};

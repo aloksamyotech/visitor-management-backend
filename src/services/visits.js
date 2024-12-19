@@ -3,62 +3,63 @@ import CustomError from "../utils/exception.js";
 import { Visit } from "../models/visits.js";
 
 export const createEntry = async (req) => {
-    const { visitor, duration, purpose, relatedTo, comment, visitorType } = req?.body;
-    const { userid } = req?.user;//fetching employee id
+  const { visitor, duration, purpose, relatedTo, comment, visitorType } =
+    req?.body;
+  const { userid } = req?.user; //fetching employee id
 
-    if (!visitor || !userid) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.notFound,
-            errorCodes?.not_found,
-        );
-    }
+  if (!visitor || !userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
 
-    const entryData = await Visit.create({
-        visitor,
-        employee: userid,
-        duration,
-        purpose,
-        relatedTo,
-        comment,
-        visitorType
-    });
+  const entryData = await Visit.create({
+    visitor,
+    employee: userid,
+    duration,
+    purpose,
+    relatedTo,
+    comment,
+    visitorType,
+  });
 
-    if (!entryData) {
-        return new CustomError(
-            statusCodes?.serviceUnavailable,
-            Message?.serverError,
-            errorCodes?.service_unavailable,
-        );
-    }
+  if (!entryData) {
+    return new CustomError(
+      statusCodes?.serviceUnavailable,
+      Message?.serverError,
+      errorCodes?.service_unavailable,
+    );
+  }
 
-    return { entryData };
+  return { entryData };
 };
 export const exitVisitor = async (req) => {
-    const { visitid } = req?.headers;
+  const { visitid } = req?.headers;
 
-    if (!visitid) {
-        throw new CustomError(
-            statusCodes?.badRequest,
-            "Visitor ID is required.",
-            errorCodes?.invalid_input
-        );
-    }
-    const visit = await Visit.findById(visitid);
-    if (!visit) {
-        throw new CustomError(
-            statusCodes?.notFound,
-            Message?.notFound,
-            errorCodes?.not_found,
-        );
-    }
-    visit.active = false;
-    visit.exitTime = new Date();
-    await visit.save();
+  if (!visitid) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      "Visitor ID is required.",
+      errorCodes?.invalid_input,
+    );
+  }
+  const visit = await Visit.findById(visitid);
+  if (!visit) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+  visit.active = false;
+  visit.exitTime = new Date();
+  await visit.save();
 
-    return { visit }
-}
+  return { visit };
+};
 export const getAllEntry = async (req) => {
-    const allEntry = await Visit.find();
-    return { allEntry }
-}
+  const allEntry = await Visit.find();
+  return { allEntry };
+};

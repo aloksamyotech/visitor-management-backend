@@ -6,29 +6,29 @@ const userSchema = new Schema(
     prefix: {
       type: String,
       enum: ["mr.", "ms.", "dr.", "mrs."],
-      required: true
+      required: true,
     },
     firstName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     lastName: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     phoneNumber: {
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     emailAddress: {
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
     },
     password: {
       type: String,
@@ -66,7 +66,8 @@ const userSchema = new Schema(
     //     ref: ""//pending
     //   }
     // ],
-  }, { timestamps: true },
+  },
+  { timestamps: true },
 );
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

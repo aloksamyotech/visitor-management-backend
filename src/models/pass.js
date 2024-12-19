@@ -14,13 +14,9 @@ const PassSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    passId: {
-      type: String,
-      unique: true,
-      required: true,
-    },
     passCode: {
       type: String,
+      unique: true,
       required: true,
     },
     startDate: {
@@ -40,6 +36,18 @@ const PassSchema = new mongoose.Schema(
       enum: ["active", "expired", "cancelled", "blocked"],
       default: "active",
     },
+    count: {
+      type: Number,
+      default: 0
+    },
+    maxCount: {
+      type: Number,
+      default: 100
+    },
+    maxEntryPerDay: {
+      type: Number,
+      default: 5
+    },
     comment: {
       type: String,
       trim: true,
@@ -54,4 +62,4 @@ const PassSchema = new mongoose.Schema(
   },
 );
 
-module.exports = mongoose.model("Pass", PassSchema);
+export const Pass = mongoose.model("Pass", PassSchema);

@@ -1,4 +1,5 @@
 import { Visitor } from "../models/visitor.js";
+import { VisitorHistory } from "../models/visitorHistory.js"
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
@@ -15,8 +16,8 @@ export const createVisitor = async (req) => {
     gender,
     address,
     comment,
-    createdBy,
   } = req?.body;
+  const { userid } = req?.user;
   const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
   if (isVisitorEmailAlreadyExist) {
     throw new CustomError(
@@ -45,16 +46,24 @@ export const createVisitor = async (req) => {
     gender,
     address,
     comment,
-    createdBy,
+    createdBy: userid,
   });
 
   const createdVisitor = await Visitor.findById(visitor._id);
-
   if (!createdVisitor) {
     return new CustomError(
       statusCodes?.serviceUnavailable,
       Message?.serverError,
       errorCodes?.service_unavailable,
+    );
+  }
+
+  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
+  if (!visitoryHistory) {
+    return new CustomError(
+      statusCodes?.badRequest,
+      Message?.notUpdated,
+      errorCodes?.not_found,
     );
   }
 
@@ -155,3 +164,27 @@ export const getDetailsByNumber = async (req) => {
   }
   return { visitor };
 };
+
+export const getVisitorHistory = async (req) => {
+  const { visitorid } = req?.params;
+
+  if (!visitorid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+    );
+  }
+
+  const visitorHistory = await VisitorHistory.find({ visitor: visitorid }).select("visitHistory").populate("visitHistory");
+
+  if (!visitorHistory) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found,
+    );
+  }
+  return { visitorHistory };
+
+}

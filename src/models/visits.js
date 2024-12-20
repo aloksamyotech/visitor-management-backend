@@ -43,9 +43,12 @@ const visitSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ["visitor", "appointment", "passes", "other"], //can be changed
-      default: "visitor",
+      enum: ["visitor", "appointment", "pass", "other"], //can be changed
       required: true,
+    },
+    visitorTypeId: {
+      type: objID,
+      default: null
     },
     active: {
       type: Boolean,

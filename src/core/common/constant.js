@@ -41,6 +41,7 @@ export const Message = {
   loginError: "Login Error",
   notUpdate: "Update Failed",
   serverError: "Internal Server Error",
+  emailNotFound:"Invalid Email Address"
 };
 
 export const errorCodes = Object.freeze({

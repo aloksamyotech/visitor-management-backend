@@ -33,3 +33,12 @@ export const getDetailsByNumber = async (req, res, next) => {
   );
   res.status(statusCodes?.ok).send(getDetailsByNumber);
 };
+
+export const getVisitorHistory = async (req, res, next) => {
+  const getVisitorHistory = await visitorService.getVisitorHistory(
+    req,
+    res,
+    next,
+  );
+  res.status(statusCodes?.ok).send(getVisitorHistory);
+};

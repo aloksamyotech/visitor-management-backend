@@ -8,6 +8,7 @@ import {
   getAllVisitor,
   getVisitorDetails,
   getDetailsByNumber,
+  getVisitorHistory,
 } from "../controllers/visitor.js";
 import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
 
@@ -40,6 +41,13 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getDetailsByNumber),
+);
+
+router.get(
+  "/getvisitorhistory/:visitorid",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getVisitorHistory),
 );
 
 export default router;

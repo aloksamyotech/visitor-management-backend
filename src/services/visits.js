@@ -1,9 +1,9 @@
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 import { Visit } from "../models/visits.js";
-
+import { VisitorHistory } from "../models/visitorHistory.js"
 export const createEntry = async (req) => {
-  const { visitor, duration, purpose, relatedTo, comment, visitorType } =
+  const { visitor, duration, purpose, relatedTo, comment, visitorType, visitorTypeId } =
     req?.body;
   const { userid } = req?.user; //fetching employee id
 
@@ -23,6 +23,7 @@ export const createEntry = async (req) => {
     relatedTo,
     comment,
     visitorType,
+    visitorTypeId
   });
 
   if (!entryData) {
@@ -30,6 +31,14 @@ export const createEntry = async (req) => {
       statusCodes?.serviceUnavailable,
       Message?.serverError,
       errorCodes?.service_unavailable,
+    );
+  }
+  const updateLogsInHistory = await VisitorHistory.findByIdAndUpdate(visitor, { $push: { visitHistory: entryData._id } });
+  if (!updateLogsInHistory) {
+    return new CustomError(
+      statusCodes?.badRequest,
+      Message?.notUpdated,
+      errorCodes?.not_found,
     );
   }
 

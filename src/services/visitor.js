@@ -1,5 +1,5 @@
 import { Visitor } from "../models/visitor.js";
-import { VisitorHistory } from "../models/visitorHistory.js"
+import { VisitorHistory } from "../models/visitorHistory.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
@@ -58,7 +58,7 @@ export const createVisitor = async (req) => {
     );
   }
 
-  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
+  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id });
   if (!visitoryHistory) {
     return new CustomError(
       statusCodes?.badRequest,
@@ -176,7 +176,9 @@ export const getVisitorHistory = async (req) => {
     );
   }
 
-  const visitorHistory = await VisitorHistory.find({ visitor: visitorid }).select("visitHistory").populate("visitHistory");
+  const visitorHistory = await VisitorHistory.find({ visitor: visitorid })
+    .select("visitHistory")
+    .populate("visitHistory");
 
   if (!visitorHistory) {
     throw new CustomError(
@@ -186,5 +188,4 @@ export const getVisitorHistory = async (req) => {
     );
   }
   return { visitorHistory };
-
-}
+};

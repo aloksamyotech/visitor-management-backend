@@ -48,7 +48,7 @@ const visitSchema = new mongoose.Schema(
     },
     visitorTypeId: {
       type: objID,
-      default: null
+      default: null,
     },
     active: {
       type: Boolean,

@@ -106,7 +106,7 @@ export const updateAppointmentStatus = async (req) => {
 };
 
 export const getAllAppointment = async (req) => {
-  const allAppointment = await Appointment.find().populate('visitor');
+  const allAppointment = await Appointment.find().populate("visitor");
   if (!allAppointment) {
     throw new CustomError(
       statusCodes?.notFound,

@@ -36,7 +36,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "hr", "receptionist", "security","guard"],
+      enum: ["admin", "hr", "receptionist", "security", "guard"],
       required: true,
     },
     gender: {
@@ -54,7 +54,7 @@ const userSchema = new Schema(
     },
     salary: {
       type: Number,
-      default:10000,
+      default: 10000,
       // required: true,
     },
     active: {

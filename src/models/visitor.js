@@ -34,12 +34,12 @@ const visitorSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ["regular", "vip", "contractor", "other"],
+      enum: ["visitor", "vip", "contractor", "other"],
       required: true,
     },
     identityType: {
       type: String,
-      enum: ["aadharCard", "pan", "passport", "drivingLicense", "other"],
+      enum: ["aadharCard", "panCard", "passport", "drivingLicence", "other"],
       required: true,
     },
     identityNumber: {

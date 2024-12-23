@@ -137,7 +137,7 @@ export const getVisitorDetails = async (req) => {
 };
 
 export const getAllVisitor = async (req) => {
-  const allVisitors = await Visitor.find();
+  const allVisitors = await Visitor.find().sort({ createdAt: -1 });
 
   return { allVisitors };
 };

@@ -5,7 +5,7 @@ const userSchema = new Schema(
   {
     prefix: {
       type: String,
-      enum: ["mr.", "ms.", "dr.", "mrs."],
+      enum: ["mr.", "miss.", "dr.", "mrs."],
       required: true,
     },
     firstName: {
@@ -36,7 +36,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "hr", "receptionist", "security"],
+      enum: ["admin", "hr", "receptionist", "security","guard"],
       required: true,
     },
     gender: {
@@ -54,7 +54,8 @@ const userSchema = new Schema(
     },
     salary: {
       type: Number,
-      required: true,
+      default:10000,
+      // required: true,
     },
     active: {
       type: Boolean,

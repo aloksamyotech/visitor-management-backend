@@ -78,6 +78,6 @@ export const exitVisitor = async (req) => {
   return { visit };
 };
 export const getAllEntry = async (req) => {
-  const allEntry = await Visit.find();
+  const allEntry = await Visit.find().populate("visitor");
   return { allEntry };
-};
+}; 

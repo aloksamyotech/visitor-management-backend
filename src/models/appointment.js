@@ -24,7 +24,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     duration: {
       type: String,
-      required: true,
+      default: null
     },
     date: {
       type: Date,
@@ -36,11 +36,9 @@ const appointmentSchema = new mongoose.Schema(
     },
     endTime: {
       type: String,
-      required: true,
     },
     comment: {
       type: String,
-      required: true,
       trim: true,
     },
     appointmentId: {

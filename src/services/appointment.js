@@ -12,12 +12,14 @@ export const scheduleAppointment = async (req) => {
     endTime,
     ref,
     comment,
-    appointmentId,
   } = req?.body;
 
   const { userid } = req?.user; //fetching employee id
 
-  if (!visitor || !userid || !ref) {
+  // pending logic to create unique id using keyword
+  const appointmentId = Math.floor(10000 + Math.random() * 90000);
+
+  if (!visitor || !userid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,

@@ -3,16 +3,8 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
 export const scheduleAppointment = async (req) => {
-  const {
-    visitor,
-    purpose,
-    duration,
-    date,
-    startTime,
-    endTime,
-    ref,
-    comment,
-  } = req?.body;
+  const { visitor, purpose, duration, date, startTime, endTime, ref, comment } =
+    req?.body;
 
   const { userid } = req?.user; //fetching employee id
 

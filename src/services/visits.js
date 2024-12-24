@@ -80,4 +80,4 @@ export const exitVisitor = async (req) => {
 export const getAllEntry = async (req) => {
   const allEntry = await Visit.find().populate("visitor");
   return { allEntry };
-}; 
+};

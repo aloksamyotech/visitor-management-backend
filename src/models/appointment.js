@@ -24,7 +24,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     duration: {
       type: String,
-      default: null
+      default: null,
     },
     date: {
       type: Date,

@@ -37,7 +37,7 @@ router.get(
   asyncHandler(getVisitorDetails),
 );
 router.get(
-  "/getdetailsbynumber",
+  "/getdetailsbynumber/:input",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getDetailsByNumber),

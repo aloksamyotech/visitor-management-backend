@@ -31,7 +31,7 @@ router.get(
   asyncHandler(getAllPass),
 );
 router.get(
-  "/getpassbypasscode",
+  "/getpassbypasscode/:input",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getPassByPassCode),

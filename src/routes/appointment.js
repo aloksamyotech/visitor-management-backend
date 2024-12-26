@@ -45,7 +45,7 @@ router.get(
   asyncHandler(getAppointmentByDate),
 );
 router.get(
-  "/getappointmentbyaptid",
+  "/getappointmentbyaptid/:input",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getAppointmentByAptID),

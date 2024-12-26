@@ -35,7 +35,7 @@ const visitSchema = new mongoose.Schema(
     relatedTo: {
       type: objID,
       ref: "User",
-      required: true,
+      // required: true,
     },
     comment: {
       type: String,
@@ -44,7 +44,7 @@ const visitSchema = new mongoose.Schema(
     visitorType: {
       type: String,
       enum: ["visitor", "appointment", "pass", "other"], //can be changed
-      required: true,
+      // required: true,
     },
     visitorTypeId: {
       type: objID,

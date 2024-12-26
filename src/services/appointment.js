@@ -126,16 +126,24 @@ export const getAppointmentByDate = async (req) => {
 };
 
 export const getAppointmentByAptID = async (req) => {
-  const { appointmentId } = req?.body;
-  if (!appointmentId) {
+  const { input } = req?.params;
+  if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
       errorCodes?.not_found,
     );
   }
-  const appointment = await Appointment.find({ appointmentId });
+  const appointment = await Appointment.find({ appointmentId: input });
 
+  if (!appointment) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found,
+
+    );
+  }
   return appointment;
 };
 

@@ -143,9 +143,9 @@ export const getAllVisitor = async (req) => {
 };
 
 export const getDetailsByNumber = async (req) => {
-  const { phoneNumber } = req?.body;
+  const { input } = req?.params;
 
-  if (!phoneNumber) {
+  if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
@@ -153,13 +153,14 @@ export const getDetailsByNumber = async (req) => {
     );
   }
 
-  const visitor = await Visitor.findOne({ phoneNumber });
+  const visitor = await Visitor.findOne({ phoneNumber: input });
 
   if (!visitor) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
       errorCodes?.user_not_found,
+
     );
   }
   return { visitor };

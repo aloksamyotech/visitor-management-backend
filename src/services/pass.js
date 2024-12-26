@@ -86,15 +86,15 @@ export const getAllPass = async (req) => {
 };
 
 export const getPassByPassCode = async (req) => {
-  const { passCode } = req?.body;
-  if (!passCode) {
+  const { input } = req?.params;
+  if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
       errorCodes?.not_found,
     );
   }
-  const passDetails = await Pass.find({ passCode });
+  const passDetails = await Pass.find({ passCode: input });
   if (!passDetails) {
     throw new CustomError(
       statusCodes?.notFound,

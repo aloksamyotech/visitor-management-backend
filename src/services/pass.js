@@ -94,7 +94,7 @@ export const getPassByPassCode = async (req) => {
       errorCodes?.not_found,
     );
   }
-  const passDetails = await Pass.find({ passCode: input });
+  const passDetails = await Pass.findOne({ passCode: input }).populate('visitor');
   if (!passDetails) {
     throw new CustomError(
       statusCodes?.notFound,

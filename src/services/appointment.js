@@ -134,7 +134,7 @@ export const getAppointmentByAptID = async (req) => {
       errorCodes?.not_found,
     );
   }
-  const appointment = await Appointment.find({ appointmentId: input });
+  const appointment = await Appointment.findOne({ appointmentId: input }).populate('visitor');
 
   if (!appointment) {
     throw new CustomError(

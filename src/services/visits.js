@@ -2,24 +2,53 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 import { Visit } from "../models/visits.js";
 import { VisitorHistory } from "../models/visitorHistory.js";
+import { newVisitor } from "./visitor.js";
+import { Visitor } from "../models/visitor.js";
 export const createEntry = async (req) => {
   const {
-    visitor,
     duration,
     purpose,
-    relatedTo,
-    comment,
+    reference,
+    entryType,
+    appointmentId,
+    passId,
     visitorType,
-    visitorTypeId,
-  } = req?.body;
-  const { userid } = req?.user; //fetching employee id
+    identityNumber,
+    identityType,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    gender,
+    address,
 
-  if (!visitor || !userid) {
+  } = req?.body;
+
+  let { visitor } = req?.body;
+  const { userid } = req?.user; //fetching employee id
+  if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
       errorCodes?.not_found,
     );
+  }
+  const data = {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy: userid
+  }
+
+  if (!visitor) {
+    const newVis = await newVisitor(data);
+    visitor = newVis._id;
   }
 
   const entryData = await Visit.create({
@@ -27,10 +56,10 @@ export const createEntry = async (req) => {
     employee: userid,
     duration,
     purpose,
-    relatedTo,
-    comment,
-    visitorType,
-    visitorTypeId,
+    relatedTo: reference,
+    entryType,
+    appointmentId,
+    passId
   });
 
   if (!entryData) {
@@ -39,6 +68,13 @@ export const createEntry = async (req) => {
       Message?.serverError,
       errorCodes?.service_unavailable,
     );
+  }
+  if (visitor) {
+    const updateCount = await Visitor.findOne({ _id: visitor });
+    if (updateCount) {
+      updateCount.totalVisit += 1;
+      await updateCount.save();
+    }
   }
   const updateLogsInHistory = await VisitorHistory.findByIdAndUpdate(visitor, {
     $push: { visitHistory: entryData._id },

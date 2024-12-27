@@ -41,14 +41,18 @@ const visitSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    visitorType: {
+    entryType: {
       type: String,
       enum: ["visitor", "appointment", "pass", "other"], //can be changed
       // required: true,
     },
-    visitorTypeId: {
+    passId: {
       type: objID,
-      default: null,
+      default: null
+    },
+    appointmentId: {
+      type: objID,
+      default: null
     },
     active: {
       type: Boolean,

@@ -7,7 +7,7 @@ const visitorSchema = new mongoose.Schema(
     prefix: {
       type: String,
       enum: ["mr.", "miss.", "dr.", "mrs."],
-      required: true,
+      // required: true,
     },
     firstName: {
       type: String,

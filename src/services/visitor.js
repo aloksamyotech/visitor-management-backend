@@ -2,6 +2,7 @@ import { Visitor } from "../models/visitor.js";
 import { VisitorHistory } from "../models/visitorHistory.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
+import { addColors } from "winston";
 
 export const createVisitor = async (req) => {
   const {
@@ -189,4 +190,57 @@ export const getVisitorHistory = async (req) => {
     );
   }
   return { visitorHistory };
+};
+
+export const newVisitor = async (data) => {
+  const { firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy } = data;
+
+  const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
+  if (isVisitorEmailAlreadyExist) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist,
+    );
+  }
+  const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
+  if (isVisitorNumberAlreadyExist) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist,
+    );
+  }
+  const visitor = await Visitor.create({
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy
+  });
+
+  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id });
+  if (!visitoryHistory) {
+    return new CustomError(
+      statusCodes?.badRequest,
+      Message?.notUpdated,
+      errorCodes?.not_found,
+    );
+  }
+
+  return visitor;
 };

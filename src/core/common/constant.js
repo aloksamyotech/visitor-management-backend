@@ -42,6 +42,9 @@ export const Message = {
   notUpdate: "Update Failed",
   serverError: "Internal Server Error",
   emailNotFound: "Invalid Email Address",
+  emailAlreadyRegistered: "Email Already Registered",
+  userIdNotFound: "User Id Not Found",
+  userNotFound: "User Not Found"
 };
 
 export const errorCodes = Object.freeze({
@@ -123,6 +126,7 @@ export const errorCodes = Object.freeze({
   feature_disabled: "FEATURE_DISABLED",
   missing_auth_token: "MISSING_AUTH_TOKEN",
   invalid_operation: "INVALID_OPERATION",
+  not_created: "NOT_CREATED"
 });
 
 export const checkRole = {

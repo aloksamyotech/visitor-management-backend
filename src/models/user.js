@@ -6,7 +6,7 @@ const userSchema = new Schema(
     prefix: {
       type: String,
       enum: ["mr.", "miss.", "dr.", "mrs."],
-      required: true,
+      // required: true,
     },
     firstName: {
       type: String,
@@ -15,7 +15,7 @@ const userSchema = new Schema(
     },
     lastName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     phoneNumber: {
@@ -46,7 +46,7 @@ const userSchema = new Schema(
     },
     file: {
       type: String,
-      required: true,
+      // required: true,
     },
     address: {
       type: String,

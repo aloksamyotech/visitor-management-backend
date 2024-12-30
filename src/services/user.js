@@ -15,15 +15,14 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    salary,
   } = req?.body;
 
   const isUserAlreadyExist = await User.findOne({ emailAddress });
   if (isUserAlreadyExist) {
     throw new CustomError(
-      statusCodes?.conflict,
-      Message?.alreadyExist,
-      errorCodes?.already_exist,
+      statusCodes?.badRequest,
+      Message?.emailAlreadyRegistered,
+      errorCodes?.email_already_registered,
     );
   }
   const user = await User.create({
@@ -37,16 +36,15 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    salary,
   });
 
   const createdUser = await User.findById(user._id).select("-password");
 
   if (!createdUser) {
     return new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable,
+      statusCodes?.internalServerError,
+      Message?.notCreated,
+      errorCodes?.not_created,
     );
   }
 
@@ -70,8 +68,8 @@ export const loginUser = async (req) => {
   if (!passwordVerify) {
     throw new CustomError(
       statusCodes?.badRequest,
-      Message?.inValid,
-      errorCodes?.invalid_credentials,
+      Message?.wrongPassword,
+      errorCodes?.password_mismatch,
     );
   }
 
@@ -101,8 +99,8 @@ export const getUserDetails = async (req) => {
   if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.notFound,
-      errorCodes?.not_found,
+      Message?.userIdNotFound,
+      errorCodes?.user_not_found,
     );
   }
 
@@ -111,7 +109,7 @@ export const getUserDetails = async (req) => {
   if (!userData) {
     return new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
+      Message?.userNotFound,
       errorCodes?.user_not_found,
     );
   }
@@ -133,7 +131,7 @@ export const updateUserDetails = async (req) => {
     address,
   } = req?.body;
 
-  const user = await User.findById(userid);
+  const user = await User.findOne({ _id: userid });
 
   if (!user) {
     throw new CustomError(
@@ -195,7 +193,7 @@ export const manageUserPermission = async (req) => {
 };
 
 export const getAllUser = async (req) => {
-  const allUser = await User.find().select("-password");
+  const allUser = await User.find().select("-password").sort({ createdAt: -1 });
   if (!allUser) {
     throw new CustomError(
       statusCodes?.notFound,

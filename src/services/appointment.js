@@ -3,7 +3,7 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 
 export const scheduleAppointment = async (req) => {
-  const { visitor, purpose, duration, date, startTime, endTime, ref, comment } =
+  const { visitor, purpose, duration, date, startTime, endTime, reference, comment } =
     req?.body;
 
   const { userid } = req?.user; //fetching employee id
@@ -26,7 +26,7 @@ export const scheduleAppointment = async (req) => {
     date,
     startTime,
     endTime,
-    ref,
+    reference,
     appointmentId,
     comment,
   });
@@ -100,7 +100,7 @@ export const updateAppointmentStatus = async (req) => {
 };
 
 export const getAllAppointment = async (req) => {
-  const allAppointment = await Appointment.find().populate("visitor");
+  const allAppointment = await Appointment.find().populate("visitor").sort({ createdAt: -1 });
   if (!allAppointment) {
     throw new CustomError(
       statusCodes?.notFound,

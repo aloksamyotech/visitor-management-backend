@@ -15,26 +15,31 @@ export const createVisitor = async (req) => {
     identityType,
     identityNumber,
     gender,
+    file,
     address,
     comment,
   } = req?.body;
+
   const { userid } = req?.user;
+
   const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
   if (isVisitorEmailAlreadyExist) {
     throw new CustomError(
       statusCodes?.conflict,
-      Message?.alreadyExist,
-      errorCodes?.already_exist,
+      Message?.emailAlreadyRegistered,
+      errorCodes?.email_already_registered,
     );
   }
+
   const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
   if (isVisitorNumberAlreadyExist) {
     throw new CustomError(
       statusCodes?.conflict,
-      Message?.alreadyExist,
-      errorCodes?.already_exist,
+      Message?.phoneNumberAlreadyRegistered,
+      errorCodes?.phone_number_already_registered,
     );
   }
+
   const visitor = await Visitor.create({
     prefix,
     firstName,
@@ -46,6 +51,7 @@ export const createVisitor = async (req) => {
     identityNumber,
     gender,
     address,
+    file,
     comment,
     createdBy: userid,
   });

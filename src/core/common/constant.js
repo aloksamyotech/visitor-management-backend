@@ -43,6 +43,7 @@ export const Message = {
   serverError: "Internal Server Error",
   emailNotFound: "Invalid Email Address",
   emailAlreadyRegistered: "Email Already Registered",
+  phoneNumberAlreadyRegistered: "Phone Number Already Registered",
   userIdNotFound: "User Id Not Found",
   userNotFound: "User Not Found"
 };
@@ -77,6 +78,7 @@ export const errorCodes = Object.freeze({
   access_denied: "ACCESS_DENIED",
   user_exists: "USER_EXISTS",
   email_already_registered: "EMAIL_ALREADY_REGISTERED",
+  phone_number_already_registered: "PHONE_NUMBER_ALREADY_REGISTERED",
   password_mismatch: "PASSWORD_MISMATCH",
   resource_unavailable: "RESOURCE_UNAVAILABLE",
   quota_exceeded: "QUOTA_EXCEEDED",

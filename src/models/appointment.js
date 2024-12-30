@@ -12,14 +12,14 @@ const appointmentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    ref: {
+    reference: {
       type: objID,
       ref: "User",
       default: null,
     },
     purpose: {
       type: String,
-      enum: ["visit", "meeting", "maintainance", "other"],
+      enum: ["visitor", "meeting", "maintenance", "other"],
       required: true,
     },
     duration: {
@@ -36,6 +36,7 @@ const appointmentSchema = new mongoose.Schema(
     },
     endTime: {
       type: String,
+      // required:true
     },
     comment: {
       type: String,

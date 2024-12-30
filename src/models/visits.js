@@ -27,23 +27,18 @@ const visitSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    purpose: {
+    comment: {
       type: String,
       trim: true,
-      required: true,
     },
     relatedTo: {
       type: objID,
       ref: "User",
       // required: true,
     },
-    comment: {
-      type: String,
-      trim: true,
-    },
     entryType: {
       type: String,
-      enum: ["visitor", "appointment", "pass", "other"], //can be changed
+      enum: ["visitor", "appointment", "pass", "other"],
       // required: true,
     },
     passId: {

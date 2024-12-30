@@ -25,7 +25,7 @@ router.get(
 router.put(
   "/updateuserdetails",
   asyncHandler(userAuth),
-  asyncHandler(adminAuth),
+  asyncHandler(employeeAuth),
   asyncHandler(userUpdate),
 );
 router.put(

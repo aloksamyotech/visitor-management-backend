@@ -7,18 +7,18 @@ import { Visitor } from "../models/visitor.js";
 export const createEntry = async (req) => {
   const {
     duration,
-    purpose,
+    comment,
     reference,
     entryType,
     appointmentId,
     passId,
-    visitorType,
-    identityNumber,
-    identityType,
     firstName,
     lastName,
     emailAddress,
     phoneNumber,
+    visitorType,
+    identityNumber,
+    identityType,
     gender,
     address,
 
@@ -55,7 +55,7 @@ export const createEntry = async (req) => {
     visitor,
     employee: userid,
     duration,
-    purpose,
+    comment,
     relatedTo: reference,
     entryType,
     appointmentId,
@@ -89,6 +89,7 @@ export const createEntry = async (req) => {
 
   return { entryData };
 };
+
 export const exitVisitor = async (req) => {
   const { visitid } = req?.headers;
 

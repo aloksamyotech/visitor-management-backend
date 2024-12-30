@@ -6,7 +6,7 @@ const visitorSchema = new mongoose.Schema(
   {
     prefix: {
       type: String,
-      enum: ["mr.", "miss.", "dr.", "mrs."],
+      enum: ["mr.", "miss.", "dr.", "mrs.", ""],
       // required: true,
     },
     firstName: {
@@ -16,7 +16,7 @@ const visitorSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     emailAddress: {
@@ -34,12 +34,12 @@ const visitorSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ["visitor", "vip", "contractor", "guest", "other"],
+      enum: ["visitor", "vip", "contractor", "guest", "maintenance", "other"],
       required: true,
     },
     identityType: {
       type: String,
-      enum: ["aadharCard", "panCard", "passport", "drivingLicence", "other"],
+      enum: ["aadharCard", "panCard", "passport", "drivingLicence", "voterId", "other"],
       required: true,
     },
     identityNumber: {
@@ -83,6 +83,10 @@ const visitorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    file: {
+      type: String,
+      // required: true
+    }
   },
   {
     timestamps: true,

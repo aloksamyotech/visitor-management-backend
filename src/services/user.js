@@ -17,14 +17,24 @@ export const registerUser = async (req) => {
     address,
   } = req?.body;
 
-  const isUserAlreadyExist = await User.findOne({ emailAddress });
-  if (isUserAlreadyExist) {
+  const isUserEmailAlreadyExist = await User.findOne({ emailAddress });
+  if (isUserEmailAlreadyExist) {
     throw new CustomError(
       statusCodes?.badRequest,
       Message?.emailAlreadyRegistered,
       errorCodes?.email_already_registered,
     );
   }
+
+  const isUserNumberAlreadyExist = await User.findOne({ phoneNumber });
+  if (isUserNumberAlreadyExist) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.phoneNumberAlreadyRegistered,
+      errorCodes?.phone_number_already_registered,
+    );
+  }
+
   const user = await User.create({
     prefix,
     firstName,

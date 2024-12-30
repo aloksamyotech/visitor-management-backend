@@ -5,7 +5,7 @@ const userSchema = new Schema(
   {
     prefix: {
       type: String,
-      enum: ["mr.", "miss.", "dr.", "mrs."],
+      enum: ["mr.", "miss.", "dr.", "mrs.", ""],
       // required: true,
     },
     firstName: {

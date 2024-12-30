@@ -16,7 +16,7 @@ router.post(
   asyncHandler(createEntry),
 );
 router.put(
-  "/updateentry",
+  "/updateentry/:visitid",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(exitVisitor),

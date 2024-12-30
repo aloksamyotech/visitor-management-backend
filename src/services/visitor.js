@@ -184,9 +184,12 @@ export const getVisitorHistory = async (req) => {
     );
   }
 
-  const visitorHistory = await VisitorHistory.find({ visitor: visitorid })
+  const visitorHistory = await VisitorHistory.findOne({ visitor: visitorid })
     .select("visitHistory")
-    .populate("visitHistory");
+    .populate({
+      path: "visitHistory",
+      populate: ("appointmentId")
+    })
 
   if (!visitorHistory) {
     throw new CustomError(

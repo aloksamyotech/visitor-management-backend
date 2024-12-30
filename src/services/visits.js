@@ -4,6 +4,7 @@ import { Visit } from "../models/visits.js";
 import { VisitorHistory } from "../models/visitorHistory.js";
 import { newVisitor } from "./visitor.js";
 import { Visitor } from "../models/visitor.js";
+
 export const createEntry = async (req) => {
   const {
     duration,
@@ -75,28 +76,30 @@ export const createEntry = async (req) => {
       updateCount.totalVisit += 1;
       await updateCount.save();
     }
-  }
-  const updateLogsInHistory = await VisitorHistory.findByIdAndUpdate(visitor, {
-    $push: { visitHistory: entryData._id },
-  });
-  if (!updateLogsInHistory) {
-    return new CustomError(
-      statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found,
-    );
+
+    const updateLogsInHistory = await VisitorHistory.findOneAndUpdate({ visitor }, {
+      $push: { visitHistory: entryData._id }
+    });
+
+    if (!updateLogsInHistory) {
+      return new CustomError(
+        statusCodes?.badRequest,
+        Message?.notUpdated,
+        errorCodes?.not_found,
+      );
+    }
   }
 
   return { entryData };
 };
 
 export const exitVisitor = async (req) => {
-  const { visitid } = req?.headers;
+  const { visitid } = req?.params;
 
   if (!visitid) {
     throw new CustomError(
       statusCodes?.badRequest,
-      "Visitor ID is required.",
+      Message?.notFound,
       errorCodes?.invalid_input,
     );
   }
@@ -115,6 +118,6 @@ export const exitVisitor = async (req) => {
   return { visit };
 };
 export const getAllEntry = async (req) => {
-  const allEntry = await Visit.find().populate("visitor");
+  const allEntry = await Visit.find().populate("visitor").sort({createdAt:-1});
   return { allEntry };
 };

@@ -41,7 +41,7 @@ router.get(
   asyncHandler(getAllUser),
 );
 router.get(
-  "/getuserdetailsbyid/:userid",
+  "/getuserdetails/:userid",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getUserDetailsById),

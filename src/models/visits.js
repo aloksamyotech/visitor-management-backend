@@ -44,12 +44,12 @@ const visitSchema = new mongoose.Schema(
     passId: {
       type: objID,
       ref: "Pass",
-      default: null
+      default: null,
     },
     appointmentId: {
       type: objID,
       ref: "Appointment",
-      default: null
+      default: null,
     },
     active: {
       type: Boolean,

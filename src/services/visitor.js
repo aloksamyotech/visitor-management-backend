@@ -167,7 +167,6 @@ export const getDetailsByNumber = async (req) => {
       statusCodes?.notFound,
       Message?.notFound,
       errorCodes?.user_not_found,
-
     );
   }
   return { visitor };
@@ -188,8 +187,8 @@ export const getVisitorHistory = async (req) => {
     .select("visitHistory")
     .populate({
       path: "visitHistory",
-      populate: ("appointmentId")
-    })
+      populate: "appointmentId",
+    });
 
   if (!visitorHistory) {
     throw new CustomError(
@@ -202,7 +201,8 @@ export const getVisitorHistory = async (req) => {
 };
 
 export const newVisitor = async (data) => {
-  const { firstName,
+  const {
+    firstName,
     lastName,
     emailAddress,
     phoneNumber,
@@ -211,7 +211,8 @@ export const newVisitor = async (data) => {
     identityNumber,
     gender,
     address,
-    createdBy } = data;
+    createdBy,
+  } = data;
 
   const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
   if (isVisitorEmailAlreadyExist) {
@@ -239,7 +240,7 @@ export const newVisitor = async (data) => {
     identityNumber,
     gender,
     address,
-    createdBy
+    createdBy,
   });
 
   const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id });

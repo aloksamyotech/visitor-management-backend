@@ -45,7 +45,7 @@ export const Message = {
   emailAlreadyRegistered: "Email Already Registered",
   phoneNumberAlreadyRegistered: "Phone Number Already Registered",
   userIdNotFound: "User Id Not Found",
-  userNotFound: "User Not Found"
+  userNotFound: "User Not Found",
 };
 
 export const errorCodes = Object.freeze({
@@ -128,7 +128,7 @@ export const errorCodes = Object.freeze({
   feature_disabled: "FEATURE_DISABLED",
   missing_auth_token: "MISSING_AUTH_TOKEN",
   invalid_operation: "INVALID_OPERATION",
-  not_created: "NOT_CREATED"
+  not_created: "NOT_CREATED",
 });
 
 export const checkRole = {

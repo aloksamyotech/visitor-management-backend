@@ -39,7 +39,14 @@ const visitorSchema = new mongoose.Schema(
     },
     identityType: {
       type: String,
-      enum: ["aadharCard", "panCard", "passport", "drivingLicence", "voterId", "other"],
+      enum: [
+        "aadharCard",
+        "panCard",
+        "passport",
+        "drivingLicence",
+        "voterId",
+        "other",
+      ],
       required: true,
     },
     identityNumber: {
@@ -86,7 +93,7 @@ const visitorSchema = new mongoose.Schema(
     file: {
       type: String,
       // required: true
-    }
+    },
   },
   {
     timestamps: true,

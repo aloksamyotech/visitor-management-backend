@@ -22,7 +22,6 @@ export const createEntry = async (req) => {
     identityType,
     gender,
     address,
-
   } = req?.body;
 
   let { visitor } = req?.body;
@@ -44,8 +43,8 @@ export const createEntry = async (req) => {
     identityNumber,
     gender,
     address,
-    createdBy: userid
-  }
+    createdBy: userid,
+  };
 
   if (!visitor) {
     const newVis = await newVisitor(data);
@@ -60,7 +59,7 @@ export const createEntry = async (req) => {
     relatedTo: reference,
     entryType,
     appointmentId,
-    passId
+    passId,
   });
 
   if (!entryData) {
@@ -77,9 +76,12 @@ export const createEntry = async (req) => {
       await updateCount.save();
     }
 
-    const updateLogsInHistory = await VisitorHistory.findOneAndUpdate({ visitor }, {
-      $push: { visitHistory: entryData._id }
-    });
+    const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
+      { visitor },
+      {
+        $push: { visitHistory: entryData._id },
+      },
+    );
 
     if (!updateLogsInHistory) {
       return new CustomError(
@@ -118,6 +120,8 @@ export const exitVisitor = async (req) => {
   return { visit };
 };
 export const getAllEntry = async (req) => {
-  const allEntry = await Visit.find().populate("visitor").sort({createdAt:-1});
+  const allEntry = await Visit.find()
+    .populate("visitor")
+    .sort({ createdAt: -1 });
   return { allEntry };
 };

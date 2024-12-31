@@ -6,6 +6,8 @@ import {
   createEntry,
   exitVisitor,
   getAllEntry,
+  getDashboardData,
+  getEntryByDate,
 } from "../controllers/visits.js";
 import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
 
@@ -27,5 +29,15 @@ router.get(
   asyncHandler(employeeAuth),
   asyncHandler(getAllEntry),
 );
+router.get("/getentrybydate",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getEntryByDate)
+)
+router.get("/getdashboarddata",
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getDashboardData)
+)
 
 export default router;

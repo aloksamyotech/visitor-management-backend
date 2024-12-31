@@ -29,15 +29,17 @@ router.get(
   asyncHandler(employeeAuth),
   asyncHandler(getAllEntry),
 );
-router.get("/getentrybydate",
+router.get(
+  "/getentrybydate",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getEntryByDate)
-)
-router.get("/getdashboarddata",
+  asyncHandler(getEntryByDate),
+);
+router.get(
+  "/getdashboarddata",
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getDashboardData)
-)
+  asyncHandler(getDashboardData),
+);
 
 export default router;

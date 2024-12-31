@@ -4,8 +4,8 @@ import { Visit } from "../models/visits.js";
 import { VisitorHistory } from "../models/visitorHistory.js";
 import { newVisitor } from "./visitor.js";
 import { Visitor } from "../models/visitor.js";
-import { Appointment } from "../models/appointment.js"
-import { Pass } from "../models/pass.js"
+import { Appointment } from "../models/appointment.js";
+import { Pass } from "../models/pass.js";
 
 export const createEntry = async (req) => {
   const {
@@ -131,30 +131,32 @@ export const getAllEntry = async (req) => {
 export const getEntryByDate = async (req) => {
   const { startDate, endDate } = req.query;
 
-  const allEntry = await Visit.find().populate('visitor');
+  const allEntry = await Visit.find().populate("visitor");
   let filteredData = allEntry;
 
   if (startDate && endDate) {
     const start = new Date(`${startDate}T00:00:00.000Z`);
     const end = new Date(`${endDate}T23:59:59.999Z`);
-    filteredData = filteredData?.filter(item => {
+    filteredData = filteredData?.filter((item) => {
       const itemDate = new Date(item?.createdAt);
       return itemDate >= start && itemDate <= end;
     });
-    const appointmentCount = filteredData.filter(item => item.entryType === 'appointment').length;
-    const passCount = filteredData.filter(item => item.entryType === 'pass').length;
+    const appointmentCount = filteredData.filter(
+      (item) => item.entryType === "appointment",
+    ).length;
+    const passCount = filteredData.filter(
+      (item) => item.entryType === "pass",
+    ).length;
 
-    return { filteredData, appointmentCount, passCount }
+    return { filteredData, appointmentCount, passCount };
   }
-}
+};
 
 export const getDashboardData = async (req) => {
-
   const allEntry = await Visit.find();
   const totalCount = allEntry.length;
 
-  const filteredData = allEntry?.filter(item => {
-
+  const filteredData = allEntry?.filter((item) => {
     const today = new Date().toISOString().slice(0, 10);
     const itemDate = new Date(item?.createdAt);
     const newdate = itemDate?.toISOString()?.slice(0, 10);
@@ -163,9 +165,10 @@ export const getDashboardData = async (req) => {
   });
   const todayCount = filteredData.length;
 
-  const todayAppointment = await Appointment.find().populate('visitor').sort({ createdAt: -1 })
-  const filteredApnData = todayAppointment?.filter(item => {
-
+  const todayAppointment = await Appointment.find()
+    .populate("visitor")
+    .sort({ createdAt: -1 });
+  const filteredApnData = todayAppointment?.filter((item) => {
     const today = new Date().toISOString().slice(0, 10);
     const itemDate = new Date(item?.createdAt);
     const newdate = itemDate?.toISOString()?.slice(0, 10);
@@ -173,15 +176,26 @@ export const getDashboardData = async (req) => {
     return newdate === today;
   });
 
-  const recentVisitor = await Visit.find().populate('visitor').sort({ createdAt: -1 }).limit(5);
+  const recentVisitor = await Visit.find()
+    .populate("visitor")
+    .sort({ createdAt: -1 })
+    .limit(5);
 
   const visitorCount = await Visitor.countDocuments();
   const apnCount = await Appointment.countDocuments();
   const passCount = await Pass.countDocuments();
 
   const allTypeCounts = {
-    visitorCount, apnCount, passCount
-  }
+    visitorCount,
+    apnCount,
+    passCount,
+  };
 
-  return { totalCount, todayCount, recentVisitor, filteredApnData, allTypeCounts };
+  return {
+    totalCount,
+    todayCount,
+    recentVisitor,
+    filteredApnData,
+    allTypeCounts,
+  };
 };

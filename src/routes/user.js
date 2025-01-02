@@ -15,7 +15,7 @@ import {
 import { adminAuth, employeeAuth, userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/uploads.js";
 
-router.post("/register", upload.single('file'), asyncHandler(userRegistration));
+router.post("/register", upload.single("file"), asyncHandler(userRegistration));
 router.post("/login", asyncHandler(userLogin));
 router.get(
   "/getuserdetails",

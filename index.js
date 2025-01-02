@@ -7,6 +7,7 @@ import "dotenv/config"
 import responseInterceptor from './src/utils/responseInterceptor.js';
 import passport from './src/core/config/passportConfig.js';
 import AllRoutes from './src/routes/routes.js'
+import path from "path"
 
 const app = express();
 const PORT = (() => {
@@ -33,6 +34,8 @@ connectDB()
 
 // user Route
 app.use(responseInterceptor);
+app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use('/api/v1', AllRoutes);
 app.use(globalExceptionHandler);
 

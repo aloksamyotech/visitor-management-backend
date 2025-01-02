@@ -12,10 +12,12 @@ export const registerUser = async (req) => {
     gender,
     phoneNumber,
     emailAddress,
-    file,
     role,
     address,
   } = req?.body;
+  const file = req?.file;
+  console.log(file);
+  
 
   const isUserEmailAlreadyExist = await User.findOne({ emailAddress });
   if (isUserEmailAlreadyExist) {
@@ -47,6 +49,8 @@ export const registerUser = async (req) => {
     role,
     address,
   });
+  console.log("================",user);
+
 
   const createdUser = await User.findById(user._id).select("-password");
 

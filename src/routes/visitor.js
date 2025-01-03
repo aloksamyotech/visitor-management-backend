@@ -14,7 +14,8 @@ import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
 import { upload } from "../middlewares/uploads.js";
 
 router.post(
-  "/createvisitor", upload.single("file"),
+  "/createvisitor",
+  upload.single("file"),
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(createVisitor),

@@ -49,6 +49,10 @@ const PassSchema = new mongoose.Schema(
       type: Number,
       default: 5,
     },
+    duration: {
+      type: Number,
+      default: 2,
+    },
     comment: {
       type: String,
       trim: true,

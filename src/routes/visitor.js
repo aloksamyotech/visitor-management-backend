@@ -11,9 +11,10 @@ import {
   getVisitorHistory,
 } from "../controllers/visitor.js";
 import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
+import { upload } from "../middlewares/uploads.js";
 
 router.post(
-  "/createvisitor",
+  "/createvisitor", upload.single("file"),
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(createVisitor),

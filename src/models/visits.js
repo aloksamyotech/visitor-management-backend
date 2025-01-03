@@ -24,7 +24,7 @@ const visitSchema = new mongoose.Schema(
       default: null,
     },
     duration: {
-      type: String,
+      type: Number,
       required: true,
     },
     comment: {

@@ -15,11 +15,10 @@ export const createVisitor = async (req) => {
     identityType,
     identityNumber,
     gender,
-    file,
     address,
     comment,
   } = req?.body;
-
+  const file = req?.file?.path;
   const { userid } = req?.user;
 
   const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });

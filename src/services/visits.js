@@ -170,7 +170,7 @@ export const getDashboardData = async (req) => {
     .sort({ createdAt: -1 });
   const filteredApnData = todayAppointment?.filter((item) => {
     const today = new Date().toISOString().slice(0, 10);
-    const itemDate = new Date(item?.createdAt);
+    const itemDate = new Date(item?.date);
     const newdate = itemDate?.toISOString()?.slice(0, 10);
 
     return newdate === today;

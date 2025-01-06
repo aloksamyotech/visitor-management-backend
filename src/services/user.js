@@ -3,6 +3,26 @@ import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 import { createToken } from "../core/helpers/createToken.js";
 
+const checkUserExist = async (email, phone) => {
+
+  const isEmail = await User.findOne({ emailAddress: email })
+  const isPhone = await User.findOne({ phoneNumber: phone })
+  if (isEmail) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.emailAlreadyRegistered,
+      errorCodes?.email_already_registered,
+    );
+  }
+  if (isPhone) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.phoneNumberAlreadyRegistered,
+      errorCodes?.phone_number_already_registered,
+    );
+  }
+}
+
 export const registerUser = async (req) => {
   const {
     prefix,
@@ -17,23 +37,7 @@ export const registerUser = async (req) => {
   } = req?.body;
   const file = req?.file?.path;
 
-  const isUserEmailAlreadyExist = await User.findOne({ emailAddress });
-  if (isUserEmailAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.badRequest,
-      Message?.emailAlreadyRegistered,
-      errorCodes?.email_already_registered,
-    );
-  }
-
-  const isUserNumberAlreadyExist = await User.findOne({ phoneNumber });
-  if (isUserNumberAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.badRequest,
-      Message?.phoneNumberAlreadyRegistered,
-      errorCodes?.phone_number_already_registered,
-    );
-  }
+  await checkUserExist(emailAddress, phoneNumber);
 
   const user = await User.create({
     prefix,

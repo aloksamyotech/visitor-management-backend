@@ -1,12 +1,12 @@
 import { Appointment } from "../models/appointment.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
+import moment from "moment";
 
 export const scheduleAppointment = async (req) => {
   const {
     visitor,
     purpose,
-    duration,
     date,
     startTime,
     endTime,
@@ -26,6 +26,11 @@ export const scheduleAppointment = async (req) => {
       errorCodes?.not_found,
     );
   }
+
+  const startMoment = moment(startTime, 'HH:mm');
+  const endMoment = moment(endTime, 'HH:mm');
+  const duration = endMoment.diff(startMoment, 'hours');
+
   const newAppointment = await Appointment.create({
     visitor,
     employee: userid,
@@ -110,6 +115,7 @@ export const updateAppointmentStatus = async (req) => {
 export const getAllAppointment = async (req) => {
   const allAppointment = await Appointment.find()
     .populate("visitor")
+    .populate("reference")
     .sort({ createdAt: -1 });
   if (!allAppointment) {
     throw new CustomError(

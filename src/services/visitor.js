@@ -3,6 +3,31 @@ import { VisitorHistory } from "../models/visitorHistory.js";
 import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
 import CustomError from "../utils/exception.js";
 import { addColors } from "winston";
+import passport from "passport";
+
+
+
+
+const checkVisitorExist = async (email, phone) => {
+
+  const isEmail = await Visitor.findOne({ emailAddress: email })
+  const isPhone = await Visitor.findOne({ phoneNumber: phone })
+  if (isEmail) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.emailAlreadyRegistered,
+      errorCodes?.email_already_registered,
+    );
+  }
+  if (isPhone) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.phoneNumberAlreadyRegistered,
+      errorCodes?.phone_number_already_registered,
+    );
+  }
+
+}
 
 export const createVisitor = async (req) => {
   const {
@@ -21,23 +46,7 @@ export const createVisitor = async (req) => {
   const file = req?.file?.path;
   const { userid } = req?.user;
 
-  const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
-  if (isVisitorEmailAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.emailAlreadyRegistered,
-      errorCodes?.email_already_registered,
-    );
-  }
-
-  const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
-  if (isVisitorNumberAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.phoneNumberAlreadyRegistered,
-      errorCodes?.phone_number_already_registered,
-    );
-  }
+  await checkVisitorExist(emailAddress, phoneNumber)
 
   const visitor = await Visitor.create({
     prefix,
@@ -187,7 +196,8 @@ export const getVisitorHistory = async (req) => {
     .populate({
       path: "visitHistory",
       populate: "appointmentId",
-    });
+    })
+    .sort({ createdAt: -1 })
 
   if (!visitorHistory) {
     throw new CustomError(
@@ -213,22 +223,8 @@ export const newVisitor = async (data) => {
     createdBy,
   } = data;
 
-  const isVisitorEmailAlreadyExist = await Visitor.findOne({ emailAddress });
-  if (isVisitorEmailAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.alreadyExist,
-      errorCodes?.already_exist,
-    );
-  }
-  const isVisitorNumberAlreadyExist = await Visitor.findOne({ phoneNumber });
-  if (isVisitorNumberAlreadyExist) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.alreadyExist,
-      errorCodes?.already_exist,
-    );
-  }
+  await checkVisitorExist(emailAddress, phoneNumber)
+
   const visitor = await Visitor.create({
     firstName,
     lastName,

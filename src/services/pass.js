@@ -5,7 +5,7 @@ import CustomError from "../utils/exception.js";
 export const createPass = async (req) => {
   const {
     visitor,
-    passCode,
+    duration,
     startDate,
     endDate,
     setAccess,
@@ -23,10 +23,13 @@ export const createPass = async (req) => {
       errorCodes?.not_found,
     );
   }
+
+  const passCode = Math.floor(10000 + Math.random() * 90000);
   const newPass = await Pass.create({
     visitor,
     employee: userid,
     passCode,
+    duration,
     startDate,
     endDate,
     setAccess,
@@ -74,7 +77,7 @@ export const updatePassValidity = async (req) => {
 };
 
 export const getAllPass = async (req) => {
-  const allPass = await Pass.find().populate("visitor");
+  const allPass = await Pass.find().populate("visitor").sort({createdAt:-1});
   if (!allPass) {
     throw new CustomError(
       statusCodes?.notFound,

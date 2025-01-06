@@ -4,15 +4,8 @@ import CustomError from "../utils/exception.js";
 import moment from "moment";
 
 export const scheduleAppointment = async (req) => {
-  const {
-    visitor,
-    purpose,
-    date,
-    startTime,
-    endTime,
-    reference,
-    comment,
-  } = req?.body;
+  const { visitor, purpose, date, startTime, endTime, reference, comment } =
+    req?.body;
 
   const { userid } = req?.user; //fetching employee id
 
@@ -27,9 +20,9 @@ export const scheduleAppointment = async (req) => {
     );
   }
 
-  const startMoment = moment(startTime, 'HH:mm');
-  const endMoment = moment(endTime, 'HH:mm');
-  const duration = endMoment.diff(startMoment, 'hours');
+  const startMoment = moment(startTime, "HH:mm");
+  const endMoment = moment(endTime, "HH:mm");
+  const duration = endMoment.diff(startMoment, "hours");
 
   const newAppointment = await Appointment.create({
     visitor,

@@ -5,13 +5,9 @@ import CustomError from "../utils/exception.js";
 import { addColors } from "winston";
 import passport from "passport";
 
-
-
-
 const checkVisitorExist = async (email, phone) => {
-
-  const isEmail = await Visitor.findOne({ emailAddress: email })
-  const isPhone = await Visitor.findOne({ phoneNumber: phone })
+  const isEmail = await Visitor.findOne({ emailAddress: email });
+  const isPhone = await Visitor.findOne({ phoneNumber: phone });
   if (isEmail) {
     throw new CustomError(
       statusCodes?.conflict,
@@ -26,8 +22,7 @@ const checkVisitorExist = async (email, phone) => {
       errorCodes?.phone_number_already_registered,
     );
   }
-
-}
+};
 
 export const createVisitor = async (req) => {
   const {
@@ -46,7 +41,7 @@ export const createVisitor = async (req) => {
   const file = req?.file?.path;
   const { userid } = req?.user;
 
-  await checkVisitorExist(emailAddress, phoneNumber)
+  await checkVisitorExist(emailAddress, phoneNumber);
 
   const visitor = await Visitor.create({
     prefix,
@@ -197,7 +192,7 @@ export const getVisitorHistory = async (req) => {
       path: "visitHistory",
       populate: "appointmentId",
     })
-    .sort({ createdAt: -1 })
+    .sort({ createdAt: -1 });
 
   if (!visitorHistory) {
     throw new CustomError(
@@ -223,7 +218,7 @@ export const newVisitor = async (data) => {
     createdBy,
   } = data;
 
-  await checkVisitorExist(emailAddress, phoneNumber)
+  await checkVisitorExist(emailAddress, phoneNumber);
 
   const visitor = await Visitor.create({
     firstName,

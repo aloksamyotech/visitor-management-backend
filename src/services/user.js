@@ -4,9 +4,8 @@ import CustomError from "../utils/exception.js";
 import { createToken } from "../core/helpers/createToken.js";
 
 const checkUserExist = async (email, phone) => {
-
-  const isEmail = await User.findOne({ emailAddress: email })
-  const isPhone = await User.findOne({ phoneNumber: phone })
+  const isEmail = await User.findOne({ emailAddress: email });
+  const isPhone = await User.findOne({ phoneNumber: phone });
   if (isEmail) {
     throw new CustomError(
       statusCodes?.conflict,
@@ -21,7 +20,7 @@ const checkUserExist = async (email, phone) => {
       errorCodes?.phone_number_already_registered,
     );
   }
-}
+};
 
 export const registerUser = async (req) => {
   const {

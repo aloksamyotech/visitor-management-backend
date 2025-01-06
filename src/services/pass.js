@@ -77,7 +77,7 @@ export const updatePassValidity = async (req) => {
 };
 
 export const getAllPass = async (req) => {
-  const allPass = await Pass.find().populate("visitor").sort({createdAt:-1});
+  const allPass = await Pass.find().populate("visitor").sort({ createdAt: -1 });
   if (!allPass) {
     throw new CustomError(
       statusCodes?.notFound,

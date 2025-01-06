@@ -1,0 +1,129 @@
+{
+  "info": {
+    "_postman_id": "b27e5858-79cd-4dae-ba9b-fec92a28a0f5",
+    "name": "Visitor Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "40351864"
+  },
+  "item": [
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"prefix\":\"Mr.\",\r\n \"firstName\":\"Demo\",\r\n \"lastName\":\"User\",\r\n \"phoneNumber\":\"1234567891\",\r\n \"emailAddress\":\"n0604@gmail.com\",\r\n \"password\":\"pass@1234\",\r\n \"role\":\"admin\",\r\n \"gender\":\"Male\",\r\n \"file\":\"c://aaaaa\",\r\n \"address\":\"i am from indore\"   \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:7200/api/v1/user/register"
+          },
+          "response": []
+        },
+        {
+          "name": "userDetails",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "authorization",
+                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjpbeyJBdXRob3JpemF0aW9uIjoiNjc1ZmI5NGVmMTI1NzNlZDdmNzgwMjJmIn1dLCJpYXQiOjE3MzQzMzA2MTQsImV4cCI6MTczNDc2MjYxNH0.8DKSoXtofn1G1GBTsZ24kTWgf3tBwBQuzkzmtYvjRDw",
+                "type": "text"
+              },
+              {
+                "key": "userid",
+                "value": "675c174389cd408f289f1174",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:7200/api/v1/user/getuserdetails"
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"emailAddress\":\"neerajchn06@gmail.com\",\r\n    \"password\":\"pass@1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "http://localhost:7200/api/v1/user/login"
+          },
+          "response": []
+        },
+        {
+          "name": "updateUser",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "authorization",
+                "value": "Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjpbeyJBdXRob3JpemF0aW9uIjoiNjc1ZmI5NGVmMTI1NzNlZDdmNzgwMjJmIn1dLCJpYXQiOjE3MzQzMzA2MTQsImV4cCI6MTczNDc2MjYxNH0.8DKSoXtofn1G1GBTsZ24kTWgf3tBwBQuzkzmtYvjRDw",
+                "type": "text"
+              },
+              {
+                "key": "userid",
+                "value": "675c174389cd408f289f1174",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n \"firstName\":\"tech3\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:7200/api/v1/user/updateuserdetails?userid=675c174389cd408f289f1174",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "7200",
+              "path": ["api", "v1", "user", "updateuserdetails"],
+              "query": [
+                {
+                  "key": "authorization",
+                  "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjpbeyJBdXRob3JpemF0aW9uIjoiNjc1ZmI5NGVmMTI1NzNlZDdmNzgwMjJmIn1dLCJpYXQiOjE3MzQzMzA2MTQsImV4cCI6MTczNDc2MjYxNH0.8DKSoXtofn1G1GBTsZ24kTWgf3tBwBQuzkzmtYvjRDw",
+                  "disabled": true
+                },
+                {
+                  "key": "userid",
+                  "value": "675c174389cd408f289f1174"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,13 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 
 const userSchema = new Schema(
   {
     prefix: {
       type: String,
-      enum: ["Mr.", "Ms.", "Dr.", "Mrs."],
-      required: true,
+      enum: ["mr.", "miss.", "dr.", "mrs.", ""],
+      // required: true,
     },
     firstName: {
       type: String,
@@ -16,19 +15,20 @@ const userSchema = new Schema(
     },
     lastName: {
       type: String,
-      required: true,
+      // required: true,
       trim: true,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
+      unique: true,
       trim: true,
     },
     emailAddress: {
       type: String,
       required: true,
-      trim: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -36,22 +36,45 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "hr", "receptionist", "guard"],
+      enum: ["admin", "hr", "receptionist", "security", "guard"],
       required: true,
     },
     gender: {
       type: String,
-      enum: ["Male", "Female", "Other"],
+      enum: ["male", "female", "other"],
       required: true,
     },
     file: {
       type: String,
-      required: true,
+      // required: true,
     },
     address: {
       type: String,
       required: true,
     },
+    salary: {
+      type: Number,
+      default: 10000,
+      // required: true,
+    },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    permissions: [
+      {
+        type: String,
+        enum: [
+          "user",
+          "manageEntry",
+          "visitor",
+          "appointment",
+          "passes",
+          "report",
+          "calender",
+        ],
+      },
+    ],
   },
   { timestamps: true },
 );

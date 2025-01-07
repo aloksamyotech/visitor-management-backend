@@ -24,6 +24,15 @@ export const createPass = async (req) => {
     );
   }
 
+  const isExist = await Pass.findOne({ visitor: visitor });
+  if (isExist) {
+    throw new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist,
+    );
+  }
+
   const passCode = Math.floor(10000 + Math.random() * 90000);
   const newPass = await Pass.create({
     visitor,

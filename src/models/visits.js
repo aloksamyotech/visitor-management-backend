@@ -1,17 +1,17 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const objID = mongoose.Schema.Types.ObjectId;
+const objID = mongoose.Schema.Types.ObjectId
 
 const visitSchema = new mongoose.Schema(
   {
     visitor: {
       type: objID,
-      ref: "Visitor",
+      ref: 'Visitor',
       required: true,
     },
     employee: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     entryTime: {
@@ -33,22 +33,22 @@ const visitSchema = new mongoose.Schema(
     },
     relatedTo: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       // required: true,
     },
     entryType: {
       type: String,
-      enum: ["visitor", "appointment", "pass", "other"],
+      enum: ['visitor', 'appointment', 'pass', 'other'],
       // required: true,
     },
     passId: {
       type: objID,
-      ref: "Pass",
+      ref: 'Pass',
       default: null,
     },
     appointmentId: {
       type: objID,
-      ref: "Appointment",
+      ref: 'Appointment',
       default: null,
     },
     active: {
@@ -58,6 +58,6 @@ const visitSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
-export const Visit = mongoose.model("Visit", visitSchema);
+  }
+)
+export const Visit = mongoose.model('Visit', visitSchema)

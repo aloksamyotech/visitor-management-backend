@@ -1,25 +1,25 @@
-import mongoose from "mongoose";
-const objID = mongoose.Schema.Types.ObjectId;
+import mongoose from 'mongoose'
+const objID = mongoose.Schema.Types.ObjectId
 const appointmentSchema = new mongoose.Schema(
   {
     visitor: {
       type: objID,
-      ref: "Visitor",
+      ref: 'Visitor',
       required: true,
     },
     employee: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     reference: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       default: null,
     },
     purpose: {
       type: String,
-      enum: ["visitor", "meeting", "maintenance", "other"],
+      enum: ['visitor', 'meeting', 'maintenance', 'other'],
       required: true,
     },
     duration: {
@@ -49,8 +49,8 @@ const appointmentSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "completed", "checkIn"],
-      default: "pending",
+      enum: ['pending', 'approved', 'rejected', 'completed', 'checkIn'],
+      default: 'pending',
     },
     active: {
       type: Boolean,
@@ -59,7 +59,7 @@ const appointmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
+  }
+)
 
-export const Appointment = mongoose.model("Appointment", appointmentSchema);
+export const Appointment = mongoose.model('Appointment', appointmentSchema)

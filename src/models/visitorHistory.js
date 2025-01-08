@@ -1,18 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const objID = mongoose.Schema.Types.ObjectId;
+const objID = mongoose.Schema.Types.ObjectId
 
 const visitorHistorySchema = new mongoose.Schema(
   {
     visitor: {
       type: objID,
-      ref: "Visitor",
+      ref: 'Visitor',
       required: true,
     },
     visitHistory: [
       {
         type: objID,
-        ref: "Visit",
+        ref: 'Visit',
       },
     ],
     active: {
@@ -22,9 +22,9 @@ const visitorHistorySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
+  }
+)
 export const VisitorHistory = mongoose.model(
-  "VisitorHistory",
-  visitorHistorySchema,
-);
+  'VisitorHistory',
+  visitorHistorySchema
+)

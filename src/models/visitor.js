@@ -1,12 +1,12 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const objID = mongoose.Schema.Types.ObjectId;
+const objID = mongoose.Schema.Types.ObjectId
 
 const visitorSchema = new mongoose.Schema(
   {
     prefix: {
       type: String,
-      enum: ["mr.", "miss.", "dr.", "mrs.", ""],
+      enum: ['mr.', 'miss.', 'dr.', 'mrs.', ''],
       // required: true,
     },
     firstName: {
@@ -34,18 +34,18 @@ const visitorSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ["visitor", "vip", "contractor", "guest", "maintenance", "other"],
+      enum: ['visitor', 'vip', 'contractor', 'guest', 'maintenance', 'other'],
       required: true,
     },
     identityType: {
       type: String,
       enum: [
-        "aadharCard",
-        "panCard",
-        "passport",
-        "drivingLicence",
-        "voterId",
-        "other",
+        'aadharCard',
+        'panCard',
+        'passport',
+        'drivingLicence',
+        'voterId',
+        'other',
       ],
       required: true,
     },
@@ -56,7 +56,7 @@ const visitorSchema = new mongoose.Schema(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: ['male', 'female', 'other'],
       required: true,
     },
     address: {
@@ -66,8 +66,8 @@ const visitorSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending',
     },
     totalVisit: {
       type: Number,
@@ -87,7 +87,7 @@ const visitorSchema = new mongoose.Schema(
     },
     createdBy: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     file: {
@@ -97,7 +97,7 @@ const visitorSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
+  }
+)
 
-export const Visitor = mongoose.model("Visitor", visitorSchema);
+export const Visitor = mongoose.model('Visitor', visitorSchema)

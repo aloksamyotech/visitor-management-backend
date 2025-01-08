@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { asyncHandler } from "../utils/asyncWrapper.js";
-const router = Router();
+import { Router } from 'express'
+import { asyncHandler } from '../utils/asyncWrapper.js'
+const router = Router()
 // controller
 import {
   createVisitor,
@@ -9,47 +9,47 @@ import {
   getVisitorDetails,
   getDetailsByNumber,
   getVisitorHistory,
-} from "../controllers/visitor.js";
-import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
-import { upload } from "../middlewares/uploads.js";
+} from '../controllers/visitor.js'
+import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
+import { upload } from '../middlewares/uploads.js'
 
 router.post(
-  "/createvisitor",
-  upload.single("file"),
+  '/createvisitor',
+  upload.single('file'),
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(createVisitor),
-);
+  asyncHandler(createVisitor)
+)
 router.put(
-  "/updatevisitor",
+  '/updatevisitor',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(updateVisitor),
-);
+  asyncHandler(updateVisitor)
+)
 router.get(
-  "/getallvisitor",
+  '/getallvisitor',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAllVisitor),
-);
+  asyncHandler(getAllVisitor)
+)
 router.get(
-  "/getvisitordetails/:visitorid",
+  '/getvisitordetails/:visitorid',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getVisitorDetails),
-);
+  asyncHandler(getVisitorDetails)
+)
 router.get(
-  "/getdetailsbynumber/:input",
+  '/getdetailsbynumber/:input',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getDetailsByNumber),
-);
+  asyncHandler(getDetailsByNumber)
+)
 
 router.get(
-  "/getvisitorhistory/:visitorid",
+  '/getvisitorhistory/:visitorid',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getVisitorHistory),
-);
+  asyncHandler(getVisitorHistory)
+)
 
-export default router;
+export default router

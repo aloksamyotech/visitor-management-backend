@@ -1,11 +1,11 @@
-import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcrypt";
+import mongoose, { Schema } from 'mongoose'
+import bcrypt from 'bcrypt'
 
 const userSchema = new Schema(
   {
     prefix: {
       type: String,
-      enum: ["mr.", "miss.", "dr.", "mrs.", ""],
+      enum: ['mr.', 'miss.', 'dr.', 'mrs.', ''],
       // required: true,
     },
     firstName: {
@@ -36,12 +36,12 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "hr", "receptionist", "security", "guard"],
+      enum: ['admin', 'hr', 'receptionist', 'security', 'guard'],
       required: true,
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: ['male', 'female', 'other'],
       required: true,
     },
     file: {
@@ -65,29 +65,29 @@ const userSchema = new Schema(
       {
         type: String,
         enum: [
-          "user",
-          "manageEntry",
-          "visitor",
-          "appointment",
-          "passes",
-          "report",
-          "calender",
+          'user',
+          'manageEntry',
+          'visitor',
+          'appointment',
+          'passes',
+          'report',
+          'calender',
         ],
       },
     ],
   },
-  { timestamps: true },
-);
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+  { timestamps: true }
+)
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next()
 
-  this.password = await bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10)
 
-  next();
-});
+  next()
+})
 
 userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
+  return await bcrypt.compare(password, this.password)
+}
 
-export const User = mongoose.model("User", userSchema);
+export const User = mongoose.model('User', userSchema)

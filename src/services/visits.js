@@ -94,41 +94,46 @@ export const createEntry = async (req) => {
       errorCodes?.service_unavailable
     )
   }
-  if (visitor) {
-    const updateCount = await Visitor.findOne({ _id: visitor })
-    if (updateCount) {
-      updateCount.totalVisit += 1
-      await updateCount.save()
-    }
+  const updateCount = await Visitor.findOne({ _id: visitor })
+  if (updateCount) {
+    updateCount.totalVisit += 1
+    await updateCount.save()
+  }
 
+  if (passId) {
     const updatePassCount = await Pass.findOne({ _id: passId })
-    if (updatePassCount) {
-      updatePassCount.count += 1
-      updatePassCount.dailyCount += 1
-      await updatePassCount.save()
-    }
-
-    const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
-      { visitor },
-      {
-        $push: { visitHistory: entryData._id },
-      }
-    )
-
-    if (!updateLogsInHistory) {
+    if (!updatePassCount) {
       throw new CustomError(
         statusCodes?.badRequest,
         Message?.notUpdated,
         errorCodes?.not_found
       )
     }
+    updatePassCount.count += 1
+    updatePassCount.dailyCount += 1
+    await updatePassCount.save()
+  }
 
-    if (appointmentId) {
-      await Appointment.findByIdAndUpdate(
-        { _id: appointmentId },
-        { status: 'checkIn' }
-      )
+  const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
+    { visitor },
+    {
+      $push: { visitHistory: entryData._id },
     }
+  )
+
+  if (!updateLogsInHistory) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notUpdated,
+      errorCodes?.not_found
+    )
+  }
+
+  if (appointmentId) {
+    await Appointment.findByIdAndUpdate(
+      { _id: appointmentId },
+      { status: 'checkIn' }
+    )
   }
 
   return { entryData }
@@ -173,19 +178,32 @@ export const getAllEntry = async () => {
   const allEntry = await Visit.find()
     .populate('visitor')
     .sort({ createdAt: -1 })
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   return { allEntry }
 }
 
 export const getEntryByDate = async (req) => {
-  const { startDate, endDate } = req.query
+  const { startDate, endDate } = req?.query || {}
 
   const allEntry = await Visit.find().populate('visitor')
-  let filteredData = allEntry
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
   if (startDate && endDate) {
     const start = new Date(`${startDate}T00:00:00.000Z`)
     const end = new Date(`${endDate}T23:59:59.999Z`)
-    filteredData = filteredData?.filter((item) => {
+    const filteredData = allEntry?.filter((item) => {
       const itemDate = new Date(item?.createdAt)
       return itemDate >= start && itemDate <= end
     })
@@ -202,7 +220,15 @@ export const getEntryByDate = async (req) => {
 
 export const getDashboardData = async () => {
   const allEntry = await Visit.find()
-  const totalCount = allEntry.length
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const totalCount = allEntry?.length
 
   const filteredData = allEntry?.filter((item) => {
     const today = new Date().toISOString().slice(0, 10)
@@ -211,11 +237,18 @@ export const getDashboardData = async () => {
 
     return newdate === today
   })
-  const todayCount = filteredData.length
+  const todayCount = filteredData?.length
 
   const todayAppointment = await Appointment.find()
     .populate('visitor')
     .sort({ createdAt: -1 })
+  if (!todayAppointment) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   const filteredApnData = todayAppointment?.filter((item) => {
     const today = new Date().toISOString().slice(0, 10)
     const itemDate = new Date(item?.date)
@@ -228,6 +261,14 @@ export const getDashboardData = async () => {
     .populate('visitor')
     .sort({ createdAt: -1 })
     .limit(5)
+
+  if (!recentVisitor) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
   const visitorCount = await Visitor.countDocuments()
   const apnCount = await Appointment.countDocuments()

@@ -1,12 +1,12 @@
 import logger from '../core/config/logger.js'
 
-const globalExceptionHandler = (err, req, res) => {
+const globalExceptionHandler = (err, req, res, next) => {
   const statusCode = err?.statusCode || 500
   const message = err?.message || 'Internal Server Error!'
   const errorCode =
     err?.errorCode || 'Something went wrong on our end. Please try again later.'
 
-  console.error('error stack', err?.stack)
+  console.error('error stack', err.stack)
   const { method, originalUrl, body, params, headers } = req
   let error = err?.stack || 'No stack trace available'
   const logMessage = `
@@ -25,6 +25,7 @@ const globalExceptionHandler = (err, req, res) => {
     message,
     errorCode,
   })
+  next()
 }
 
 export default globalExceptionHandler

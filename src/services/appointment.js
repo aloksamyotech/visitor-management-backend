@@ -22,7 +22,10 @@ export const scheduleAppointment = async (req) => {
 
   const startMoment = moment(startTime, 'HH:mm')
   const endMoment = moment(endTime, 'HH:mm')
-  const duration = endMoment.diff(startMoment, 'hours')
+  let duration = endMoment.diff(startMoment, 'hours')
+  if (duration < 1) {
+    duration = 1
+  }
 
   const newAppointment = await Appointment.create({
     visitor,
@@ -171,8 +174,6 @@ export const getAppointmentByName = async (req) => {
     match: { firstName: inputName },
     select: 'firstName',
   })
-  // const appointment = await Appointment.find().populate({ path: "visitor", match: { firstName: { $regex: new RegExp(inputName, "i") } } });
-
   const filteredAppointment = appointment.filter((app) => app.visitor)
 
   if (filteredAppointment.length === 0) {

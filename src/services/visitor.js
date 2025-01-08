@@ -57,9 +57,8 @@ export const createVisitor = async (req) => {
     createdBy: userid,
   })
 
-  const createdVisitor = await Visitor.findById(visitor._id)
-  if (!createdVisitor) {
-    return new CustomError(
+  if (!visitor) {
+    throw new CustomError(
       statusCodes?.serviceUnavailable,
       Message?.serverError,
       errorCodes?.service_unavailable
@@ -68,14 +67,14 @@ export const createVisitor = async (req) => {
 
   const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
   if (!visitoryHistory) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.badRequest,
       Message?.notUpdated,
       errorCodes?.not_found
     )
   }
 
-  return { createdVisitor }
+  return { visitor }
 }
 
 export const updateVisitor = async (req) => {
@@ -104,6 +103,7 @@ export const updateVisitor = async (req) => {
       errorCodes?.user_not_found
     )
   }
+
   const updatedData = await Visitor.findByIdAndUpdate(visitorid, {
     prefix,
     firstName,
@@ -118,6 +118,14 @@ export const updateVisitor = async (req) => {
     comment,
     createdBy,
   })
+
+  if (!updatedData) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
   return { updatedData }
 }
 
@@ -146,6 +154,13 @@ export const getVisitorDetails = async (req) => {
 
 export const getAllVisitor = async () => {
   const allVisitors = await Visitor.find().sort({ createdAt: -1 })
+  if (!allVisitors) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
   return { allVisitors }
 }
@@ -230,6 +245,14 @@ export const newVisitor = async (data) => {
     address,
     createdBy,
   })
+
+  if (!visitor) {
+    throw new CustomError(
+      statusCodes?.serviceUnavailable,
+      Message?.serverError,
+      errorCodes?.service_unavailable
+    )
+  }
 
   const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
   if (!visitoryHistory) {

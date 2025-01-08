@@ -26,7 +26,7 @@ export const createPass = async (req) => {
 
   const isExist = await Pass.findOne({ visitor: visitor })
   if (isExist) {
-    throw new CustomError(
+    return new CustomError(
       statusCodes?.conflict,
       Message?.alreadyExist,
       errorCodes?.already_exist
@@ -47,7 +47,7 @@ export const createPass = async (req) => {
     comment,
   })
   if (!newPass) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.badRequest,
       Message?.notCreated,
       errorCodes?.bad_request
@@ -62,7 +62,7 @@ export const updatePassValidity = async (req) => {
 
   const checkPass = await Pass.findById(passId)
 
-  if (!checkPass) {
+  if (checkPass) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.userNotGet,

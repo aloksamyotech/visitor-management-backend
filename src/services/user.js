@@ -55,7 +55,7 @@ export const registerUser = async (req) => {
   const createdUser = await User.findById(user._id).select('-password')
 
   if (!createdUser) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.internalServerError,
       Message?.notCreated,
       errorCodes?.not_created
@@ -121,7 +121,7 @@ export const getUserDetails = async (req) => {
   const userData = await User.findById(userid).select('-password')
 
   if (!userData) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.notFound,
       Message?.userNotFound,
       errorCodes?.user_not_found
@@ -232,7 +232,7 @@ export const getUserDetailsById = async (req) => {
   const userData = await User.findById(userid).select('-password')
 
   if (!userData) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.notFound,
       Message?.userNotGet,
       errorCodes?.user_not_found

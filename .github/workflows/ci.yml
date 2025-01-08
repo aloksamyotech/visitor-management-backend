@@ -1,0 +1,51 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Remove Existing Node Modules
+        run: rm -rf node_modules
+
+      - name: Set environment variables
+        env:
+          DB_URL: 'mongodb://127.0.0.1:27017/'
+          DB_NAME: 'visitor2'
+          PORT: 5050
+          ENV: 'development'
+          ACCESS_TOKEN_SECRET: 'secretkey'
+          ACCESS_TOKEN_EXPIRY: '5d'
+          REFRESH_TOKEN_SECRET: 'secretkey'
+          REFRESH_TOKEN_EXPIRY: '10d'
+        run: |
+          echo "DB_URL=${DB_URL}" >> $GITHUB_ENV
+          echo "DB_NAME=${DB_NAME}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
+          echo "ENV=${ENV}" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN_EXPIRY=${ACCESS_TOKEN_EXPIRY}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN_EXPIRY=${REFRESH_TOKEN_EXPIRY}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Lint Command
+        run: npm run lint
+
+      - name: Run Build Command
+        run: npm run build

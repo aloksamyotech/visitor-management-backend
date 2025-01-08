@@ -92,6 +92,14 @@ export const createEntry = async (req) => {
         errorCodes?.not_found
       )
     }
+
+    if (appointmentId) {
+      const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
+        { _id: appointmentId },
+        { status: 'checkIn' }
+      )
+      console.log('status updated', updateAppointmentStatus)
+    }
   }
 
   return { entryData }

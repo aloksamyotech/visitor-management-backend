@@ -1,7 +1,5 @@
 import * as passService from '../services/pass.js'
-import { Message, statusCodes } from '../core/common/constant.js'
-import { asyncHandler } from '../utils/asyncWrapper.js'
-import CustomError from '../utils/exception.js'
+import { statusCodes } from '../core/common/constant.js'
 
 export const createPass = async (req, res, next) => {
   const createPass = await passService.createPass(req, res, next)

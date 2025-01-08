@@ -2,6 +2,7 @@ import { User } from '../models/user.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { createToken } from '../core/helpers/createToken.js'
+import process from 'node:process'
 
 const checkUserExist = async (email, phone) => {
   const isEmail = await User.findOne({ emailAddress: email })
@@ -33,7 +34,7 @@ export const registerUser = async (req) => {
     emailAddress,
     role,
     address,
-  } = req?.body
+  } = req?.body || {}
   const file = req?.file?.path
 
   await checkUserExist(emailAddress, phoneNumber)
@@ -65,7 +66,7 @@ export const registerUser = async (req) => {
 }
 
 export const loginUser = async (req) => {
-  const { emailAddress, password } = req?.body
+  const { emailAddress, password } = req?.body || {}
 
   const user = await User.findOne({ emailAddress })
   if (!user) {
@@ -89,8 +90,8 @@ export const loginUser = async (req) => {
   const loginUser = await User.findById(user._id).select('-password')
 
   const payload = { userid: loginUser._id, role: loginUser.role }
-  const key = process.env.ACCESS_TOKEN_SECRET
-  const expiresIn = process.env.ACCESS_TOKEN_EXPIRY
+  const key = process.env?.ACCESS_TOKEN_SECRET
+  const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY
 
   const jwtToken = createToken(payload, key, expiresIn)
 
@@ -107,7 +108,7 @@ export const loginUser = async (req) => {
 }
 
 export const getUserDetails = async (req) => {
-  const { userid } = req?.user
+  const { userid } = req?.user || {}
 
   if (!userid) {
     throw new CustomError(
@@ -130,7 +131,7 @@ export const getUserDetails = async (req) => {
 }
 
 export const updateUserDetails = async (req) => {
-  const { userid } = req?.user
+  const { userid } = req?.user || {}
   const {
     prefix,
     firstName,
@@ -142,7 +143,7 @@ export const updateUserDetails = async (req) => {
     file,
     role,
     address,
-  } = req?.body
+  } = req?.body || {}
 
   const user = await User.findOne({ _id: userid })
 
@@ -170,8 +171,8 @@ export const updateUserDetails = async (req) => {
 }
 
 export const manageUserPermission = async (req) => {
-  const { userid } = req?.params
-  const { permissions } = req?.body
+  const { userid } = req?.params || {}
+  const { permissions } = req?.body || {}
 
   const user = await User.findById(userid)
 
@@ -205,7 +206,7 @@ export const manageUserPermission = async (req) => {
   return updatePermission
 }
 
-export const getAllUser = async (req) => {
+export const getAllUser = async () => {
   const allUser = await User.find().select('-password').sort({ createdAt: -1 })
   if (!allUser) {
     throw new CustomError(
@@ -218,7 +219,7 @@ export const getAllUser = async (req) => {
 }
 
 export const getUserDetailsById = async (req) => {
-  const { userid } = req?.params
+  const { userid } = req?.params || {}
 
   if (!userid) {
     throw new CustomError(

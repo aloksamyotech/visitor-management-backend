@@ -1,7 +1,5 @@
 import * as appointmentService from '../services/appointment.js'
-import { Message, statusCodes } from '../core/common/constant.js'
-import { asyncHandler } from '../utils/asyncWrapper.js'
-import CustomError from '../utils/exception.js'
+import { statusCodes } from '../core/common/constant.js'
 
 export const scheduleAppointment = async (req, res, next) => {
   const appointmentDetails = await appointmentService.scheduleAppointment(

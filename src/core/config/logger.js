@@ -1,6 +1,8 @@
 import winston from 'winston'
 import { format } from 'winston'
 import DailyRotateFile from 'winston-daily-rotate-file'
+import process from 'node:process'
+
 const customLogFormat = format.combine(
   format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   format.errors({ stack: true }),
@@ -12,7 +14,7 @@ const customLogFormat = format.combine(
   })
 )
 
-const logLevel = process.env.NODE_ENV === 'production' ? 'info' : 'debug'
+const logLevel = process.env?.NODE_ENV === 'production' ? 'info' : 'debug'
 
 const logger = winston.createLogger({
   level: logLevel,

@@ -1,7 +1,8 @@
 import passport from 'passport'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import process from 'node:process'
 
-const secretKey = process.env.ACCESS_TOKEN_SECRET
+const secretKey = process.env?.ACCESS_TOKEN_SECRET
 
 passport.use(
   new JwtStrategy(

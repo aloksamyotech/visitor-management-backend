@@ -45,6 +45,10 @@ const PassSchema = new mongoose.Schema(
       type: Number,
       default: 100,
     },
+    dailyCount: {
+      type: Number,
+      default: 0,
+    },
     maxEntryPerDay: {
       type: Number,
       default: 5,

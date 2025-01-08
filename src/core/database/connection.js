@@ -1,11 +1,12 @@
 import mongoose from 'mongoose'
 import { database_urls } from '../common/constant.js'
 import 'dotenv/config'
+import process from 'node:process'
 
 const connectDB = async () => {
   try {
     ;(async function () {
-      const dbUri = database_urls.connection + database_urls.db_name
+      const dbUri = database_urls?.connection + database_urls?.db_name
       await mongoose.connect(dbUri, {
         // useNewUrlParser: true,
         // useUnifiedTopology: true,
@@ -14,7 +15,7 @@ const connectDB = async () => {
       })
     })()
   } catch (error) {
-    console.error('database connection failed:', error.message)
+    console.error('database connection failed:', error?.message)
     process.exit(1)
   }
 }

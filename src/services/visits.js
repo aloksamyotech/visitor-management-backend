@@ -24,10 +24,10 @@ export const createEntry = async (req) => {
     identityType,
     gender,
     address,
-  } = req?.body
+  } = req?.body || {}
 
-  let { visitor } = req?.body
-  const { userid } = req?.user //fetching employee id
+  let { visitor } = req?.body || {}
+  const { userid } = req?.user || {} //fetching employee id
   if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -35,6 +35,29 @@ export const createEntry = async (req) => {
       errorCodes?.not_found
     )
   }
+
+  if (passId) {
+    const passData = await Pass.findOne({ _id: passId })
+    if (passData?.dailyCount >= passData?.maxEntryPerDay) {
+      passData.status = 'expired'
+      await passData.save()
+      throw new CustomError(
+        statusCodes?.conflict,
+        Message?.passValidityExpired,
+        errorCodes?.pass_expire
+      )
+    }
+    if (passData?.count >= passData?.maxCount) {
+      passData.status = 'expired'
+      await passData.save()
+      throw new CustomError(
+        statusCodes?.conflict,
+        Message?.passValidityExpired,
+        errorCodes?.pass_expire
+      )
+    }
+  }
+
   const data = {
     firstName,
     lastName,
@@ -65,7 +88,7 @@ export const createEntry = async (req) => {
   })
 
   if (!entryData) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.serviceUnavailable,
       Message?.serverError,
       errorCodes?.service_unavailable
@@ -78,6 +101,13 @@ export const createEntry = async (req) => {
       await updateCount.save()
     }
 
+    const updatePassCount = await Pass.findOne({ _id: passId })
+    if (updatePassCount) {
+      updatePassCount.count += 1
+      updatePassCount.dailyCount += 1
+      await updatePassCount.save()
+    }
+
     const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
       { visitor },
       {
@@ -86,7 +116,7 @@ export const createEntry = async (req) => {
     )
 
     if (!updateLogsInHistory) {
-      return new CustomError(
+      throw new CustomError(
         statusCodes?.badRequest,
         Message?.notUpdated,
         errorCodes?.not_found
@@ -94,11 +124,10 @@ export const createEntry = async (req) => {
     }
 
     if (appointmentId) {
-      const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
+      await Appointment.findByIdAndUpdate(
         { _id: appointmentId },
         { status: 'checkIn' }
       )
-      console.log('status updated', updateAppointmentStatus)
     }
   }
 
@@ -106,7 +135,7 @@ export const createEntry = async (req) => {
 }
 
 export const exitVisitor = async (req) => {
-  const { visitid } = req?.params
+  const { visitid } = req?.params || {}
 
   if (!visitid) {
     throw new CustomError(
@@ -127,10 +156,20 @@ export const exitVisitor = async (req) => {
   visit.exitTime = new Date()
   await visit.save()
 
+  const ApnID = visit?.appointmentId
+  if (ApnID) {
+    await Appointment.findByIdAndUpdate(
+      { _id: ApnID },
+      {
+        status: 'completed',
+      }
+    )
+  }
+
   return { visit }
 }
 
-export const getAllEntry = async (req) => {
+export const getAllEntry = async () => {
   const allEntry = await Visit.find()
     .populate('visitor')
     .sort({ createdAt: -1 })
@@ -161,7 +200,7 @@ export const getEntryByDate = async (req) => {
   }
 }
 
-export const getDashboardData = async (req) => {
+export const getDashboardData = async () => {
   const allEntry = await Visit.find()
   const totalCount = allEntry.length
 

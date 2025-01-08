@@ -5,9 +5,9 @@ import moment from 'moment'
 
 export const scheduleAppointment = async (req) => {
   const { visitor, purpose, date, startTime, endTime, reference, comment } =
-    req?.body
+    req?.body || {}
 
-  const { userid } = req?.user //fetching employee id
+  const { userid } = req?.user || {} //fetching employee id
 
   // pending logic to create unique id using keyword
   const appointmentId = Math.floor(10000 + Math.random() * 90000)
@@ -47,8 +47,8 @@ export const scheduleAppointment = async (req) => {
 }
 
 export const reScheduleAppointment = async (req) => {
-  const { appointmentId } = req?.params
-  const { date, startTime, endTime } = req?.body
+  const { appointmentId } = req?.params || {}
+  const { date, startTime, endTime } = req?.body || {}
 
   const checkAppointment = await Appointment.findById(appointmentId)
 
@@ -77,8 +77,8 @@ export const reScheduleAppointment = async (req) => {
 }
 
 export const updateAppointmentStatus = async (req) => {
-  const { appointmentId } = req?.params
-  const { status } = req?.body
+  const { appointmentId } = req?.params || {}
+  const { status } = req?.body || {}
 
   const checkAppointment = await Appointment.findById(appointmentId)
 
@@ -105,7 +105,7 @@ export const updateAppointmentStatus = async (req) => {
   return { statusUpdate }
 }
 
-export const getAllAppointment = async (req) => {
+export const getAllAppointment = async () => {
   const allAppointment = await Appointment.find()
     .populate('visitor')
     .populate('reference')
@@ -121,7 +121,7 @@ export const getAllAppointment = async (req) => {
 }
 
 export const getAppointmentByDate = async (req) => {
-  const { date } = req?.body
+  const { date } = req?.body || {}
   if (!date) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -135,7 +135,7 @@ export const getAppointmentByDate = async (req) => {
 }
 
 export const getAppointmentByAptID = async (req) => {
-  const { input } = req?.params
+  const { input } = req?.params || {}
   if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -158,7 +158,7 @@ export const getAppointmentByAptID = async (req) => {
 }
 
 export const getAppointmentByName = async (req) => {
-  const { inputName } = req?.query
+  const { inputName } = req?.query || {}
   if (!inputName) {
     throw new CustomError(
       statusCodes?.notFound,

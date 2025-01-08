@@ -12,9 +12,9 @@ export const createPass = async (req) => {
     maxCount,
     maxEntryPerDay,
     comment,
-  } = req?.body
+  } = req?.body || {}
 
-  const { userid } = req?.user //fetching employee id
+  const { userid } = req?.user || {} //fetching employee id
 
   if (!visitor || !userid) {
     throw new CustomError(
@@ -57,8 +57,8 @@ export const createPass = async (req) => {
 }
 
 export const updatePassValidity = async (req) => {
-  const { passId } = req?.params
-  const { startDate, endDate } = req?.body
+  const { passId } = req?.params || {}
+  const { startDate, endDate } = req?.body || {}
 
   const checkPass = await Pass.findById(passId)
 
@@ -85,7 +85,7 @@ export const updatePassValidity = async (req) => {
   return { passUpdate }
 }
 
-export const getAllPass = async (req) => {
+export const getAllPass = async () => {
   const allPass = await Pass.find().populate('visitor').sort({ createdAt: -1 })
   if (!allPass) {
     throw new CustomError(
@@ -98,7 +98,7 @@ export const getAllPass = async (req) => {
 }
 
 export const getPassByPassCode = async (req) => {
-  const { input } = req?.params
+  const { input } = req?.params || {}
   if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -120,7 +120,7 @@ export const getPassByPassCode = async (req) => {
 }
 
 export const getPassByName = async (req) => {
-  const { inputName } = req?.query
+  const { inputName } = req?.query || {}
   if (!inputName) {
     throw new CustomError(
       statusCodes?.notFound,

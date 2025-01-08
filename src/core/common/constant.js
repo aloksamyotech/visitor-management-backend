@@ -1,7 +1,9 @@
 import 'dotenv/config'
+import process from 'node:process'
+
 export const database_urls = Object.freeze({
-  connection: process.env.DB_URL || 'mongodb://127.0.0.1:27017/',
-  db_name: process.env.DB_NAME || 'heyreach',
+  connection: process.env?.DB_URL || 'mongodb://127.0.0.1:27017/',
+  db_name: process.env?.DB_NAME || 'heyreach',
 })
 
 export const statusCodes = {
@@ -46,6 +48,7 @@ export const Message = {
   phoneNumberAlreadyRegistered: 'Phone Number Already Registered',
   userIdNotFound: 'User Id Not Found',
   userNotFound: 'User Not Found',
+  passValidityExpired: 'Pass Validity Expired',
 }
 
 export const errorCodes = Object.freeze({
@@ -129,6 +132,7 @@ export const errorCodes = Object.freeze({
   missing_auth_token: 'MISSING_AUTH_TOKEN',
   invalid_operation: 'INVALID_OPERATION',
   not_created: 'NOT_CREATED',
+  pass_expire: 'Pass Validity Expired',
 })
 
 export const checkRole = {

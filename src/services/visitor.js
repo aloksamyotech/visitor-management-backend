@@ -2,8 +2,6 @@ import { Visitor } from '../models/visitor.js'
 import { VisitorHistory } from '../models/visitorHistory.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
-import { addColors } from 'winston'
-import passport from 'passport'
 
 const checkVisitorExist = async (email, phone) => {
   const isEmail = await Visitor.findOne({ emailAddress: email })
@@ -37,9 +35,9 @@ export const createVisitor = async (req) => {
     gender,
     address,
     comment,
-  } = req?.body
+  } = req?.body || {}
   const file = req?.file?.path
-  const { userid } = req?.user
+  const { userid } = req?.user || {}
 
   await checkVisitorExist(emailAddress, phoneNumber)
 
@@ -81,7 +79,7 @@ export const createVisitor = async (req) => {
 }
 
 export const updateVisitor = async (req) => {
-  const { visitorid } = req?.headers
+  const { visitorid } = req?.headers || {}
   const {
     prefix,
     firstName,
@@ -95,7 +93,7 @@ export const updateVisitor = async (req) => {
     address,
     comment,
     createdBy,
-  } = req?.body
+  } = req?.body || {}
 
   const visitor = await Visitor.findById(visitorid)
 
@@ -124,7 +122,7 @@ export const updateVisitor = async (req) => {
 }
 
 export const getVisitorDetails = async (req) => {
-  const { visitorid } = req?.params
+  const { visitorid } = req?.params || {}
 
   if (!visitorid) {
     throw new CustomError(
@@ -146,14 +144,14 @@ export const getVisitorDetails = async (req) => {
   return { visitorData }
 }
 
-export const getAllVisitor = async (req) => {
+export const getAllVisitor = async () => {
   const allVisitors = await Visitor.find().sort({ createdAt: -1 })
 
   return { allVisitors }
 }
 
 export const getDetailsByNumber = async (req) => {
-  const { input } = req?.params
+  const { input } = req?.params || {}
 
   if (!input) {
     throw new CustomError(
@@ -176,7 +174,7 @@ export const getDetailsByNumber = async (req) => {
 }
 
 export const getVisitorHistory = async (req) => {
-  const { visitorid } = req?.params
+  const { visitorid } = req?.params || {}
 
   if (!visitorid) {
     throw new CustomError(

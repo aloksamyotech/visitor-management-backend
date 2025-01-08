@@ -1,7 +1,5 @@
 import * as userService from '../services/user.js'
-import { Message, statusCodes } from '../core/common/constant.js'
-import { asyncHandler } from '../utils/asyncWrapper.js'
-import CustomError from '../utils/exception.js'
+import { statusCodes } from '../core/common/constant.js'
 
 export const userRegistration = async (req, res, next) => {
   const userData = await userService.registerUser(req, res, next)

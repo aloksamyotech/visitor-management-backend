@@ -6,11 +6,13 @@ import {
   statusCodes,
   checkRole,
 } from '../core/common/constant.js'
+import 'dotenv/config'
+import process from 'node:process'
 
 export const userAuth = (req, res, next) => {
-  const { authorization } = req?.headers
+  const { authorization } = req?.headers || {}
   const token = authorization && authorization.split(' ')[1]
-  const verfifyToken = process.env.ACCESS_TOKEN_SECRET
+  const verfifyToken = process.env?.ACCESS_TOKEN_SECRET
 
   if (!token) {
     throw new CustomError(
@@ -33,7 +35,7 @@ export const userAuth = (req, res, next) => {
 }
 
 export const adminAuth = (req, res, next) => {
-  const { role } = req?.user
+  const { role } = req?.user || {}
 
   if (role !== checkRole?.admin) {
     throw new CustomError(
@@ -45,7 +47,7 @@ export const adminAuth = (req, res, next) => {
   next()
 }
 export const employeeAuth = (req, res, next) => {
-  const { role } = req?.user
+  const { role } = req?.user || {}
 
   if (
     role !== checkRole?.admin &&

@@ -241,9 +241,8 @@ export const getUserDetailsById = async (req) => {
 }
 
 export const updateUserPassword = async (req) => {
-
-  const { userid } = req?.user;
-  const { password, currentPassword } = req?.body || {};
+  const { userid } = req?.user
+  const { password, currentPassword } = req?.body || {}
   const user = await User.findOne({ _id: userid })
   if (!user) {
     throw new CustomError(
@@ -252,7 +251,7 @@ export const updateUserPassword = async (req) => {
       errorCodes?.user_not_found
     )
   }
-  const checkCurrentPassword = await user.isPasswordCorrect(currentPassword);
+  const checkCurrentPassword = await user.isPasswordCorrect(currentPassword)
   if (!checkCurrentPassword) {
     throw new CustomError(
       statusCodes?.badRequest,

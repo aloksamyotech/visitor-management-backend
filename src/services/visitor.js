@@ -203,10 +203,7 @@ export const getVisitorHistory = async (req) => {
     .select('visitHistory')
     .populate({
       path: 'visitHistory',
-      populate: [
-        { path: 'appointmentId' },
-        { path: 'passId' }
-      ],
+      populate: [{ path: 'appointmentId' }, { path: 'passId' }],
     })
     .sort({ createdAt: -1 })
 

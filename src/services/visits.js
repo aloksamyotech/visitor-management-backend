@@ -94,7 +94,7 @@ export const createEntry = async (req) => {
       errorCodes?.not_created
     )
   }
-  const updateCount = await Visitor.findOne({ _id: visitor });
+  const updateCount = await Visitor.findOne({ _id: visitor })
   if (!updateCount) {
     throw new CustomError(
       statusCodes?.notFound,

@@ -87,7 +87,7 @@ userSchema.pre('save', async function (next) {
 })
 userSchema.pre('findOneAndUpdate', async function (next) {
   if (!this._update.password) return next()
-    
+
   this._update.password = await bcrypt.hash(this._update.password, 10)
 
   next()

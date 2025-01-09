@@ -31,7 +31,11 @@ export const userUpdate = async (req, res, next) => {
 }
 
 export const updateUserPassword = async (req, res, next) => {
-  const updateUserPassword = await userService.updateUserPassword(req, res, next)
+  const updateUserPassword = await userService.updateUserPassword(
+    req,
+    res,
+    next
+  )
   res.status(statusCodes?.ok).send(updateUserPassword)
 }
 

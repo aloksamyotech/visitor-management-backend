@@ -7,6 +7,7 @@ import {
   getAllUser,
   getUserDetailsById,
   manageUserPermission,
+  updateUserPassword,
   userDetails,
   userLogin,
   userRegistration,
@@ -25,9 +26,16 @@ router.get(
 )
 router.put(
   '/updateuserdetails',
+  upload.single('file'),
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(userUpdate)
+)
+router.put(
+  '/updateuserpassword',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updateUserPassword)
 )
 router.put(
   '/manageuserpermission/:userid',

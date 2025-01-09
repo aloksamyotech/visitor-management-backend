@@ -48,7 +48,12 @@ export const Message = {
   phoneNumberAlreadyRegistered: 'Phone Number Already Registered',
   userIdNotFound: 'User Id Not Found',
   userNotFound: 'User Not Found',
-  passValidityExpired: 'Pass Validity Expired',
+  passValidityExpired: 'Pass Validity Expired Please Renew for Access ',
+  passValidityPerDayExpired: 'Today\'s Pass Limit Reached.',
+  passNotFound:"Pass Not Found",
+  visitHistoryNotCreated:"Visitor History Not Created",
+  apnStatusNotUpdated:"Appointment Status not Updated",
+  incorrrectPassword:'Incorrect Password'
 }
 
 export const errorCodes = Object.freeze({
@@ -133,6 +138,7 @@ export const errorCodes = Object.freeze({
   invalid_operation: 'INVALID_OPERATION',
   not_created: 'NOT_CREATED',
   pass_expire: 'Pass Validity Expired',
+  not_updated:'NOT_UPDATED'
 })
 
 export const checkRole = {

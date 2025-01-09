@@ -3,7 +3,7 @@ import { statusCodes } from '../core/common/constant.js'
 
 export const createPass = async (req, res, next) => {
   const createPass = await passService.createPass(req, res, next)
-  res.status(statusCodes?.created).send(createPass)
+  res.status(statusCodes?.ok).send(createPass)
 }
 
 export const updatePassValidity = async (req, res, next) => {

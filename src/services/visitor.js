@@ -59,9 +59,9 @@ export const createVisitor = async (req) => {
 
   if (!visitor) {
     throw new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
     )
   }
 
@@ -69,8 +69,8 @@ export const createVisitor = async (req) => {
   if (!visitoryHistory) {
     throw new CustomError(
       statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
     )
   }
 
@@ -99,8 +99,8 @@ export const updateVisitor = async (req) => {
   if (!visitor) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found
+      Message?.notFound,
+      errorCodes?.not_found
     )
   }
 
@@ -122,8 +122,8 @@ export const updateVisitor = async (req) => {
   if (!updatedData) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found
+      Message?.notFound,
+      errorCodes?.not_found
     )
   }
   return { updatedData }
@@ -145,8 +145,8 @@ export const getVisitorDetails = async (req) => {
   if (!visitorData) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found
+      Message?.notFound,
+      errorCodes?.not_found
     )
   }
   return { visitorData }
@@ -203,15 +203,18 @@ export const getVisitorHistory = async (req) => {
     .select('visitHistory')
     .populate({
       path: 'visitHistory',
-      populate: 'appointmentId',
+      populate: [
+        { path: 'appointmentId' },
+        { path: 'passId' }
+      ],
     })
     .sort({ createdAt: -1 })
 
   if (!visitorHistory) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found
+      Message?.notFound,
+      errorCodes?.not_found
     )
   }
   return { visitorHistory }
@@ -248,9 +251,9 @@ export const newVisitor = async (data) => {
 
   if (!visitor) {
     throw new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
     )
   }
 
@@ -258,8 +261,8 @@ export const newVisitor = async (data) => {
   if (!visitoryHistory) {
     return new CustomError(
       statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
     )
   }
 

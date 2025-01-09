@@ -3,7 +3,7 @@ import { statusCodes } from '../core/common/constant.js'
 
 export const userRegistration = async (req, res, next) => {
   const userData = await userService.registerUser(req, res, next)
-  res.status(statusCodes?.created).send(userData)
+  res.status(statusCodes?.ok).send(userData)
 }
 
 export const userLogin = async (req, res, next) => {
@@ -28,6 +28,11 @@ export const getUserDetailsById = async (req, res, next) => {
 export const userUpdate = async (req, res, next) => {
   const updatedDetails = await userService.updateUserDetails(req, res, next)
   res.status(statusCodes?.ok).send(updatedDetails)
+}
+
+export const updateUserPassword = async (req, res, next) => {
+  const updateUserPassword = await userService.updateUserPassword(req, res, next)
+  res.status(statusCodes?.ok).send(updateUserPassword)
 }
 
 export const manageUserPermission = async (req, res, next) => {

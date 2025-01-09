@@ -140,11 +140,10 @@ export const updateUserDetails = async (req) => {
     gender,
     phoneNumber,
     emailAddress,
-    file,
     role,
     address,
   } = req?.body || {}
-
+  const file = req?.file?.path
   const user = await User.findOne({ _id: userid })
 
   if (!user) {
@@ -239,4 +238,29 @@ export const getUserDetailsById = async (req) => {
     )
   }
   return userData
+}
+
+export const updateUserPassword = async (req) => {
+
+  const { userid } = req?.user;
+  const { password, currentPassword } = req?.body || {};
+  const user = await User.findOne({ _id: userid })
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
+  const checkCurrentPassword = await user.isPasswordCorrect(currentPassword);
+  if (!checkCurrentPassword) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.incorrrectPassword,
+      errorCodes?.password_mismatch
+    )
+  }
+  const updatedData = await User.findByIdAndUpdate(userid, { password })
+
+  return updatedData
 }

@@ -3,7 +3,7 @@ import { statusCodes } from '../core/common/constant.js'
 
 export const createVisitor = async (req, res, next) => {
   const visitorData = await visitorService.createVisitor(req, res, next)
-  res.status(statusCodes?.created).send(visitorData)
+  res.status(statusCodes?.ok).send(visitorData)
 }
 
 export const updateVisitor = async (req, res, next) => {

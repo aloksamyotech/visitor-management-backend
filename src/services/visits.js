@@ -89,12 +89,19 @@ export const createEntry = async (req) => {
 
   if (!entryData) {
     throw new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
     )
   }
   const updateCount = await Visitor.findOne({ _id: visitor })
+  if (!updateCount) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   if (updateCount) {
     updateCount.totalVisit += 1
     await updateCount.save()
@@ -104,8 +111,8 @@ export const createEntry = async (req) => {
     const updatePassCount = await Pass.findOne({ _id: passId })
     if (!updatePassCount) {
       throw new CustomError(
-        statusCodes?.badRequest,
-        Message?.notUpdated,
+        statusCodes?.notFound,
+        Message?.passNotFound,
         errorCodes?.not_found
       )
     }
@@ -124,16 +131,23 @@ export const createEntry = async (req) => {
   if (!updateLogsInHistory) {
     throw new CustomError(
       statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
     )
   }
 
   if (appointmentId) {
-    await Appointment.findByIdAndUpdate(
+    const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
       { _id: appointmentId },
       { status: 'checkIn' }
     )
+    if (!updateAppointmentStatus) {
+      throw new CustomError(
+        statusCodes?.badRequest,
+        Message?.apnStatusNotUpdated,
+        errorCodes?.not_updated
+      )
+    }
   }
 
   return { entryData }
@@ -144,9 +158,9 @@ export const exitVisitor = async (req) => {
 
   if (!visitid) {
     throw new CustomError(
-      statusCodes?.badRequest,
+      statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.invalid_input
+      errorCodes?.not_found
     )
   }
   const visit = await Visit.findById(visitid)

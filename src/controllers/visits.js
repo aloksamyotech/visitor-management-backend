@@ -3,7 +3,7 @@ import { statusCodes } from '../core/common/constant.js'
 
 export const createEntry = async (req, res, next) => {
   const entryData = await visitsService.createEntry(req, res, next)
-  res.status(statusCodes?.created).send(entryData)
+  res.status(statusCodes?.ok).send(entryData)
 }
 export const exitVisitor = async (req, res, next) => {
   const exitVisitor = await visitsService.exitVisitor(req, res, next)

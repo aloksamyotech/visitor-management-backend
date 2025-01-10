@@ -7,7 +7,7 @@ export const scheduleAppointment = async (req, res, next) => {
     res,
     next
   )
-  res.status(statusCodes?.created).send(appointmentDetails)
+  res.status(statusCodes?.ok).send(appointmentDetails)
 }
 
 export const reScheduleAppointment = async (req, res, next) => {

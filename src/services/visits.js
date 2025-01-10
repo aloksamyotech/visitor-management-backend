@@ -39,7 +39,7 @@ export const createEntry = async (req) => {
   if (passId) {
     const passData = await Pass.findOne({ _id: passId })
     if (passData?.dailyCount >= passData?.maxEntryPerDay) {
-      passData.status = 'expired'
+      // passData.status = 'expired'
       await passData.save()
       throw new CustomError(
         statusCodes?.conflict,

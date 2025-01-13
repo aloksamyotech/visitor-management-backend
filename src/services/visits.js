@@ -1,11 +1,11 @@
-import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
-import CustomError from "../utils/exception.js";
-import { Visit } from "../models/visits.js";
-import { VisitorHistory } from "../models/visitorHistory.js";
-import { newVisitor } from "./visitor.js";
-import { Visitor } from "../models/visitor.js";
-import { Appointment } from "../models/appointment.js";
-import { Pass } from "../models/pass.js";
+import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
+import CustomError from '../utils/exception.js'
+import { Visit } from '../models/visits.js'
+import { VisitorHistory } from '../models/visitorHistory.js'
+import { newVisitor } from './visitor.js'
+import { Visitor } from '../models/visitor.js'
+import { Appointment } from '../models/appointment.js'
+import { Pass } from '../models/pass.js'
 
 export const createEntry = async (req) => {
   const {
@@ -24,17 +24,40 @@ export const createEntry = async (req) => {
     identityType,
     gender,
     address,
-  } = req?.body;
+  } = req?.body || {}
 
-  let { visitor } = req?.body;
-  const { userid } = req?.user; //fetching employee id
+  let { visitor } = req?.body || {}
+  const { userid } = req?.user || {} //fetching employee id
   if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.not_found,
-    );
+      errorCodes?.not_found
+    )
   }
+
+  if (passId) {
+    const passData = await Pass.findOne({ _id: passId })
+    if (passData?.dailyCount >= passData?.maxEntryPerDay) {
+      passData.status = 'expired'
+      await passData.save()
+      throw new CustomError(
+        statusCodes?.conflict,
+        Message?.passValidityExpired,
+        errorCodes?.pass_expire
+      )
+    }
+    if (passData?.count >= passData?.maxCount) {
+      passData.status = 'expired'
+      await passData.save()
+      throw new CustomError(
+        statusCodes?.conflict,
+        Message?.passValidityExpired,
+        errorCodes?.pass_expire
+      )
+    }
+  }
+
   const data = {
     firstName,
     lastName,
@@ -46,11 +69,11 @@ export const createEntry = async (req) => {
     gender,
     address,
     createdBy: userid,
-  };
+  }
 
   if (!visitor) {
-    const newVis = await newVisitor(data);
-    visitor = newVis._id;
+    const newVis = await newVisitor(data)
+    visitor = newVis._id
   }
 
   const entryData = await Visit.create({
@@ -62,134 +85,223 @@ export const createEntry = async (req) => {
     entryType,
     appointmentId,
     passId,
-  });
+  })
 
   if (!entryData) {
-    return new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable,
-    );
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
   }
-  if (visitor) {
-    const updateCount = await Visitor.findOne({ _id: visitor });
-    if (updateCount) {
-      updateCount.totalVisit += 1;
-      await updateCount.save();
+  const updateCount = await Visitor.findOne({ _id: visitor })
+  if (!updateCount) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  if (updateCount) {
+    updateCount.status = 'in'
+    updateCount.totalVisit += 1
+    await updateCount.save()
+  }
+
+  if (passId) {
+    const updatePassCount = await Pass.findOne({ _id: passId })
+    if (!updatePassCount) {
+      throw new CustomError(
+        statusCodes?.notFound,
+        Message?.passNotFound,
+        errorCodes?.not_found
+      )
     }
+    updatePassCount.count += 1
+    updatePassCount.dailyCount += 1
+    await updatePassCount.save()
+  }
 
-    const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
-      { visitor },
-      {
-        $push: { visitHistory: entryData._id },
-      },
-    );
+  const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
+    { visitor },
+    {
+      $push: { visitHistory: entryData._id },
+    }
+  )
 
-    if (!updateLogsInHistory) {
-      return new CustomError(
+  if (!updateLogsInHistory) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
+    )
+  }
+
+  if (appointmentId) {
+    const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
+      { _id: appointmentId },
+      { status: 'checkIn' }
+    )
+    if (!updateAppointmentStatus) {
+      throw new CustomError(
         statusCodes?.badRequest,
-        Message?.notUpdated,
-        errorCodes?.not_found,
-      );
+        Message?.apnStatusNotUpdated,
+        errorCodes?.not_updated
+      )
     }
   }
 
-  return { entryData };
-};
+  return { entryData }
+}
 
 export const exitVisitor = async (req) => {
-  const { visitid } = req?.params;
+  const { visitid } = req?.params || {}
 
   if (!visitid) {
     throw new CustomError(
-      statusCodes?.badRequest,
+      statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.invalid_input,
-    );
+      errorCodes?.not_found
+    )
   }
-  const visit = await Visit.findById(visitid);
+  const visit = await Visit.findById(visitid)
   if (!visit) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.not_found,
-    );
+      errorCodes?.not_found
+    )
   }
-  visit.active = false;
-  visit.exitTime = new Date();
-  await visit.save();
+  visit.status = false
+  visit.exitTime = new Date()
+  await visit.save()
 
-  return { visit };
-};
-export const getAllEntry = async (req) => {
+  const updateVisitorStatus = visit?.visitor
+  if (updateVisitorStatus) {
+    await Visitor.findByIdAndUpdate(
+      { _id: updateVisitorStatus },
+      {
+        status: 'out',
+      }
+    )
+  }
+  const ApnID = visit?.appointmentId
+  if (ApnID) {
+    await Appointment.findByIdAndUpdate(
+      { _id: ApnID },
+      {
+        status: 'completed',
+      }
+    )
+  }
+  return { visit }
+}
+
+export const getAllEntry = async () => {
   const allEntry = await Visit.find()
-    .populate("visitor")
-    .sort({ createdAt: -1 });
-  return { allEntry };
-};
+    .populate('visitor')
+    .sort({ createdAt: -1 })
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  return { allEntry }
+}
 
 export const getEntryByDate = async (req) => {
-  const { startDate, endDate } = req.query;
+  const { startDate, endDate } = req?.query || {}
 
-  const allEntry = await Visit.find().populate("visitor");
-  let filteredData = allEntry;
+  const allEntry = await Visit.find().populate('visitor')
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
   if (startDate && endDate) {
-    const start = new Date(`${startDate}T00:00:00.000Z`);
-    const end = new Date(`${endDate}T23:59:59.999Z`);
-    filteredData = filteredData?.filter((item) => {
-      const itemDate = new Date(item?.createdAt);
-      return itemDate >= start && itemDate <= end;
-    });
+    const start = new Date(`${startDate}T00:00:00.000Z`)
+    const end = new Date(`${endDate}T23:59:59.999Z`)
+    const filteredData = allEntry?.filter((item) => {
+      const itemDate = new Date(item?.createdAt)
+      return itemDate >= start && itemDate <= end
+    })
     const appointmentCount = filteredData.filter(
-      (item) => item.entryType === "appointment",
-    ).length;
+      (item) => item.entryType === 'appointment'
+    ).length
     const passCount = filteredData.filter(
-      (item) => item.entryType === "pass",
-    ).length;
+      (item) => item.entryType === 'pass'
+    ).length
 
-    return { filteredData, appointmentCount, passCount };
+    return { filteredData, appointmentCount, passCount }
   }
-};
+}
 
-export const getDashboardData = async (req) => {
-  const allEntry = await Visit.find();
-  const totalCount = allEntry.length;
+export const getDashboardData = async () => {
+  const allEntry = await Visit.find()
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const totalCount = allEntry?.length
 
   const filteredData = allEntry?.filter((item) => {
-    const today = new Date().toISOString().slice(0, 10);
-    const itemDate = new Date(item?.createdAt);
-    const newdate = itemDate?.toISOString()?.slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10)
+    const itemDate = new Date(item?.createdAt)
+    const newdate = itemDate?.toISOString()?.slice(0, 10)
 
-    return newdate === today;
-  });
-  const todayCount = filteredData.length;
+    return newdate === today
+  })
+  const todayCount = filteredData?.length
 
   const todayAppointment = await Appointment.find()
-    .populate("visitor")
-    .sort({ createdAt: -1 });
+    .populate('visitor')
+    .sort({ createdAt: -1 })
+  if (!todayAppointment) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   const filteredApnData = todayAppointment?.filter((item) => {
-    const today = new Date().toISOString().slice(0, 10);
-    const itemDate = new Date(item?.date);
-    const newdate = itemDate?.toISOString()?.slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10)
+    const itemDate = new Date(item?.date)
+    const newdate = itemDate?.toISOString()?.slice(0, 10)
 
-    return newdate === today;
-  });
+    return newdate === today
+  })
 
   const recentVisitor = await Visit.find()
-    .populate("visitor")
+    .populate('visitor')
     .sort({ createdAt: -1 })
-    .limit(5);
+    .limit(5)
 
-  const visitorCount = await Visitor.countDocuments();
-  const apnCount = await Appointment.countDocuments();
-  const passCount = await Pass.countDocuments();
+  if (!recentVisitor) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const visitorCount = await Visitor.countDocuments()
+  const apnCount = await Appointment.countDocuments()
+  const passCount = await Pass.countDocuments()
 
   const allTypeCounts = {
     visitorCount,
     apnCount,
     passCount,
-  };
+  }
 
   return {
     totalCount,
@@ -197,5 +309,5 @@ export const getDashboardData = async (req) => {
     recentVisitor,
     filteredApnData,
     allTypeCounts,
-  };
-};
+  }
+}

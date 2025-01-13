@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { asyncHandler } from "../utils/asyncWrapper.js";
-const router = Router();
+import { Router } from 'express'
+import { asyncHandler } from '../utils/asyncWrapper.js'
+const router = Router()
 // controller
 import {
   createEntry,
@@ -8,38 +8,38 @@ import {
   getAllEntry,
   getDashboardData,
   getEntryByDate,
-} from "../controllers/visits.js";
-import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
+} from '../controllers/visits.js'
+import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 
 router.post(
-  "/createentry",
+  '/createentry',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(createEntry),
-);
+  asyncHandler(createEntry)
+)
 router.put(
-  "/updateentry/:visitid",
+  '/updateentry/:visitid',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(exitVisitor),
-);
+  asyncHandler(exitVisitor)
+)
 router.get(
-  "/getallentry",
+  '/getallentry',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAllEntry),
-);
+  asyncHandler(getAllEntry)
+)
 router.get(
-  "/getentrybydate",
+  '/getentrybydate',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getEntryByDate),
-);
+  asyncHandler(getEntryByDate)
+)
 router.get(
-  "/getdashboarddata",
+  '/getdashboarddata',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getDashboardData),
-);
+  asyncHandler(getDashboardData)
+)
 
-export default router;
+export default router

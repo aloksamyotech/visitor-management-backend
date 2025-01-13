@@ -1,7 +1,8 @@
-import passport from "passport";
-import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import passport from 'passport'
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import process from 'node:process'
 
-const secretKey = process.env.ACCESS_TOKEN_SECRET;
+const secretKey = process.env?.ACCESS_TOKEN_SECRET
 
 passport.use(
   new JwtStrategy(
@@ -10,10 +11,10 @@ passport.use(
       secretOrKey: secretKey,
     },
     (jwtPayload, done) => {
-      if (jwtPayload) return done(null, jwtPayload);
-      return done(null, false);
-    },
-  ),
-);
+      if (jwtPayload) return done(null, jwtPayload)
+      return done(null, false)
+    }
+  )
+)
 
-export default passport;
+export default passport

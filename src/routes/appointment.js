@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { asyncHandler } from "../utils/asyncWrapper.js";
-const router = Router();
+import { Router } from 'express'
+import { asyncHandler } from '../utils/asyncWrapper.js'
+const router = Router()
 
 // controller
 import {
@@ -11,50 +11,50 @@ import {
   getAppointmentByAptID,
   updateAppointmentStatus,
   getAppointmentByName,
-} from "../controllers/appointment.js";
-import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
+} from '../controllers/appointment.js'
+import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 
 router.post(
-  "/scheduleappointment",
+  '/scheduleappointment',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(scheduleAppointment),
-);
+  asyncHandler(scheduleAppointment)
+)
 router.put(
-  "/rescheduleappointment/:appointmentId",
+  '/rescheduleappointment/:appointmentId',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(reScheduleAppointment),
-);
+  asyncHandler(reScheduleAppointment)
+)
 router.put(
-  "/updateappointmentstatus/:appointmentId",
+  '/updateappointmentstatus/:appointmentId',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(updateAppointmentStatus),
-);
+  asyncHandler(updateAppointmentStatus)
+)
 router.get(
-  "/getallappointment",
+  '/getallappointment',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAllAppointment),
-);
+  asyncHandler(getAllAppointment)
+)
 router.get(
-  "/getappointmentbydate",
+  '/getappointmentbydate',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAppointmentByDate),
-);
+  asyncHandler(getAppointmentByDate)
+)
 router.get(
-  "/getappointmentbyaptid/:input",
+  '/getappointmentbyaptid/:input',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAppointmentByAptID),
-);
+  asyncHandler(getAppointmentByAptID)
+)
 router.get(
-  "/getappointmentbyname",
+  '/getappointmentbyname',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAppointmentByName),
-);
+  asyncHandler(getAppointmentByName)
+)
 
-export default router;
+export default router

@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { asyncHandler } from "../utils/asyncWrapper.js";
-const router = Router();
+import { Router } from 'express'
+import { asyncHandler } from '../utils/asyncWrapper.js'
+const router = Router()
 
 // controller
 import {
@@ -9,38 +9,38 @@ import {
   getAllPass,
   getPassByPassCode,
   getPassByName,
-} from "../controllers/pass.js";
-import { employeeAuth, userAuth } from "../middlewares/userAuth.js";
+} from '../controllers/pass.js'
+import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 
 router.post(
-  "/createpass",
+  '/createpass',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(createPass),
-);
+  asyncHandler(createPass)
+)
 router.put(
-  "/updatepassvalidity/:passId",
+  '/updatepassvalidity/:passId',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(updatePassValidity),
-);
+  asyncHandler(updatePassValidity)
+)
 router.get(
-  "/getallpass",
+  '/getallpass',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAllPass),
-);
+  asyncHandler(getAllPass)
+)
 router.get(
-  "/getpassbypasscode/:input",
+  '/getpassbypasscode/:input',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getPassByPassCode),
-);
+  asyncHandler(getPassByPassCode)
+)
 router.get(
-  "/getpassbyname",
+  '/getpassbyname',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getPassByName),
-);
+  asyncHandler(getPassByName)
+)
 
-export default router;
+export default router

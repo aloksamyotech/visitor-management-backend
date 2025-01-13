@@ -39,7 +39,7 @@ export const createEntry = async (req) => {
   if (passId) {
     const passData = await Pass.findOne({ _id: passId })
     if (passData?.dailyCount >= passData?.maxEntryPerDay) {
-      // passData.status = 'expired'
+      passData.status = 'expired'
       await passData.save()
       throw new CustomError(
         statusCodes?.conflict,
@@ -103,6 +103,7 @@ export const createEntry = async (req) => {
     )
   }
   if (updateCount) {
+    updateCount.status = 'in'
     updateCount.totalVisit += 1
     await updateCount.save()
   }
@@ -171,10 +172,19 @@ export const exitVisitor = async (req) => {
       errorCodes?.not_found
     )
   }
-  visit.active = false
+  visit.status = false
   visit.exitTime = new Date()
   await visit.save()
 
+  const updateVisitorStatus = visit?.visitor
+  if (updateVisitorStatus) {
+    await Visitor.findByIdAndUpdate(
+      { _id: updateVisitorStatus },
+      {
+        status: 'out',
+      }
+    )
+  }
   const ApnID = visit?.appointmentId
   if (ApnID) {
     await Appointment.findByIdAndUpdate(
@@ -184,7 +194,6 @@ export const exitVisitor = async (req) => {
       }
     )
   }
-
   return { visit }
 }
 

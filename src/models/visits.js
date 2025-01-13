@@ -51,6 +51,10 @@ const visitSchema = new mongoose.Schema(
       ref: 'Appointment',
       default: null,
     },
+    status: {
+      type: Boolean,
+      default: true
+    },
     active: {
       type: Boolean,
       default: true,

@@ -6,8 +6,7 @@ const visitorSchema = new mongoose.Schema(
   {
     prefix: {
       type: String,
-      enum: ['mr.', 'miss.', 'dr.', 'mrs.', ''],
-      // required: true,
+      enum: ['mr.', 'miss.', 'dr.', 'mrs.'],
     },
     firstName: {
       type: String,
@@ -16,12 +15,10 @@ const visitorSchema = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      // required: true,
       trim: true,
     },
     emailAddress: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
       lowercase: true,
@@ -64,22 +61,25 @@ const visitorSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    status: {
+    comment: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
-      default: 'pending',
+      trim: true,
     },
     totalVisit: {
       type: Number,
       default: 0,
     },
+    file: {
+      type: String,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'in', 'out'],
+      default: 'pending',
+    },
     verified: {
       type: Boolean,
       default: true,
-    },
-    comment: {
-      type: String,
-      trim: true,
     },
     active: {
       type: Boolean,
@@ -89,10 +89,6 @@ const visitorSchema = new mongoose.Schema(
       type: objID,
       ref: 'User',
       required: true,
-    },
-    file: {
-      type: String,
-      // required: true
     },
   },
   {

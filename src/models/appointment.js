@@ -19,7 +19,6 @@ const appointmentSchema = new mongoose.Schema(
     },
     purpose: {
       type: String,
-      enum: ['visitor', 'meeting', 'maintenance', 'other'],
       required: true,
     },
     duration: {
@@ -36,7 +35,6 @@ const appointmentSchema = new mongoose.Schema(
     },
     endTime: {
       type: String,
-      // required:true
     },
     comment: {
       type: String,

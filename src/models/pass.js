@@ -30,7 +30,7 @@ const PassSchema = new mongoose.Schema(
     setAccess: {
       type: String,
       required: true,
-      enum: ['1stFloor', '2ndFloor', 'fullAccess', 'restricted'],
+      enum: ['1stFloor', '2ndFloor', 'fullAccess'],
     },
     status: {
       type: String,
@@ -55,7 +55,7 @@ const PassSchema = new mongoose.Schema(
     },
     duration: {
       type: Number,
-      default: 2,
+      default: 1,
     },
     comment: {
       type: String,

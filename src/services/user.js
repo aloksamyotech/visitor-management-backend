@@ -89,7 +89,7 @@ export const loginUser = async (req) => {
 
   const loginUser = await User.findById(user._id).select('-password')
 
-  const payload = { userid: loginUser._id, role: loginUser.role }
+  const payload = { userid: loginUser, role: loginUser.role }
   const key = process.env?.ACCESS_TOKEN_SECRET
   const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY
 

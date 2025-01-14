@@ -9,6 +9,7 @@ const connectDB = async () => {
     ;(async function () {
       const dbUri = database_urls?.connection + database_urls?.db_name
       const dbConnect = await mongoose.connect(dbUri, {})
+      console.log("connected successfully")
       if (dbConnect) {
         const existingAdmin = await User.findOne({
           emailAddress: 'admin@gmail.com',

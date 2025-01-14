@@ -16,6 +16,7 @@ const connectDB = async () => {
         if (!existingAdmin) {
           const userData = new User({
             firstName: 'Admin',
+            lastName: '',
             gender: 'male',
             phoneNumber: '1234567890',
             emailAddress: 'admin@gmail.com',

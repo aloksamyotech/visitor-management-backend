@@ -6,7 +6,7 @@ const visitorSchema = new mongoose.Schema(
   {
     prefix: {
       type: String,
-      enum: ['mr.', 'miss.', 'dr.', 'mrs.'],
+      enum: ['mr.', 'miss.', 'dr.', 'mrs.', ''],
     },
     firstName: {
       type: String,
@@ -19,7 +19,6 @@ const visitorSchema = new mongoose.Schema(
     },
     emailAddress: {
       type: String,
-      unique: true,
       trim: true,
       lowercase: true,
     },
@@ -31,8 +30,15 @@ const visitorSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ['visitor', 'vip', 'contractor', 'guest', 'maintenance', 'other'],
-      required: true,
+      enum: [
+        'visitor',
+        'vip',
+        'contractor',
+        'guest',
+        'maintenance',
+        'other',
+        '',
+      ],
     },
     identityType: {
       type: String,

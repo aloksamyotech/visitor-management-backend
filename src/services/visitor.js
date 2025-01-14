@@ -4,15 +4,7 @@ import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 
 const checkVisitorExist = async (email, phone) => {
-  const isEmail = await Visitor.findOne({ emailAddress: email })
   const isPhone = await Visitor.findOne({ phoneNumber: phone })
-  if (isEmail) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.emailAlreadyRegistered,
-      errorCodes?.email_already_registered
-    )
-  }
   if (isPhone) {
     throw new CustomError(
       statusCodes?.conflict,

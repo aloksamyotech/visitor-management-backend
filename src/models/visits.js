@@ -34,12 +34,10 @@ const visitSchema = new mongoose.Schema(
     relatedTo: {
       type: objID,
       ref: 'User',
-      // required: true,
     },
     entryType: {
       type: String,
       enum: ['visitor', 'appointment', 'pass', 'other'],
-      // required: true,
     },
     passId: {
       type: objID,

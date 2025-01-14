@@ -30,7 +30,15 @@ const visitorSchema = new mongoose.Schema(
     },
     visitorType: {
       type: String,
-      enum: ['visitor', 'vip', 'contractor', 'guest', 'maintenance', 'other',''],
+      enum: [
+        'visitor',
+        'vip',
+        'contractor',
+        'guest',
+        'maintenance',
+        'other',
+        '',
+      ],
     },
     identityType: {
       type: String,

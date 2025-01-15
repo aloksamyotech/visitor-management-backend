@@ -9,6 +9,7 @@ import {
   getVisitorDetails,
   getDetailsByNumber,
   getVisitorHistory,
+  bulkUploadVisitor,
 } from '../controllers/visitor.js'
 import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 import { upload } from '../middlewares/uploads.js'
@@ -50,6 +51,14 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getVisitorHistory)
+)
+
+router.post(
+  '/bulkuploadvisitor',
+  upload.single('file'),
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(bulkUploadVisitor)
 )
 
 export default router

@@ -89,7 +89,7 @@ export const loginUser = async (req) => {
 
   const loginUser = await User.findById(user._id).select('-password')
 
-  const payload = { userid: loginUser, role: loginUser.role }
+  const payload = { userid: loginUser?._id, user: loginUser, role: loginUser?.role, permission: loginUser?.permissions }
   const key = process.env?.ACCESS_TOKEN_SECRET
   const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY
 
@@ -171,38 +171,29 @@ export const updateUserDetails = async (req) => {
 
 export const manageUserPermission = async (req) => {
   const { userid } = req?.params || {}
-  const { permissions } = req?.body || {}
+  const permission = req?.body || {}
 
-  const user = await User.findById(userid)
+  const user = await User.findById(userid);
+  const currentPermissions = user.permissions || [];
 
-  if (!user) {
-    throw new CustomError(
-      statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found
-    )
-  }
+  const allowedPermissions = Object.keys(permission).filter((key) => permission[key] === true && !currentPermissions.includes(key));
+  const disallowedPermissions = Object.keys(permission).filter((key) => permission[key] === false && currentPermissions.includes(key));
 
-  if (!permissions) {
-    throw new CustomError(
-      statusCodes?.notFound,
-      Message?.notFound,
-      errorCodes?.not_found
-    )
-  }
-  const updatePermission = await User.findByIdAndUpdate(
-    userid,
-    { permissions },
+  const addPermission = await User.findOneAndUpdate(
+    { _id: userid },
+    {
+      $addToSet: { permissions: { $each: allowedPermissions } },
+    },
     { new: true }
-  )
-  if (!updatePermission) {
-    throw new CustomError(
-      statusCodes?.notModified,
-      Message?.notUpdate,
-      errorCodes?.operation_failed
-    )
-  }
-  return updatePermission
+  );
+  const removePermission = await User.findOneAndUpdate(
+    { _id: userid },
+    {
+      $pull: { permissions: { $in: disallowedPermissions } }
+    },
+    { new: true }
+  );
+  return { addPermission, removePermission }
 }
 
 export const getAllUser = async () => {

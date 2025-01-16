@@ -54,6 +54,8 @@ export const Message = {
   visitHistoryNotCreated: 'Visitor History Not Created',
   apnStatusNotUpdated: 'Appointment Status not Updated',
   incorrrectPassword: 'Incorrect Password',
+  inValidData: 'Invalid Data',
+  duplicateData: 'Duplicate Visitor Data',
 }
 
 export const errorCodes = Object.freeze({

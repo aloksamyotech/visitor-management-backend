@@ -42,3 +42,12 @@ export const getVisitorHistory = async (req, res, next) => {
   )
   res.status(statusCodes?.ok).send(getVisitorHistory)
 }
+
+export const bulkUploadVisitor = async (req, res, next) => {
+  const bulkUploadVisitor = await visitorService.bulkUploadVisitor(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(bulkUploadVisitor)
+}

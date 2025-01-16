@@ -23,6 +23,18 @@ const connectDB = async () => {
             password: 'admin123',
             role: 'admin',
             address: 'USA',
+            permissions: [
+              'dashboard',
+              'employee',
+              'manageEntry',
+              'allEntry',
+              'visitor',
+              'appointment',
+              'pass',
+              'report',
+              'calender',
+              'profile',
+            ],
           })
           await userData.save()
           console.log(`New Admin is Created`)

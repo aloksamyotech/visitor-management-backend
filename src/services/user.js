@@ -89,7 +89,12 @@ export const loginUser = async (req) => {
 
   const loginUser = await User.findById(user._id).select('-password')
 
-  const payload = { userid: loginUser?._id, user: loginUser, role: loginUser?.role, permission: loginUser?.permissions }
+  const payload = {
+    userid: loginUser?._id,
+    user: loginUser,
+    role: loginUser?.role,
+    permission: loginUser?.permissions,
+  }
   const key = process.env?.ACCESS_TOKEN_SECRET
   const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY
 
@@ -173,11 +178,15 @@ export const manageUserPermission = async (req) => {
   const { userid } = req?.params || {}
   const permission = req?.body || {}
 
-  const user = await User.findById(userid);
-  const currentPermissions = user.permissions || [];
+  const user = await User.findById(userid)
+  const currentPermissions = user.permissions || []
 
-  const allowedPermissions = Object.keys(permission).filter((key) => permission[key] === true && !currentPermissions.includes(key));
-  const disallowedPermissions = Object.keys(permission).filter((key) => permission[key] === false && currentPermissions.includes(key));
+  const allowedPermissions = Object.keys(permission).filter(
+    (key) => permission[key] === true && !currentPermissions.includes(key)
+  )
+  const disallowedPermissions = Object.keys(permission).filter(
+    (key) => permission[key] === false && currentPermissions.includes(key)
+  )
 
   const addPermission = await User.findOneAndUpdate(
     { _id: userid },
@@ -185,14 +194,14 @@ export const manageUserPermission = async (req) => {
       $addToSet: { permissions: { $each: allowedPermissions } },
     },
     { new: true }
-  );
+  )
   const removePermission = await User.findOneAndUpdate(
     { _id: userid },
     {
-      $pull: { permissions: { $in: disallowedPermissions } }
+      $pull: { permissions: { $in: disallowedPermissions } },
     },
     { new: true }
-  );
+  )
   return { addPermission, removePermission }
 }
 

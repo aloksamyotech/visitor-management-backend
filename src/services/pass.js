@@ -75,7 +75,7 @@ export const createPass = async (req) => {
     maxCount,
     maxEntryPerDay,
     comment,
-    qrUrl
+    qrUrl,
   })
 
   if (!newPass) {

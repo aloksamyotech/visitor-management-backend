@@ -1,4 +1,6 @@
 import QRCode from 'qrcode'
+import { errorCodes, Message, statusCodes } from '../common/constant'
+import CustomError from '../../utils/exception'
 
 export const generateQR = async (passCode) => {
   try {

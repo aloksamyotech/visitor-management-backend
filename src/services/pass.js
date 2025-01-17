@@ -2,7 +2,7 @@ import { Pass } from '../models/pass.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { newVisitor } from './visitor.js'
-
+import { generateQR } from '../core/helpers/generateQR.js'
 export const createPass = async (req) => {
   const {
     duration,
@@ -62,6 +62,7 @@ export const createPass = async (req) => {
     const newVis = await newVisitor(data)
     visitor = newVis._id
   }
+  const qrUrl = await generateQR(passCode)
 
   const newPass = await Pass.create({
     visitor,
@@ -74,6 +75,7 @@ export const createPass = async (req) => {
     maxCount,
     maxEntryPerDay,
     comment,
+    qrUrl
   })
 
   if (!newPass) {

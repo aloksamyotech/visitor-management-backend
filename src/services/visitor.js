@@ -2,7 +2,7 @@ import { Visitor } from '../models/visitor.js'
 import { VisitorHistory } from '../models/visitorHistory.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
-
+import XLSX from 'xlsx'
 const checkVisitorExist = async (email, phone) => {
   const isPhone = await Visitor.findOne({ phoneNumber: phone })
   if (isPhone) {
@@ -256,4 +256,62 @@ export const newVisitor = async (data) => {
   }
 
   return visitor
+}
+
+export const bulkUploadVisitor = async (req) => {
+  const file = req?.file?.path
+  const { userid } = req?.user || {}
+
+  const workbook = XLSX.readFile(file)
+  const sheetName = workbook.SheetNames[0]
+  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+
+  const visitors = data.map((row) => ({
+    ...row,
+    createdBy: userid,
+  }))
+
+  const keysToCheck = [
+    'firstName',
+    'phoneNumber',
+    'identityNumber',
+    'identityType',
+    'gender',
+    'address',
+  ]
+  const checkAllKeys = visitors.every((obj) =>
+    keysToCheck.every((key) => key in obj)
+  )
+  if (!checkAllKeys) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.inValidData,
+      errorCodes?.invalid_format
+    )
+  }
+
+  visitors.map(async (visitor) => {
+    try {
+      const newVisitor = await Visitor.create(visitor);
+      if (!newVisitor) {
+        throw new CustomError(
+          statusCodes?.badRequest,
+          Message?.notCreated,
+          errorCodes?.not_created
+        )
+      }
+
+      const visitoryHistory = await VisitorHistory.create({ visitor: newVisitor._id })
+      if (!visitoryHistory) {
+        return new CustomError(
+          statusCodes?.badRequest,
+          Message?.visitHistoryNotCreated,
+          errorCodes?.not_created
+        )
+      }
+    } catch (error) {
+      //handles duplicate visitor
+    }
+  })
+  return
 }

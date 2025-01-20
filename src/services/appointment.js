@@ -2,17 +2,34 @@ import { Appointment } from '../models/appointment.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import moment from 'moment'
+import { newVisitor } from './visitor.js'
 
 export const scheduleAppointment = async (req) => {
-  const { visitor, purpose, date, startTime, endTime, reference, comment } =
-    req?.body || {}
+  const {
+    purpose,
+    date,
+    startTime,
+    endTime,
+    reference,
+    comment,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityNumber,
+    identityType,
+    gender,
+    address,
+  } = req?.body || {}
 
+  let { visitor } = req?.body || {}
   const { userid } = req?.user || {} //fetching employee id
 
   // pending logic to create unique id using keyword
   const appointmentId = Math.floor(10000 + Math.random() * 90000)
 
-  if (!visitor || !userid) {
+  if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
@@ -25,6 +42,24 @@ export const scheduleAppointment = async (req) => {
   let duration = endMoment.diff(startMoment, 'hours')
   if (duration < 1) {
     duration = 1
+  }
+
+  const data = {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy: userid,
+  }
+
+  if (!visitor) {
+    const newVis = await newVisitor(data)
+    visitor = newVis._id
   }
 
   const newAppointment = await Appointment.create({

@@ -61,6 +61,9 @@ const PassSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    qrUrl: {
+      type: String,
+    },
     active: {
       type: Boolean,
       default: true,

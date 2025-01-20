@@ -1,10 +1,10 @@
 import { Pass } from '../models/pass.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
-
+import { newVisitor } from './visitor.js'
+import { generateQR } from '../core/helpers/generateQR.js'
 export const createPass = async (req) => {
   const {
-    visitor,
     duration,
     startDate,
     endDate,
@@ -12,11 +12,21 @@ export const createPass = async (req) => {
     maxCount,
     maxEntryPerDay,
     comment,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityNumber,
+    identityType,
+    gender,
+    address,
   } = req?.body || {}
 
+  let { visitor } = req?.body || {}
   const { userid } = req?.user || {} //fetching employee id
 
-  if (!visitor || !userid) {
+  if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
@@ -34,6 +44,26 @@ export const createPass = async (req) => {
   }
 
   const passCode = Math.floor(10000 + Math.random() * 90000)
+
+  const data = {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy: userid,
+  }
+
+  if (!visitor) {
+    const newVis = await newVisitor(data)
+    visitor = newVis._id
+  }
+  const qrUrl = await generateQR(passCode)
+
   const newPass = await Pass.create({
     visitor,
     employee: userid,
@@ -45,7 +75,9 @@ export const createPass = async (req) => {
     maxCount,
     maxEntryPerDay,
     comment,
+    qrUrl,
   })
+
   if (!newPass) {
     throw new CustomError(
       statusCodes?.badRequest,

@@ -57,20 +57,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: true,
     },
-    permissions: [
-      {
-        type: String,
-        enum: [
-          'user',
-          'manageEntry',
-          'visitor',
-          'appointment',
-          'passes',
-          'report',
-          'calender',
-        ],
-      },
-    ],
+    permissions: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 )

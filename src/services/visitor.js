@@ -292,7 +292,7 @@ export const bulkUploadVisitor = async (req) => {
 
   visitors.map(async (visitor) => {
     try {
-      const newVisitor = await Visitor.create(visitor);
+      const newVisitor = await Visitor.create(visitor)
       if (!newVisitor) {
         throw new CustomError(
           statusCodes?.badRequest,
@@ -301,7 +301,9 @@ export const bulkUploadVisitor = async (req) => {
         )
       }
 
-      const visitoryHistory = await VisitorHistory.create({ visitor: newVisitor._id })
+      const visitoryHistory = await VisitorHistory.create({
+        visitor: newVisitor._id,
+      })
       if (!visitoryHistory) {
         return new CustomError(
           statusCodes?.badRequest,

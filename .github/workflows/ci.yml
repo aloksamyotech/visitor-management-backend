@@ -49,3 +49,33 @@ jobs:
 
       - name: Run Build Command
         run: npm run build
+
+      - name: Deploy to Server
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          # Set up SSH private key
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Disable strict host key checking for GitHub Actions
+          echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+
+          # SSH into the server and deploy the code
+          ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking=no" root@134.209.152.97 << EOF
+            # Navigate to the project directory
+            cd /var/www/html
+
+            # Pull the latest changes from the repository
+            git pull origin develop
+
+            # Install dependencies
+            npm install
+
+            # Build the application
+            npm run build
+
+            # Restart the application (assuming you're using pm2 or a similar process manager)
+            pm2 restart app_name || pm2 start npm --name "app_name" -- start
+          EOF

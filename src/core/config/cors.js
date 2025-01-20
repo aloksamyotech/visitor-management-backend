@@ -8,5 +8,5 @@ const corsOptions = {
   preflightContinue: false,
 }
 
-const corsConfig = cors(corsOptions)
+const corsConfig = cors()
 export default corsConfig

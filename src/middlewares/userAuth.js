@@ -1,51 +1,53 @@
-import jwt from "jsonwebtoken";
-import CustomError from "../utils/exception.js";
+import jwt from 'jsonwebtoken'
+import CustomError from '../utils/exception.js'
 import {
   errorCodes,
   Message,
   statusCodes,
   checkRole,
-} from "../core/common/constant.js";
+} from '../core/common/constant.js'
+import 'dotenv/config'
+import process from 'node:process'
 
 export const userAuth = (req, res, next) => {
-  const { authorization } = req?.headers;
-  const token = authorization && authorization.split(" ")[1];
-  const verfifyToken = process.env.ACCESS_TOKEN_SECRET;
+  const { authorization } = req?.headers || {}
+  const token = authorization && authorization.split(' ')[1]
+  const verfifyToken = process.env?.ACCESS_TOKEN_SECRET
 
   if (!token) {
     throw new CustomError(
       statusCodes?.unauthorized,
       Message?.notFound,
-      errorCodes?.missing_auth_token,
-    );
+      errorCodes?.missing_auth_token
+    )
   }
   jwt.verify(token, verfifyToken, (err, user) => {
     if (err) {
       throw new CustomError(
         statusCodes?.unauthorized,
         Message?.inValid,
-        errorCodes?.invalid_authentication,
-      );
+        errorCodes?.invalid_authentication
+      )
     }
-    req.user = user?.payload; //attach decoded user data in req
-    next();
-  });
-};
+    req.user = user?.payload //attach decoded user data in req
+    next()
+  })
+}
 
 export const adminAuth = (req, res, next) => {
-  const { role } = req?.user;
+  const { role } = req?.user || {}
 
   if (role !== checkRole?.admin) {
     throw new CustomError(
       statusCodes?.unauthorized,
       Message?.inValid,
-      errorCodes?.access_denied,
-    );
+      errorCodes?.access_denied
+    )
   }
-  next();
-};
+  next()
+}
 export const employeeAuth = (req, res, next) => {
-  const { role } = req?.user;
+  const { role } = req?.user || {}
 
   if (
     role !== checkRole?.admin &&
@@ -56,8 +58,8 @@ export const employeeAuth = (req, res, next) => {
     throw new CustomError(
       statusCodes?.unauthorized,
       Message?.inValid,
-      errorCodes?.access_denied,
-    );
+      errorCodes?.access_denied
+    )
   }
-  next();
-};
+  next()
+}

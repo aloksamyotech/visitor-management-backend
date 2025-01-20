@@ -1,17 +1,17 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const objID = mongoose.Schema.Types.ObjectId;
+const objID = mongoose.Schema.Types.ObjectId
 
 const PassSchema = new mongoose.Schema(
   {
     visitor: {
       type: objID,
-      ref: "Visitor",
+      ref: 'Visitor',
       required: true,
     },
     employee: {
       type: objID,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     passCode: {
@@ -30,12 +30,12 @@ const PassSchema = new mongoose.Schema(
     setAccess: {
       type: String,
       required: true,
-      enum: ["1stFloor", "2ndFloor", "fullAccess", "restricted"],
+      enum: ['1stFloor', '2ndFloor', 'fullAccess'],
     },
     status: {
       type: String,
-      enum: ["active", "expired", "cancelled", "blocked"],
-      default: "active",
+      enum: ['active', 'expired', 'cancelled', 'blocked'],
+      default: 'active',
     },
     count: {
       type: Number,
@@ -45,13 +45,17 @@ const PassSchema = new mongoose.Schema(
       type: Number,
       default: 100,
     },
+    dailyCount: {
+      type: Number,
+      default: 0,
+    },
     maxEntryPerDay: {
       type: Number,
       default: 5,
     },
     duration: {
       type: Number,
-      default: 2,
+      default: 1,
     },
     comment: {
       type: String,
@@ -64,7 +68,7 @@ const PassSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
+  }
+)
 
-export const Pass = mongoose.model("Pass", PassSchema);
+export const Pass = mongoose.model('Pass', PassSchema)

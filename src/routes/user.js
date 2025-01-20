@@ -1,50 +1,58 @@
-import { Router } from "express";
-import { asyncHandler } from "../utils/asyncWrapper.js";
-const router = Router();
+import { Router } from 'express'
+import { asyncHandler } from '../utils/asyncWrapper.js'
+const router = Router()
 
 // controller
 import {
   getAllUser,
   getUserDetailsById,
   manageUserPermission,
+  updateUserPassword,
   userDetails,
   userLogin,
   userRegistration,
   userUpdate,
-} from "../controllers/user.js";
-import { adminAuth, employeeAuth, userAuth } from "../middlewares/userAuth.js";
-import { upload } from "../middlewares/uploads.js";
+} from '../controllers/user.js'
+import { adminAuth, employeeAuth, userAuth } from '../middlewares/userAuth.js'
+import { upload } from '../middlewares/uploads.js'
 
-router.post("/register", upload.single("file"), asyncHandler(userRegistration));
-router.post("/login", asyncHandler(userLogin));
+router.post('/register', upload.single('file'), asyncHandler(userRegistration))
+router.post('/login', asyncHandler(userLogin))
 router.get(
-  "/getuserdetails",
+  '/getuserdetails',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(userDetails),
-);
+  asyncHandler(userDetails)
+)
 router.put(
-  "/updateuserdetails",
+  '/updateuserdetails',
+  upload.single('file'),
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(userUpdate),
-);
+  asyncHandler(userUpdate)
+)
 router.put(
-  "/manageuserpermission/:userid",
+  '/updateuserpassword',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updateUserPassword)
+)
+router.put(
+  '/manageuserpermission/:userid',
   asyncHandler(userAuth),
   asyncHandler(adminAuth),
-  asyncHandler(manageUserPermission),
-);
+  asyncHandler(manageUserPermission)
+)
 router.get(
-  "/getalluser",
+  '/getalluser',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getAllUser),
-);
+  asyncHandler(getAllUser)
+)
 router.get(
-  "/getuserdetails/:userid",
+  '/getuserdetails/:userid',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
-  asyncHandler(getUserDetailsById),
-);
-export default router;
+  asyncHandler(getUserDetailsById)
+)
+export default router

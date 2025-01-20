@@ -1,0 +1,81 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Remove Existing Node Modules
+        run: rm -rf node_modules
+
+      - name: Set environment variables
+        env:
+          DB_URL: 'mongodb://127.0.0.1:27017/'
+          DB_NAME: 'visitor2'
+          PORT: 5050
+          ENV: 'development'
+          ACCESS_TOKEN_SECRET: 'secretkey'
+          ACCESS_TOKEN_EXPIRY: '5d'
+          REFRESH_TOKEN_SECRET: 'secretkey'
+          REFRESH_TOKEN_EXPIRY: '10d'
+        run: |
+          echo "DB_URL=${DB_URL}" >> $GITHUB_ENV
+          echo "DB_NAME=${DB_NAME}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
+          echo "ENV=${ENV}" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "ACCESS_TOKEN_EXPIRY=${ACCESS_TOKEN_EXPIRY}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "REFRESH_TOKEN_EXPIRY=${REFRESH_TOKEN_EXPIRY}" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Lint Command
+        run: npm run lint
+
+      - name: Run Build Command
+        run: npm run build
+
+      - name: Deploy to Server
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          # Set up SSH private key
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Disable strict host key checking for GitHub Actions
+          echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null" >> ~/.ssh/config
+
+          # SSH into the server and deploy the code
+          ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking=no" root@134.209.152.97 << EOF
+            # Navigate to the project directory
+            cd /var/www/html
+
+            # Pull the latest changes from the repository
+            git pull origin develop
+
+            # Install dependencies
+            npm install
+
+            # Build the application
+            npm run build
+
+            # Restart the application (assuming you're using pm2 or a similar process manager)
+            pm2 restart app_name || pm2 start npm --name "app_name" -- start
+          EOF

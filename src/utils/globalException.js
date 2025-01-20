@@ -1,18 +1,14 @@
-import logger from "../core/config/logger.js";
+import logger from '../core/config/logger.js'
 
 const globalExceptionHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Internal Server Error!";
+  const statusCode = err?.statusCode || 500
+  const message = err?.message || 'Internal Server Error!'
   const errorCode =
-    err.errorCode || "Something went wrong on our end. Please try again later.";
-  const stack = process.env.NODE_ENV === "production" ? null : err.stack;
+    err?.errorCode || 'Something went wrong on our end. Please try again later.'
 
-  console.error("hiiiiiiiiiiiiiii", err.stack);
-  const { method, originalUrl, body, params, headers } = req;
-  // let statusCode = err.statusCode || 500;
-  // let message = err.message || 'Internal Server Error';
-  let error = err.stack || "No stack trace available";
-  const isOperational = err.isOperational || false;
+  console.error('error stack', err.stack)
+  const { method, originalUrl, body, params, headers } = req
+  let error = err?.stack || 'No stack trace available'
   const logMessage = `
     Method: ${method}
     URL: ${originalUrl}
@@ -21,14 +17,15 @@ const globalExceptionHandler = (err, req, res, next) => {
     Headers: ${JSON.stringify(headers)}
     Error: ${message}
     Stack: ${error}
-  `;
-  logger.error(logMessage);
+  `
+  logger.error(logMessage)
 
   res.status(statusCode).json({
-    status: "error",
+    status: 'error',
     message,
     errorCode,
-  });
-};
+  })
+  next()
+}
 
-export default globalExceptionHandler;
+export default globalExceptionHandler

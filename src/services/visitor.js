@@ -1,28 +1,18 @@
-import { Visitor } from "../models/visitor.js";
-import { VisitorHistory } from "../models/visitorHistory.js";
-import { errorCodes, Message, statusCodes } from "../core/common/constant.js";
-import CustomError from "../utils/exception.js";
-import { addColors } from "winston";
-import passport from "passport";
-
+import { Visitor } from '../models/visitor.js'
+import { VisitorHistory } from '../models/visitorHistory.js'
+import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
+import CustomError from '../utils/exception.js'
+import XLSX from 'xlsx'
 const checkVisitorExist = async (email, phone) => {
-  const isEmail = await Visitor.findOne({ emailAddress: email });
-  const isPhone = await Visitor.findOne({ phoneNumber: phone });
-  if (isEmail) {
-    throw new CustomError(
-      statusCodes?.conflict,
-      Message?.emailAlreadyRegistered,
-      errorCodes?.email_already_registered,
-    );
-  }
+  const isPhone = await Visitor.findOne({ phoneNumber: phone })
   if (isPhone) {
     throw new CustomError(
       statusCodes?.conflict,
       Message?.phoneNumberAlreadyRegistered,
-      errorCodes?.phone_number_already_registered,
-    );
+      errorCodes?.phone_number_already_registered
+    )
   }
-};
+}
 
 export const createVisitor = async (req) => {
   const {
@@ -37,11 +27,11 @@ export const createVisitor = async (req) => {
     gender,
     address,
     comment,
-  } = req?.body;
-  const file = req?.file?.path;
-  const { userid } = req?.user;
+  } = req?.body || {}
+  const file = req?.file?.path
+  const { userid } = req?.user || {}
 
-  await checkVisitorExist(emailAddress, phoneNumber);
+  await checkVisitorExist(emailAddress, phoneNumber)
 
   const visitor = await Visitor.create({
     prefix,
@@ -57,31 +47,30 @@ export const createVisitor = async (req) => {
     file,
     comment,
     createdBy: userid,
-  });
+  })
 
-  const createdVisitor = await Visitor.findById(visitor._id);
-  if (!createdVisitor) {
-    return new CustomError(
-      statusCodes?.serviceUnavailable,
-      Message?.serverError,
-      errorCodes?.service_unavailable,
-    );
-  }
-
-  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id });
-  if (!visitoryHistory) {
-    return new CustomError(
+  if (!visitor) {
+    throw new CustomError(
       statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found,
-    );
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
   }
 
-  return { createdVisitor };
-};
+  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
+  if (!visitoryHistory) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
+    )
+  }
+
+  return { visitor }
+}
 
 export const updateVisitor = async (req) => {
-  const { visitorid } = req?.headers;
+  const { visitorid } = req?.headers || {}
   const {
     prefix,
     firstName,
@@ -95,17 +84,18 @@ export const updateVisitor = async (req) => {
     address,
     comment,
     createdBy,
-  } = req?.body;
+  } = req?.body || {}
 
-  const visitor = await Visitor.findById(visitorid);
+  const visitor = await Visitor.findById(visitorid)
 
   if (!visitor) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found,
-    );
+      Message?.notFound,
+      errorCodes?.not_found
+    )
   }
+
   const updatedData = await Visitor.findByIdAndUpdate(visitorid, {
     prefix,
     firstName,
@@ -119,90 +109,105 @@ export const updateVisitor = async (req) => {
     address,
     comment,
     createdBy,
-  });
-  return { updatedData };
-};
+  })
+
+  if (!updatedData) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  return { updatedData }
+}
 
 export const getVisitorDetails = async (req) => {
-  const { visitorid } = req?.params;
+  const { visitorid } = req?.params || {}
 
   if (!visitorid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.not_found,
-    );
+      errorCodes?.not_found
+    )
   }
 
-  const visitorData = await Visitor.findById(visitorid);
+  const visitorData = await Visitor.findById(visitorid)
 
   if (!visitorData) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found,
-    );
+      Message?.notFound,
+      errorCodes?.not_found
+    )
   }
-  return { visitorData };
-};
+  return { visitorData }
+}
 
-export const getAllVisitor = async (req) => {
-  const allVisitors = await Visitor.find().sort({ createdAt: -1 });
+export const getAllVisitor = async () => {
+  const allVisitors = await Visitor.find().sort({ createdAt: -1 })
+  if (!allVisitors) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
-  return { allVisitors };
-};
+  return { allVisitors }
+}
 
 export const getDetailsByNumber = async (req) => {
-  const { input } = req?.params;
+  const { input } = req?.params || {}
 
   if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.not_found,
-    );
+      errorCodes?.not_found
+    )
   }
 
-  const visitor = await Visitor.findOne({ phoneNumber: input });
+  const visitor = await Visitor.findOne({ phoneNumber: input })
 
   if (!visitor) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.user_not_found,
-    );
+      errorCodes?.user_not_found
+    )
   }
-  return { visitor };
-};
+  return { visitor }
+}
 
 export const getVisitorHistory = async (req) => {
-  const { visitorid } = req?.params;
+  const { visitorid } = req?.params || {}
 
   if (!visitorid) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
-      errorCodes?.not_found,
-    );
+      errorCodes?.not_found
+    )
   }
 
   const visitorHistory = await VisitorHistory.findOne({ visitor: visitorid })
-    .select("visitHistory")
+    .select('visitHistory')
     .populate({
-      path: "visitHistory",
-      populate: "appointmentId",
+      path: 'visitHistory',
+      populate: [{ path: 'appointmentId' }, { path: 'passId' }],
     })
-    .sort({ createdAt: -1 });
+    .sort({ createdAt: -1 })
 
   if (!visitorHistory) {
     throw new CustomError(
       statusCodes?.notFound,
-      Message?.userNotGet,
-      errorCodes?.user_not_found,
-    );
+      Message?.notFound,
+      errorCodes?.not_found
+    )
   }
-  return { visitorHistory };
-};
+  return { visitorHistory }
+}
 
 export const newVisitor = async (data) => {
   const {
@@ -216,9 +221,9 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
-  } = data;
+  } = data
 
-  await checkVisitorExist(emailAddress, phoneNumber);
+  await checkVisitorExist(emailAddress, phoneNumber)
 
   const visitor = await Visitor.create({
     firstName,
@@ -231,16 +236,82 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
-  });
+  })
 
-  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id });
+  if (!visitor) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
+  }
+
+  const visitoryHistory = await VisitorHistory.create({ visitor: visitor._id })
   if (!visitoryHistory) {
     return new CustomError(
       statusCodes?.badRequest,
-      Message?.notUpdated,
-      errorCodes?.not_found,
-    );
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
+    )
   }
 
-  return visitor;
-};
+  return visitor
+}
+
+export const bulkUploadVisitor = async (req) => {
+  const file = req?.file?.path
+  const { userid } = req?.user || {}
+
+  const workbook = XLSX.readFile(file)
+  const sheetName = workbook.SheetNames[0]
+  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName])
+
+  const visitors = data.map((row) => ({
+    ...row,
+    createdBy: userid,
+  }))
+
+  const keysToCheck = [
+    'firstName',
+    'phoneNumber',
+    'identityNumber',
+    'identityType',
+    'gender',
+    'address',
+  ]
+  const checkAllKeys = visitors.every((obj) =>
+    keysToCheck.every((key) => key in obj)
+  )
+  if (!checkAllKeys) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.inValidData,
+      errorCodes?.invalid_format
+    )
+  }
+
+  visitors.map(async (visitor) => {
+    try {
+      const newVisitor = await Visitor.create(visitor);
+      if (!newVisitor) {
+        throw new CustomError(
+          statusCodes?.badRequest,
+          Message?.notCreated,
+          errorCodes?.not_created
+        )
+      }
+
+      const visitoryHistory = await VisitorHistory.create({ visitor: newVisitor._id })
+      if (!visitoryHistory) {
+        return new CustomError(
+          statusCodes?.badRequest,
+          Message?.visitHistoryNotCreated,
+          errorCodes?.not_created
+        )
+      }
+    } catch (error) {
+      //handles duplicate visitor
+    }
+  })
+  return
+}

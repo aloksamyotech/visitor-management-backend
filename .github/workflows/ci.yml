@@ -54,16 +54,9 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          # Set up SSH private key
-          mkdir -p ~/.ssh
-          echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          
-          # Disable strict host key checking for GitHub Actions
-          echo -e "Host *\n  StrictHostKeyChecking no\n  UserKnownHostsFile /dev/null" >> ~/.ssh/config
-
+         run: |
           # SSH into the server and deploy the code
-          ssh -i ~/.ssh/id_rsa -o "StrictHostKeyChecking=no" root@134.209.152.97 << EOF
+          ssh -o StrictHostKeyChecking=no -T root@134.209.152.97 << EOF
             # Navigate to the project directory
             cd /var/www/html
 

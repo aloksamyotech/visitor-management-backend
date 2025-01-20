@@ -4,6 +4,8 @@ const router = Router()
 // controller
 import {
   createEntry,
+  createEntryUsingApn,
+  createEntryUsingPass,
   exitVisitor,
   getAllEntry,
   getDashboardData,
@@ -16,6 +18,20 @@ router.post(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(createEntry)
+)
+
+router.post(
+  '/createentryusingapn',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(createEntryUsingApn)
+)
+
+router.post(
+  '/createentryusingpass',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(createEntryUsingPass)
 )
 router.put(
   '/updateentry/:visitid',

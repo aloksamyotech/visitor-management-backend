@@ -3,6 +3,7 @@ import { VisitorHistory } from '../models/visitorHistory.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import XLSX from 'xlsx'
+
 const checkVisitorExist = async (email, phone) => {
   const isPhone = await Visitor.findOne({ phoneNumber: phone })
   if (isPhone) {
@@ -221,7 +222,7 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
-  } = data
+  } = data || {}
 
   await checkVisitorExist(emailAddress, phoneNumber)
 

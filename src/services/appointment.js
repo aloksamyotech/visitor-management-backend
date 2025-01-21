@@ -220,3 +220,49 @@ export const getAppointmentByName = async (req) => {
   }
   return filteredAppointment
 }
+
+export const newApn = async (data) => {
+  const {
+    visitor,
+    employee,
+    purpose,
+    date,
+    startTime,
+    endTime,
+    reference,
+    comment,
+    status,
+  } = data || {}
+
+  // pending logic to create unique id using keyword
+  const appointmentId = Math.floor(10000 + Math.random() * 90000)
+
+  const startMoment = moment(startTime, 'HH:mm')
+  const endMoment = moment(endTime, 'HH:mm')
+  let duration = endMoment.diff(startMoment, 'hours')
+  if (duration < 1) {
+    duration = 1
+  }
+
+  const newAppointment = await Appointment.create({
+    visitor,
+    employee,
+    purpose,
+    duration,
+    date,
+    startTime,
+    endTime,
+    reference,
+    appointmentId,
+    comment,
+    status,
+  })
+  if (!newAppointment) {
+    return new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.bad_request
+    )
+  }
+  return newAppointment
+}

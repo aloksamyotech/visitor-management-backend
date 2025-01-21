@@ -3,6 +3,7 @@ import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { newVisitor } from './visitor.js'
 import { generateQR } from '../core/helpers/generateQR.js'
+
 export const createPass = async (req) => {
   const {
     duration,
@@ -176,4 +177,54 @@ export const getPassByName = async (req) => {
     )
   }
   return filteredPass
+}
+
+export const newPass = async (data) => {
+  const {
+    employee,
+    visitor,
+    duration,
+    startDate,
+    endDate,
+    setAccess,
+    maxCount,
+    maxEntryPerDay,
+    comment,
+  } = data || {}
+
+  const isExist = await Pass.findOne({ visitor: visitor })
+  if (isExist) {
+    return new CustomError(
+      statusCodes?.conflict,
+      Message?.alreadyExist,
+      errorCodes?.already_exist
+    )
+  }
+
+  const passCode = Math.floor(10000 + Math.random() * 90000)
+
+  const qrUrl = await generateQR(passCode)
+
+  const newPass = await Pass.create({
+    visitor,
+    employee,
+    passCode,
+    duration,
+    startDate,
+    endDate,
+    setAccess,
+    maxCount,
+    maxEntryPerDay,
+    comment,
+    qrUrl,
+  })
+
+  if (!newPass) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.bad_request
+    )
+  }
+  return newPass
 }

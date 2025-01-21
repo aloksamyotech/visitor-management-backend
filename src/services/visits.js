@@ -6,6 +6,8 @@ import { newVisitor } from './visitor.js'
 import { Visitor } from '../models/visitor.js'
 import { Appointment } from '../models/appointment.js'
 import { Pass } from '../models/pass.js'
+import { newApn } from './appointment.js'
+import { newPass } from './pass.js'
 
 export const createEntry = async (req) => {
   const {
@@ -13,8 +15,6 @@ export const createEntry = async (req) => {
     comment,
     reference,
     entryType,
-    appointmentId,
-    passId,
     firstName,
     lastName,
     emailAddress,
@@ -28,6 +28,231 @@ export const createEntry = async (req) => {
 
   let { visitor } = req?.body || {}
   const { userid } = req?.user || {} //fetching employee id
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const data = {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy: userid,
+  }
+
+  if (!visitor) {
+    const newVis = await newVisitor(data)
+    visitor = newVis._id
+  }
+
+  const entryData = await Visit.create({
+    visitor,
+    employee: userid,
+    duration,
+    comment,
+    relatedTo: reference,
+    entryType,
+  })
+
+  if (!entryData) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
+  }
+  const updateCount = await Visitor.findOne({ _id: visitor })
+  if (!updateCount) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  if (updateCount) {
+    updateCount.status = 'in'
+    updateCount.totalVisit += 1
+    await updateCount.save()
+  }
+
+  const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
+    { visitor },
+    {
+      $push: { visitHistory: entryData._id },
+    }
+  )
+
+  if (!updateLogsInHistory) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
+    )
+  }
+
+  return { entryData }
+}
+
+export const createEntryUsingApn = async (req) => {
+  const {
+    duration,
+    comment,
+    reference,
+    entryType,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityNumber,
+    identityType,
+    gender,
+    address,
+    purpose,
+    date,
+    startTime,
+    endTime,
+  } = req?.body || {}
+  let { visitor, appointmentId } = req?.body || {}
+  const { userid } = req?.user || {} //fetching employee id
+
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const data = {
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityType,
+    identityNumber,
+    gender,
+    address,
+    createdBy: userid,
+  }
+
+  if (!visitor) {
+    const newVis = await newVisitor(data)
+    visitor = newVis._id
+  }
+
+  const newApnData = {
+    visitor,
+    employee: userid,
+    reference,
+    purpose,
+    date,
+    startTime,
+    endTime,
+    comment,
+    status: 'checkIn',
+  }
+  if (!appointmentId) {
+    const newApnId = await newApn(newApnData)
+    appointmentId = newApnId?._id
+  }
+
+  const entryData = await Visit.create({
+    visitor,
+    employee: userid,
+    duration,
+    comment,
+    relatedTo: reference,
+    entryType,
+    appointmentId,
+  })
+
+  if (!entryData) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
+  }
+  const updateCount = await Visitor.findOne({ _id: visitor })
+  if (!updateCount) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  if (updateCount) {
+    updateCount.status = 'in'
+    updateCount.totalVisit += 1
+    await updateCount.save()
+  }
+
+  const updateLogsInHistory = await VisitorHistory.findOneAndUpdate(
+    { visitor },
+    {
+      $push: { visitHistory: entryData._id },
+    }
+  )
+
+  if (!updateLogsInHistory) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.visitHistoryNotCreated,
+      errorCodes?.not_created
+    )
+  }
+
+  if (appointmentId) {
+    const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
+      { _id: appointmentId },
+      { status: 'checkIn' }
+    )
+    if (!updateAppointmentStatus) {
+      throw new CustomError(
+        statusCodes?.badRequest,
+        Message?.apnStatusNotUpdated,
+        errorCodes?.not_updated
+      )
+    }
+  }
+
+  return { entryData }
+}
+
+export const createEntryUsingPass = async (req) => {
+  const {
+    duration,
+    comment,
+    reference,
+    entryType,
+    firstName,
+    lastName,
+    emailAddress,
+    phoneNumber,
+    visitorType,
+    identityNumber,
+    identityType,
+    gender,
+    address,
+    setAccess,
+    startDate,
+    endDate,
+  } = req?.body || {}
+
+  let { visitor, passId } = req?.body || {}
+  const { userid } = req?.user || {} //fetching employee id
+
   if (!userid) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -76,6 +301,20 @@ export const createEntry = async (req) => {
     visitor = newVis._id
   }
 
+  const newPassData = {
+    visitor,
+    employee: userid,
+    duration,
+    startDate,
+    endDate,
+    setAccess,
+    comment,
+  }
+  if (!passId) {
+    const newPassId = await newPass(newPassData)
+    passId = newPassId?._id
+  }
+
   const entryData = await Visit.create({
     visitor,
     employee: userid,
@@ -83,7 +322,6 @@ export const createEntry = async (req) => {
     comment,
     relatedTo: reference,
     entryType,
-    appointmentId,
     passId,
   })
 
@@ -135,20 +373,6 @@ export const createEntry = async (req) => {
       Message?.visitHistoryNotCreated,
       errorCodes?.not_created
     )
-  }
-
-  if (appointmentId) {
-    const updateAppointmentStatus = await Appointment.findByIdAndUpdate(
-      { _id: appointmentId },
-      { status: 'checkIn' }
-    )
-    if (!updateAppointmentStatus) {
-      throw new CustomError(
-        statusCodes?.badRequest,
-        Message?.apnStatusNotUpdated,
-        errorCodes?.not_updated
-      )
-    }
   }
 
   return { entryData }
@@ -272,13 +496,15 @@ export const getDashboardData = async () => {
       errorCodes?.not_found
     )
   }
-  const filteredApnData = todayAppointment?.filter((item) => {
-    const today = new Date().toISOString().slice(0, 10)
-    const itemDate = new Date(item?.date)
-    const newdate = itemDate?.toISOString()?.slice(0, 10)
+  const filteredApnData = todayAppointment
+    ?.filter((item) => {
+      const today = new Date().toISOString().slice(0, 10)
+      const itemDate = new Date(item?.date)
+      const newdate = itemDate?.toISOString()?.slice(0, 10)
 
-    return newdate === today
-  })
+      return newdate === today
+    })
+    ?.slice(0, 5)
 
   const recentVisitor = await Visit.find()
     .populate('visitor')

@@ -50,7 +50,7 @@ export const createEntry = async (req) => {
     gender,
     address,
     createdBy: userid,
-    companyId
+    companyId,
   }
 
   if (!visitor) {
@@ -65,7 +65,7 @@ export const createEntry = async (req) => {
     comment,
     relatedTo: reference,
     entryType,
-    companyId
+    companyId,
   })
 
   if (!entryData) {
@@ -151,7 +151,7 @@ export const createEntryUsingApn = async (req) => {
     gender,
     address,
     createdBy: userid,
-    companyId
+    companyId,
   }
 
   if (!visitor) {
@@ -169,7 +169,7 @@ export const createEntryUsingApn = async (req) => {
     endTime,
     comment,
     status: 'checkIn',
-    companyId
+    companyId,
   }
   if (!appointmentId) {
     const newApnId = await newApn(newApnData)
@@ -184,7 +184,7 @@ export const createEntryUsingApn = async (req) => {
     relatedTo: reference,
     entryType,
     appointmentId,
-    companyId
+    companyId,
   })
 
   if (!entryData) {
@@ -306,7 +306,7 @@ export const createEntryUsingPass = async (req) => {
     gender,
     address,
     createdBy: userid,
-    companyId
+    companyId,
   }
 
   if (!visitor) {
@@ -322,7 +322,7 @@ export const createEntryUsingPass = async (req) => {
     endDate,
     setAccess,
     comment,
-    companyId
+    companyId,
   }
   if (!passId) {
     const newPassId = await newPass(newPassData)
@@ -337,7 +337,7 @@ export const createEntryUsingPass = async (req) => {
     relatedTo: reference,
     entryType,
     passId,
-    companyId
+    companyId,
   })
 
   if (!entryData) {
@@ -443,7 +443,7 @@ export const getAllEntry = async (req) => {
   const allentry = await Visit.find()
     .populate('visitor')
     .sort({ updatedAt: -1 })
-  const allEntry = allentry.filter(entry => (entry?.companyId == companyId))
+  const allEntry = allentry.filter((entry) => entry?.companyId == companyId)
 
   if (!allEntry) {
     throw new CustomError(

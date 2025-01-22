@@ -64,8 +64,8 @@ const userSchema = new Schema(
     },
     companyId: {
       type: objID,
-      default: null
-    }
+      default: null,
+    },
   },
   { timestamps: true }
 )

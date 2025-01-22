@@ -6,7 +6,7 @@ import { User } from '../../models/user.js'
 
 const connectDB = async () => {
   try {
-    ; (async function () {
+    ;(async function () {
       const dbUri = database_urls?.connection + database_urls?.db_name
       const dbConnect = await mongoose.connect(dbUri, {})
       if (dbConnect) {

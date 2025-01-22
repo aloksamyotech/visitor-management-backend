@@ -50,9 +50,7 @@ export const superAdminAuth = (req, res, next) => {
 export const adminAuth = (req, res, next) => {
   const { role } = req?.user || {}
 
-  if (role !== checkRole?.admin &&
-    role !== checkRole?.superAdmin
-  ) {
+  if (role !== checkRole?.admin && role !== checkRole?.superAdmin) {
     throw new CustomError(
       statusCodes?.unauthorized,
       Message?.inValid,

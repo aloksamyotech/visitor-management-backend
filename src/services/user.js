@@ -51,7 +51,7 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    companyId: userid
+    companyId: userid,
   })
 
   const createdUser = await User.findById(user._id).select('-password')
@@ -208,12 +208,16 @@ export const manageUserPermission = async (req) => {
 }
 
 export const getAllUser = async (req) => {
-  const { userid } = req?.user || {}
   const { user } = req?.user || {}
   const companyId = user?.companyId
 
   const AllUser = await User.find().select('-password').sort({ createdAt: -1 })
-  const allUser = AllUser.filter(user => (user?.role !== 'admin' && user?.role !== 'superAdmin' && user?.companyId == companyId))
+  const allUser = AllUser.filter(
+    (user) =>
+      user?.role !== 'admin' &&
+      user?.role !== 'superAdmin' &&
+      user?.companyId == companyId
+  )
 
   if (!allUser) {
     throw new CustomError(
@@ -227,7 +231,7 @@ export const getAllUser = async (req) => {
 
 export const getAllCompany = async () => {
   const AllUser = await User.find().select('-password').sort({ createdAt: -1 })
-  const allUser = AllUser.filter(user => user?.role === 'admin')
+  const allUser = AllUser.filter((user) => user?.role === 'admin')
   if (!allUser) {
     throw new CustomError(
       statusCodes?.notFound,

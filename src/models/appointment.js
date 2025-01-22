@@ -57,7 +57,7 @@ const appointmentSchema = new mongoose.Schema(
     companyId: {
       type: objID,
       required: true,
-    }
+    },
   },
   {
     timestamps: true,

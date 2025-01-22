@@ -59,8 +59,8 @@ const visitSchema = new mongoose.Schema(
     },
     companyId: {
       type: objID,
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -50,7 +50,7 @@ export const createVisitor = async (req) => {
     file,
     comment,
     createdBy: userid,
-    companyId
+    companyId,
   })
 
   if (!visitor) {
@@ -149,10 +149,12 @@ export const getVisitorDetails = async (req) => {
 }
 
 export const getAllVisitor = async (req) => {
-  const { user } = req?.user;
+  const { user } = req?.user || {}
   const companyId = user?.companyId
   const allvisitors = await Visitor.find().sort({ createdAt: -1 })
-  const allVisitors = allvisitors.filter(visitor => visitor?.companyId == companyId)
+  const allVisitors = allvisitors.filter(
+    (visitor) => visitor?.companyId == companyId
+  )
   if (!allVisitors) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -203,7 +205,11 @@ export const getVisitorHistory = async (req) => {
     .populate({
       path: 'visitHistory',
       options: { sort: { createdAt: -1 } },
-      populate: [{ path: 'appointmentId' }, { path: 'passId' }, { path: 'relatedTo' }],
+      populate: [
+        { path: 'appointmentId' },
+        { path: 'passId' },
+        { path: 'relatedTo' },
+      ],
     })
 
   if (!visitorHistory) {
@@ -228,7 +234,7 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
-    companyId
+    companyId,
   } = data || {}
 
   await checkVisitorExist(emailAddress, phoneNumber)
@@ -244,7 +250,7 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
-    companyId
+    companyId,
   })
 
   if (!visitor) {

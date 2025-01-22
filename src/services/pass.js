@@ -5,7 +5,6 @@ import { newVisitor } from './visitor.js'
 import { generateQR } from '../core/helpers/generateQR.js'
 
 export const createPass = async (req) => {
-
   const {
     duration,
     startDate,
@@ -59,7 +58,7 @@ export const createPass = async (req) => {
     gender,
     address,
     createdBy: userid,
-    companyId
+    companyId,
   }
 
   if (!visitor) {
@@ -80,7 +79,7 @@ export const createPass = async (req) => {
     maxEntryPerDay,
     comment,
     qrUrl,
-    companyId
+    companyId,
   })
 
   if (!newPass) {
@@ -123,10 +122,10 @@ export const updatePassValidity = async (req) => {
 }
 
 export const getAllPass = async (req) => {
-  const { user } = req?.user
+  const { user } = req?.user || {}
   const companyId = user?.companyId
   const allpass = await Pass.find().populate('visitor').sort({ createdAt: -1 })
-  const allPass = allpass.filter(pass => pass?.companyId == companyId)
+  const allPass = allpass.filter((pass) => pass?.companyId == companyId)
 
   if (!allPass) {
     throw new CustomError(
@@ -198,7 +197,7 @@ export const newPass = async (data) => {
     maxCount,
     maxEntryPerDay,
     comment,
-    companyId
+    companyId,
   } = data || {}
 
   const isExist = await Pass.findOne({ visitor: visitor })
@@ -226,7 +225,7 @@ export const newPass = async (data) => {
     maxEntryPerDay,
     comment,
     qrUrl,
-    companyId
+    companyId,
   })
 
   if (!newPass) {

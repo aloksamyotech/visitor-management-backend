@@ -57,7 +57,7 @@ export const scheduleAppointment = async (req) => {
     gender,
     address,
     createdBy: userid,
-    companyId
+    companyId,
   }
 
   if (!visitor) {
@@ -76,7 +76,7 @@ export const scheduleAppointment = async (req) => {
     reference,
     appointmentId,
     comment,
-    companyId
+    companyId,
   })
   if (!newAppointment) {
     return new CustomError(
@@ -148,13 +148,15 @@ export const updateAppointmentStatus = async (req) => {
 }
 
 export const getAllAppointment = async (req) => {
-  const { user } = req?.user
+  const { user } = req?.user || {}
   const companyId = user?.companyId
   const allappointment = await Appointment.find()
     .populate('visitor')
     .populate('reference')
     .sort({ createdAt: -1 })
-  const allAppointment = allappointment?.filter(apn => apn?.companyId == companyId)
+  const allAppointment = allappointment?.filter(
+    (apn) => apn?.companyId == companyId
+  )
   if (!allAppointment) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -239,7 +241,7 @@ export const newApn = async (data) => {
     reference,
     comment,
     status,
-    companyId
+    companyId,
   } = data || {}
 
   // pending logic to create unique id using keyword
@@ -264,7 +266,7 @@ export const newApn = async (data) => {
     appointmentId,
     comment,
     status,
-    companyId
+    companyId,
   })
   if (!newAppointment) {
     return new CustomError(

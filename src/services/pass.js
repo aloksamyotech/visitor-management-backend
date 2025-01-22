@@ -5,6 +5,7 @@ import { newVisitor } from './visitor.js'
 import { generateQR } from '../core/helpers/generateQR.js'
 
 export const createPass = async (req) => {
+
   const {
     duration,
     startDate,
@@ -23,9 +24,10 @@ export const createPass = async (req) => {
     gender,
     address,
   } = req?.body || {}
-
   let { visitor } = req?.body || {}
-  const { userid } = req?.user || {} //fetching employee id
+  const { userid } = req?.user || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
 
   if (!userid) {
     throw new CustomError(
@@ -57,6 +59,7 @@ export const createPass = async (req) => {
     gender,
     address,
     createdBy: userid,
+    companyId
   }
 
   if (!visitor) {
@@ -77,6 +80,7 @@ export const createPass = async (req) => {
     maxEntryPerDay,
     comment,
     qrUrl,
+    companyId
   })
 
   if (!newPass) {
@@ -118,8 +122,12 @@ export const updatePassValidity = async (req) => {
   return { passUpdate }
 }
 
-export const getAllPass = async () => {
-  const allPass = await Pass.find().populate('visitor').sort({ createdAt: -1 })
+export const getAllPass = async (req) => {
+  const { user } = req?.user
+  const companyId = user?.companyId
+  const allpass = await Pass.find().populate('visitor').sort({ createdAt: -1 })
+  const allPass = allpass.filter(pass => pass?.companyId == companyId)
+
   if (!allPass) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -190,6 +198,7 @@ export const newPass = async (data) => {
     maxCount,
     maxEntryPerDay,
     comment,
+    companyId
   } = data || {}
 
   const isExist = await Pass.findOne({ visitor: visitor })
@@ -217,6 +226,7 @@ export const newPass = async (data) => {
     maxEntryPerDay,
     comment,
     qrUrl,
+    companyId
   })
 
   if (!newPass) {

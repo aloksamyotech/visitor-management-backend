@@ -36,6 +36,7 @@ export const registerUser = async (req) => {
     address,
   } = req?.body || {}
   const file = req?.file?.path
+  const { userid } = req?.user || {}
 
   await checkUserExist(emailAddress, phoneNumber)
 
@@ -50,6 +51,7 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
+    companyId: userid
   })
 
   const createdUser = await User.findById(user._id).select('-password')
@@ -205,8 +207,27 @@ export const manageUserPermission = async (req) => {
   return { addPermission, removePermission }
 }
 
-export const getAllUser = async () => {
-  const allUser = await User.find().select('-password').sort({ createdAt: -1 })
+export const getAllUser = async (req) => {
+  const { userid } = req?.user || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+
+  const AllUser = await User.find().select('-password').sort({ createdAt: -1 })
+  const allUser = AllUser.filter(user => (user?.role !== 'admin' && user?.role !== 'superAdmin' && user?.companyId == companyId))
+
+  if (!allUser) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  return { allUser }
+}
+
+export const getAllCompany = async () => {
+  const AllUser = await User.find().select('-password').sort({ createdAt: -1 })
+  const allUser = AllUser.filter(user => user?.role === 'admin')
   if (!allUser) {
     throw new CustomError(
       statusCodes?.notFound,

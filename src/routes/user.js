@@ -4,6 +4,7 @@ const router = Router()
 
 // controller
 import {
+  getAllCompany,
   getAllUser,
   getUserDetailsById,
   manageUserPermission,
@@ -16,7 +17,13 @@ import {
 import { adminAuth, employeeAuth, userAuth } from '../middlewares/userAuth.js'
 import { upload } from '../middlewares/uploads.js'
 
-router.post('/register', upload.single('file'), asyncHandler(userRegistration))
+router.post(
+  '/register',
+  upload.single('file'),
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(userRegistration)
+)
 router.post('/login', asyncHandler(userLogin))
 router.get(
   '/getuserdetails',
@@ -48,6 +55,13 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getAllUser)
+)
+
+router.get(
+  '/getallcompany',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getAllCompany)
 )
 router.get(
   '/getuserdetails/:userid',

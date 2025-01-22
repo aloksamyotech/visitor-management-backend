@@ -31,6 +31,8 @@ export const createVisitor = async (req) => {
   } = req?.body || {}
   const file = req?.file?.path
   const { userid } = req?.user || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
 
   await checkVisitorExist(emailAddress, phoneNumber)
 
@@ -48,6 +50,7 @@ export const createVisitor = async (req) => {
     file,
     comment,
     createdBy: userid,
+    companyId
   })
 
   if (!visitor) {
@@ -145,8 +148,11 @@ export const getVisitorDetails = async (req) => {
   return { visitorData }
 }
 
-export const getAllVisitor = async () => {
-  const allVisitors = await Visitor.find().sort({ createdAt: -1 })
+export const getAllVisitor = async (req) => {
+  const { user } = req?.user;
+  const companyId = user?.companyId
+  const allvisitors = await Visitor.find().sort({ createdAt: -1 })
+  const allVisitors = allvisitors.filter(visitor => visitor?.companyId == companyId)
   if (!allVisitors) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -196,9 +202,9 @@ export const getVisitorHistory = async (req) => {
     .select('visitHistory')
     .populate({
       path: 'visitHistory',
-      populate: [{ path: 'appointmentId' }, { path: 'passId' }],
+      options: { sort: { createdAt: -1 } },
+      populate: [{ path: 'appointmentId' }, { path: 'passId' }, { path: 'relatedTo' }],
     })
-    .sort({ createdAt: -1 })
 
   if (!visitorHistory) {
     throw new CustomError(
@@ -222,6 +228,7 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
+    companyId
   } = data || {}
 
   await checkVisitorExist(emailAddress, phoneNumber)
@@ -237,6 +244,7 @@ export const newVisitor = async (data) => {
     gender,
     address,
     createdBy,
+    companyId
   })
 
   if (!visitor) {

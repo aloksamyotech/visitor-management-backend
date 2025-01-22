@@ -68,6 +68,10 @@ const PassSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    companyId: {
+      type: objID,
+      required: true,
+    }
   },
   {
     timestamps: true,

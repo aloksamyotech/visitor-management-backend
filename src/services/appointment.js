@@ -29,12 +29,14 @@ export const scheduleAppointment = async (req) => {
   const companyId = user?.companyId
 
   let uniqueId = false
-  let appointmentId;
+  let appointmentId
   while (!uniqueId) {
     appointmentId = Math.floor(10000 + Math.random() * 90000)
-    const checkUnique = await Appointment.findOne({ appointmentId: appointmentId })
+    const checkUnique = await Appointment.findOne({
+      appointmentId: appointmentId,
+    })
     if (!checkUnique) {
-      uniqueId = true;
+      uniqueId = true
     }
   }
 
@@ -187,7 +189,7 @@ export const getAppointmentByDate = async (req) => {
     )
   }
   const apt = await Appointment.find({ date })
-  const appointments = apt.filter(apt => apt?.companyId == companyId)
+  const appointments = apt.filter((apt) => apt?.companyId == companyId)
 
   return appointments
 }
@@ -206,9 +208,9 @@ export const getAppointmentByAptID = async (req) => {
   }
   const appointment = await Appointment.findOne({
     appointmentId: input,
-    companyId: companyId
+    companyId: companyId,
   }).populate('visitor')
-  
+
   if (!appointment) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -260,12 +262,14 @@ export const newApn = async (data) => {
   } = data || {}
 
   let uniqueId = false
-  let appointmentId;
+  let appointmentId
   while (!uniqueId) {
     appointmentId = Math.floor(10000 + Math.random() * 90000)
-    const checkUnique = await Appointment.findOne({ appointmentId: appointmentId })
+    const checkUnique = await Appointment.findOne({
+      appointmentId: appointmentId,
+    })
     if (!checkUnique) {
-      uniqueId = true;
+      uniqueId = true
     }
   }
 

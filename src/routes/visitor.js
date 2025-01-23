@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { asyncHandler } from '../utils/asyncWrapper.js'
 const router = Router()
-// controller
 import {
   createVisitor,
   updateVisitor,

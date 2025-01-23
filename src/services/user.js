@@ -51,9 +51,12 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    companyId: userid,
+    companyId: role === 'admin' ? undefined : userid,
   })
-
+  if (role === 'admin') {
+    user.companyId = user._id;
+    await user.save();
+  }
   const createdUser = await User.findById(user._id).select('-password')
 
   if (!createdUser) {

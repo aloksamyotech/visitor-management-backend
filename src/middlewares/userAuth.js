@@ -34,10 +34,23 @@ export const userAuth = (req, res, next) => {
   })
 }
 
+export const superAdminAuth = (req, res, next) => {
+  const { role } = req?.user || {}
+
+  if (role !== checkRole?.superAdmin) {
+    throw new CustomError(
+      statusCodes?.unauthorized,
+      Message?.inValid,
+      errorCodes?.access_denied
+    )
+  }
+  next()
+}
+
 export const adminAuth = (req, res, next) => {
   const { role } = req?.user || {}
 
-  if (role !== checkRole?.admin) {
+  if (role !== checkRole?.admin && role !== checkRole?.superAdmin) {
     throw new CustomError(
       statusCodes?.unauthorized,
       Message?.inValid,
@@ -50,8 +63,10 @@ export const employeeAuth = (req, res, next) => {
   const { role } = req?.user || {}
 
   if (
+    role !== checkRole?.superAdmin &&
     role !== checkRole?.admin &&
     role !== checkRole?.hr &&
+    role !== checkRole?.guard &&
     role !== checkRole?.security &&
     role !== checkRole?.receptionist
   ) {

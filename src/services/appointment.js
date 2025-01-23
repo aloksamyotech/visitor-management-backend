@@ -24,7 +24,9 @@ export const scheduleAppointment = async (req) => {
   } = req?.body || {}
 
   let { visitor } = req?.body || {}
-  const { userid } = req?.user || {} //fetching employee id
+  const { userid } = req?.user || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
 
   // pending logic to create unique id using keyword
   const appointmentId = Math.floor(10000 + Math.random() * 90000)
@@ -55,6 +57,7 @@ export const scheduleAppointment = async (req) => {
     gender,
     address,
     createdBy: userid,
+    companyId,
   }
 
   if (!visitor) {
@@ -73,6 +76,7 @@ export const scheduleAppointment = async (req) => {
     reference,
     appointmentId,
     comment,
+    companyId,
   })
   if (!newAppointment) {
     return new CustomError(
@@ -143,11 +147,16 @@ export const updateAppointmentStatus = async (req) => {
   return { statusUpdate }
 }
 
-export const getAllAppointment = async () => {
-  const allAppointment = await Appointment.find()
+export const getAllAppointment = async (req) => {
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+  const allappointment = await Appointment.find()
     .populate('visitor')
     .populate('reference')
     .sort({ createdAt: -1 })
+  const allAppointment = allappointment?.filter(
+    (apn) => apn?.companyId == companyId
+  )
   if (!allAppointment) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -232,6 +241,7 @@ export const newApn = async (data) => {
     reference,
     comment,
     status,
+    companyId,
   } = data || {}
 
   // pending logic to create unique id using keyword
@@ -256,6 +266,7 @@ export const newApn = async (data) => {
     appointmentId,
     comment,
     status,
+    companyId,
   })
   if (!newAppointment) {
     return new CustomError(

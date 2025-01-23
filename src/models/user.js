@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
 import bcrypt from 'bcrypt'
 
+const objID = mongoose.Schema.Types.ObjectId
 const userSchema = new Schema(
   {
     prefix: {
@@ -34,7 +35,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['admin', 'hr', 'receptionist', 'security', 'guard'],
+      enum: ['admin', 'hr', 'receptionist', 'security', 'guard', 'superAdmin'],
       required: true,
     },
     gender: {
@@ -60,6 +61,10 @@ const userSchema = new Schema(
     permissions: {
       type: [String],
       default: [],
+    },
+    companyId: {
+      type: objID,
+      default: null,
     },
   },
   { timestamps: true }

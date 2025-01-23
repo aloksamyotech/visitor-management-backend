@@ -52,3 +52,8 @@ export const getAllUser = async (req, res, next) => {
   const getAllUser = await userService.getAllUser(req, res, next)
   res.status(statusCodes?.ok).send(getAllUser)
 }
+
+export const getAllCompany = async (req, res, next) => {
+  const getAllCompany = await userService.getAllCompany(req, res, next)
+  res.status(statusCodes?.ok).send(getAllCompany)
+}

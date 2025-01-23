@@ -144,8 +144,10 @@ export const errorCodes = Object.freeze({
 })
 
 export const checkRole = {
+  superAdmin: 'superAdmin',
   admin: 'admin',
   hr: 'hr',
   security: 'security',
+  guard: 'guard',
   receptionist: 'receptionist',
 }

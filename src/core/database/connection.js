@@ -9,7 +9,6 @@ const connectDB = async () => {
     ;(async function () {
       const dbUri = database_urls?.connection + database_urls?.db_name
       const dbConnect = await mongoose.connect(dbUri, {})
-      console.log("connected successfully")
       if (dbConnect) {
         const existingAdmin = await User.findOne({
           emailAddress: 'admin@gmail.com',
@@ -22,11 +21,12 @@ const connectDB = async () => {
             phoneNumber: '1234567890',
             emailAddress: 'admin@gmail.com',
             password: 'admin123',
-            role: 'admin',
+            role: 'superAdmin',
             address: 'USA',
             permissions: [
               'dashboard',
               'employee',
+              'company',
               'manageEntry',
               'allEntry',
               'visitor',

@@ -96,6 +96,10 @@ const visitorSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    companyId: {
+      type: objID,
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -6,6 +6,7 @@ import {
   getAllCompany,
   getAllUser,
   getUserDetailsById,
+  logoUpdate,
   manageUserPermission,
   updateUserPassword,
   userDetails,
@@ -36,6 +37,13 @@ router.put(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(userUpdate)
+)
+router.put(
+  '/updatecompanylogo',
+  upload.single('companyLogo'),
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(logoUpdate)
 )
 router.put(
   '/updateuserpassword',

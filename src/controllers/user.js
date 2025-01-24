@@ -30,6 +30,11 @@ export const userUpdate = async (req, res, next) => {
   res.status(statusCodes?.ok).send(updatedDetails)
 }
 
+export const logoUpdate = async (req, res, next) => {
+  const logoUpdate = await userService.logoUpdate(req, res, next)
+  res.status(statusCodes?.ok).send(logoUpdate)
+}
+
 export const updateUserPassword = async (req, res, next) => {
   const updateUserPassword = await userService.updateUserPassword(
     req,

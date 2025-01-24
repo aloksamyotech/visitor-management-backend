@@ -41,14 +41,12 @@ const userSchema = new Schema(
     gender: {
       type: String,
       enum: ['male', 'female', 'other'],
-      required: true,
     },
     file: {
       type: String,
     },
     address: {
       type: String,
-      required: true,
     },
     salary: {
       type: Number,
@@ -64,7 +62,11 @@ const userSchema = new Schema(
     },
     companyId: {
       type: objID,
+      ref: 'User',
       default: null,
+    },
+    companyLogo: {
+      type: String,
     },
   },
   { timestamps: true }

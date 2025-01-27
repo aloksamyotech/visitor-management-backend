@@ -45,7 +45,15 @@ export const createPass = async (req) => {
     )
   }
 
-  const passCode = Math.floor(10000 + Math.random() * 90000)
+  let uniqueId = false
+  let passCode
+  while (!uniqueId) {
+    passCode = Math.floor(10000 + Math.random() * 90000)
+    const checkUnique = await Pass.findOne({ passCode: passCode })
+    if (!checkUnique) {
+      uniqueId = true
+    }
+  }
 
   const data = {
     firstName,
@@ -139,6 +147,9 @@ export const getAllPass = async (req) => {
 
 export const getPassByPassCode = async (req) => {
   const { input } = req?.params || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+
   if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -146,9 +157,11 @@ export const getPassByPassCode = async (req) => {
       errorCodes?.not_found
     )
   }
-  const passDetails = await Pass.findOne({ passCode: input }).populate(
-    'visitor'
-  )
+
+  const passDetails = await Pass.findOne({
+    passCode: input,
+    companyId: companyId,
+  }).populate('visitor')
   if (!passDetails) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -209,7 +222,15 @@ export const newPass = async (data) => {
     )
   }
 
-  const passCode = Math.floor(10000 + Math.random() * 90000)
+  let uniqueId = false
+  let passCode
+  while (!uniqueId) {
+    passCode = Math.floor(10000 + Math.random() * 90000)
+    const checkUnique = await Pass.findOne({ passCode: passCode })
+    if (!checkUnique) {
+      uniqueId = true
+    }
+  }
 
   const qrUrl = await generateQR(passCode)
 

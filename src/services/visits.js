@@ -456,9 +456,12 @@ export const getAllEntry = async (req) => {
 }
 
 export const getEntryByDate = async (req) => {
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
   const { startDate, endDate } = req?.query || {}
 
-  const allEntry = await Visit.find().populate('visitor')
+  const allentry = await Visit.find().populate('visitor')
+  const allEntry = allentry.filter((entry) => entry?.companyId == companyId)
   if (!allEntry) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -485,8 +488,13 @@ export const getEntryByDate = async (req) => {
   }
 }
 
-export const getDashboardData = async () => {
-  const allEntry = await Visit.find()
+export const getDashboardData = async (req) => {
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+
+  const allentry = await Visit.find()
+  const allEntry = allentry.filter((entry) => entry?.companyId == companyId)
+
   if (!allEntry) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -506,9 +514,11 @@ export const getDashboardData = async () => {
   })
   const todayCount = filteredData?.length
 
-  const todayAppointment = await Appointment.find()
+  const todayApt = await Appointment.find()
     .populate('visitor')
     .sort({ createdAt: -1 })
+  const todayAppointment = todayApt.filter((apt) => apt?.companyId == companyId)
+
   if (!todayAppointment) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -526,10 +536,12 @@ export const getDashboardData = async () => {
     })
     ?.slice(0, 5)
 
-  const recentVisitor = await Visit.find()
+  const recentvisitor = await Visit.find()
     .populate('visitor')
     .sort({ createdAt: -1 })
-    .limit(5)
+  const recentVisitor = recentvisitor
+    ?.filter((recent) => recent?.companyId == companyId)
+    .slice(0, 5)
 
   if (!recentVisitor) {
     throw new CustomError(
@@ -539,9 +551,20 @@ export const getDashboardData = async () => {
     )
   }
 
-  const visitorCount = await Visitor.countDocuments()
-  const apnCount = await Appointment.countDocuments()
-  const passCount = await Pass.countDocuments()
+  const visitorcount = await Visitor.find()
+  const visitorCount = visitorcount.filter(
+    (count) => count?.companyId == companyId
+  ).length
+
+  const apncount = await Appointment.find()
+  const apnCount = apncount.filter(
+    (count) => count?.companyId == companyId
+  ).length
+
+  const passcount = await Pass.find()
+  const passCount = passcount.filter(
+    (count) => count?.companyId == companyId
+  ).length
 
   const allTypeCounts = {
     visitorCount,

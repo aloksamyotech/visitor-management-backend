@@ -28,8 +28,17 @@ export const scheduleAppointment = async (req) => {
   const { user } = req?.user || {}
   const companyId = user?.companyId
 
-  // pending logic to create unique id using keyword
-  const appointmentId = Math.floor(10000 + Math.random() * 90000)
+  let uniqueId = false
+  let appointmentId
+  while (!uniqueId) {
+    appointmentId = Math.floor(10000 + Math.random() * 90000)
+    const checkUnique = await Appointment.findOne({
+      appointmentId: appointmentId,
+    })
+    if (!checkUnique) {
+      uniqueId = true
+    }
+  }
 
   if (!userid) {
     throw new CustomError(
@@ -169,6 +178,9 @@ export const getAllAppointment = async (req) => {
 
 export const getAppointmentByDate = async (req) => {
   const { date } = req?.body || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+
   if (!date) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -176,13 +188,17 @@ export const getAppointmentByDate = async (req) => {
       errorCodes?.not_found
     )
   }
-  const appointments = await Appointment.find({ date })
+  const apt = await Appointment.find({ date })
+  const appointments = apt.filter((apt) => apt?.companyId == companyId)
 
   return appointments
 }
 
 export const getAppointmentByAptID = async (req) => {
   const { input } = req?.params || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
+
   if (!input) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -192,6 +208,7 @@ export const getAppointmentByAptID = async (req) => {
   }
   const appointment = await Appointment.findOne({
     appointmentId: input,
+    companyId: companyId,
   }).populate('visitor')
 
   if (!appointment) {
@@ -244,8 +261,17 @@ export const newApn = async (data) => {
     companyId,
   } = data || {}
 
-  // pending logic to create unique id using keyword
-  const appointmentId = Math.floor(10000 + Math.random() * 90000)
+  let uniqueId = false
+  let appointmentId
+  while (!uniqueId) {
+    appointmentId = Math.floor(10000 + Math.random() * 90000)
+    const checkUnique = await Appointment.findOne({
+      appointmentId: appointmentId,
+    })
+    if (!checkUnique) {
+      uniqueId = true
+    }
+  }
 
   const startMoment = moment(startTime, 'HH:mm')
   const endMoment = moment(endTime, 'HH:mm')

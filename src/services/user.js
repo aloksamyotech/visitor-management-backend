@@ -34,6 +34,7 @@ export const registerUser = async (req) => {
     emailAddress,
     role,
     address,
+    permissions,
   } = req?.body || {}
   const file = req?.file?.path
   const { userid } = req?.user || {}
@@ -51,9 +52,13 @@ export const registerUser = async (req) => {
     file,
     role,
     address,
-    companyId: userid,
+    companyId: role === 'admin' ? undefined : userid,
+    permissions,
   })
-
+  if (role === 'admin') {
+    user.companyId = user._id
+    await user.save()
+  }
   const createdUser = await User.findById(user._id).select('-password')
 
   if (!createdUser) {
@@ -90,12 +95,16 @@ export const loginUser = async (req) => {
   }
 
   const loginUser = await User.findById(user._id).select('-password')
+  const companyLogo = await User.findById(user._id)
+    .select('companyId')
+    .populate('companyId')
 
   const payload = {
     userid: loginUser?._id,
     user: loginUser,
     role: loginUser?.role,
     permission: loginUser?.permissions,
+    logo: companyLogo?.companyId?.companyLogo,
   }
   const key = process.env?.ACCESS_TOKEN_SECRET
   const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY
@@ -172,6 +181,25 @@ export const updateUserDetails = async (req) => {
     file,
     role,
     address,
+  })
+  return { updatedData }
+}
+
+export const logoUpdate = async (req) => {
+  const { userid } = req?.user || {}
+  const companyLogo = req?.file?.path
+  const user = await User.findOne({ _id: userid })
+
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
+
+  const updatedData = await User.findByIdAndUpdate(userid, {
+    companyLogo,
   })
   return { updatedData }
 }

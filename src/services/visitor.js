@@ -276,6 +276,8 @@ export const newVisitor = async (data) => {
 export const bulkUploadVisitor = async (req) => {
   const file = req?.file?.path
   const { userid } = req?.user || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
 
   const workbook = XLSX.readFile(file)
   const sheetName = workbook.SheetNames[0]
@@ -284,6 +286,7 @@ export const bulkUploadVisitor = async (req) => {
   const visitors = data.map((row) => ({
     ...row,
     createdBy: userid,
+    companyId,
   }))
 
   const keysToCheck = [

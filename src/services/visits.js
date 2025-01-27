@@ -1,6 +1,7 @@
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { Visit } from '../models/visits.js'
+import { User } from '../models/user.js'
 import { VisitorHistory } from '../models/visitorHistory.js'
 import { newVisitor } from './visitor.js'
 import { Visitor } from '../models/visitor.js'
@@ -578,5 +579,27 @@ export const getDashboardData = async (req) => {
     recentVisitor,
     filteredApnData,
     allTypeCounts,
+  }
+}
+
+export const adminDashboardData = async () => {
+
+  const companycount = await User.find()
+  const companyCount = companycount.filter(company => company.role == 'admin').length
+  const visitorcount = await Visitor.find()
+  const visitorCount = visitorcount.length
+  const apncount = await Appointment.find()
+  const apnCount = apncount.length
+  const passcount = await Pass.find()
+  const passCount = passcount.length
+
+  const allTypeCount = {
+    visitorCount,
+    apnCount,
+    passCount,
+    companyCount
+  }
+  return {
+    allTypeCount
   }
 }

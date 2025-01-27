@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncWrapper.js'
 const router = Router()
 // controller
 import {
+  adminDashboardData,
   createEntry,
   createEntryUsingApn,
   createEntryUsingPass,
@@ -56,6 +57,13 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getDashboardData)
+)
+
+router.get(
+  '/admindashboarddata',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(adminDashboardData)
 )
 
 export default router

@@ -34,6 +34,20 @@ export const getDashboardData = async (req, res, next) => {
 }
 
 export const adminDashboardData = async (req, res, next) => {
-  const adminDashboardData = await visitsService.adminDashboardData(req, res, next)
+  const adminDashboardData = await visitsService.adminDashboardData(
+    req,
+    res,
+    next
+  )
   res.status(statusCodes?.ok).send(adminDashboardData)
+}
+
+export const adminReport = async (req, res, next) => {
+  const adminReport = await visitsService.adminReport(req, res, next)
+  res.status(statusCodes?.ok).send(adminReport)
+}
+
+export const companyEmpCount = async (req, res, next) => {
+  const companyEmpCount = await visitsService.companyEmpCount(req, res, next)
+  res.status(statusCodes?.ok).send(companyEmpCount)
 }

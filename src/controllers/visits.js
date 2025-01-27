@@ -32,3 +32,8 @@ export const getDashboardData = async (req, res, next) => {
   const getDashboardData = await visitsService.getDashboardData(req, res, next)
   res.status(statusCodes?.ok).send(getDashboardData)
 }
+
+export const adminDashboardData = async (req, res, next) => {
+  const adminDashboardData = await visitsService.adminDashboardData(req, res, next)
+  res.status(statusCodes?.ok).send(adminDashboardData)
+}

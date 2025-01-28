@@ -3,6 +3,8 @@ import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { createToken } from '../core/helpers/createToken.js'
 import process from 'node:process'
+import { Subscription } from '../models/subscription.js'
+import { createPaymentFunction } from './payment.js'
 
 const checkUserExist = async (email, phone) => {
   const isEmail = await User.findOne({ emailAddress: email })
@@ -57,6 +59,23 @@ export const registerUser = async (req) => {
   })
   if (role === 'admin') {
     user.companyId = user._id
+
+    const subscription = await Subscription.findOne({ title: 'Free Trial' })
+    subscription.company += 1
+    await subscription.save()
+
+    const paymentData = {
+      companyId: user._id,
+      subscriptionId: subscription._id,
+    }
+    await createPaymentFunction(paymentData)
+
+    const expiryDate = new Date()
+    expiryDate.setMonth(expiryDate.getMonth() + 1)
+
+    user.subscriptionDetails = subscription._id
+    user.startDate = new Date()
+    user.expiryDate = expiryDate
     await user.save()
   }
   const createdUser = await User.findById(user._id).select('-password')
@@ -281,7 +300,9 @@ export const getUserDetailsById = async (req) => {
     )
   }
 
-  const userData = await User.findById(userid).select('-password')
+  const userData = await User.findById(userid)
+    .populate('subscriptionDetails')
+    .select('-password')
 
   if (!userData) {
     throw new CustomError(

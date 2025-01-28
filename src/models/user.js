@@ -68,6 +68,16 @@ const userSchema = new Schema(
     companyLogo: {
       type: String,
     },
+    subscriptionDetails: {
+      type: objID,
+      ref: 'Subscription',
+    },
+    startDate: {
+      type: Date,
+    },
+    expiryDate: {
+      type: Date,
+    },
   },
   { timestamps: true }
 )

@@ -15,7 +15,7 @@ const SubscriptionSchema = new mongoose.Schema(
       trim: true,
     },
     company: {
-      type: String,
+      type: Number,
       default: 0,
     },
     duration: {

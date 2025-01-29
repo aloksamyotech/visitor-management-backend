@@ -583,9 +583,10 @@ export const getDashboardData = async (req) => {
 }
 
 export const adminDashboardData = async () => {
-
   const companycount = await User.find()
-  const companyCount = companycount.filter(company => company.role == 'admin').length
+  const companyCount = companycount.filter(
+    (company) => company.role == 'admin'
+  ).length
   const visitorcount = await Visitor.find()
   const visitorCount = visitorcount.length
   const apncount = await Appointment.find()
@@ -597,9 +598,45 @@ export const adminDashboardData = async () => {
     visitorCount,
     apnCount,
     passCount,
-    companyCount
+    companyCount,
   }
   return {
-    allTypeCount
+    allTypeCount,
   }
+}
+
+export const adminReport = async (req) => {
+  const { startDate, endDate, companyId } = req?.query || {}
+
+  const allentry = await Visit.find().populate('visitor')
+  const allEntry = allentry.filter((entry) => entry?.companyId == companyId)
+  if (!allEntry) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  if (startDate && endDate) {
+    const start = new Date(`${startDate}T00:00:00.000Z`)
+    const end = new Date(`${endDate}T23:59:59.999Z`)
+    const filteredData = allEntry?.filter((item) => {
+      const itemDate = new Date(item?.createdAt)
+      return itemDate >= start && itemDate <= end
+    })
+    const appointmentCount = filteredData.filter(
+      (item) => item.entryType === 'appointment'
+    ).length
+    const passCount = filteredData.filter(
+      (item) => item.entryType === 'pass'
+    ).length
+
+    return { filteredData, appointmentCount, passCount }
+  }
+}
+
+export const companyEmpCount = async () => {
+  const companyEmpCount = User.find()
+  return companyEmpCount
 }

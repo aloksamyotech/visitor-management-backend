@@ -4,6 +4,8 @@ const router = Router()
 // controller
 import {
   adminDashboardData,
+  adminReport,
+  companyEmpCount,
   createEntry,
   createEntryUsingApn,
   createEntryUsingPass,
@@ -64,6 +66,20 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(adminDashboardData)
+)
+
+router.get(
+  '/adminreport',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(adminReport)
+)
+
+router.get(
+  '/companyempcount',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(companyEmpCount)
 )
 
 export default router

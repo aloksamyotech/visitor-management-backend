@@ -27,3 +27,21 @@ export const getAllSubscription = async (req, res, next) => {
   )
   res.status(statusCodes?.ok).send(getAllSubscription)
 }
+
+export const upgradeCompanySubscription = async (req, res, next) => {
+  const upgradeCompanySubscription = await subscriptionService.upgradeCompanySubscription(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(upgradeCompanySubscription)
+}
+
+export const updateSubscriptionActiveStatus = async (req, res, next) => {
+  const updateSubscriptionActiveStatus = await subscriptionService.updateSubscriptionActiveStatus(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(updateSubscriptionActiveStatus)
+}

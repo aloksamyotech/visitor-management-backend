@@ -6,6 +6,8 @@ import {
   createSubscription,
   getAllSubscription,
   updateSubscription,
+  updateSubscriptionActiveStatus,
+  upgradeCompanySubscription,
 } from '../controllers/subscription.js'
 
 router.post(
@@ -25,6 +27,18 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getAllSubscription)
+)
+router.put(
+  '/upgradecompanysubscription',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(upgradeCompanySubscription)
+)
+router.put(
+  '/updatesubscriptionactivestatus',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updateSubscriptionActiveStatus)
 )
 
 export default router

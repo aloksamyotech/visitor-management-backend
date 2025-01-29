@@ -1,21 +1,55 @@
 import { Payment } from '../models/paymentHistory.js'
+import { Message, errorCodes, statusCodes } from '../core/common/constant.js'
 
 export const createPaymentFunction = async (data) => {
+
   const { companyId, subscriptionId } = data || {}
-  await Payment.create({
+  if (!companyId || !subscriptionId) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const payment = await Payment.create({
     companyId,
     subscriptionId,
     paymentStatus: 'completed',
   })
+  if (!payment) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
+  }
 }
 
 export const createPayment = async (req) => {
+
   const { companyId, subscriptionId } = req?.body || {}
-  await Payment.create({
+  if (!companyId || !subscriptionId) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const payment = await Payment.create({
     companyId,
     subscriptionId,
     paymentStatus: '',
   })
+  if (!payment) {
+    throw new CustomError(
+      statusCodes?.badRequest,
+      Message?.notCreated,
+      errorCodes?.not_created
+    )
+  }
+
 }
 
 export const getAllPaymentHistory = async () => {
@@ -23,13 +57,34 @@ export const getAllPaymentHistory = async () => {
     { path: 'companyId' },
     { path: 'subscriptionId' },
   ])
+  if (!getAllPaymentHistory) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   return getAllPaymentHistory
 }
 
 export const companyPaymentHistory = (req) => {
   const { companyid } = req?.params || {}
+  if (!companyid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   const companyPaymentHistory = Payment.find({ companyId: companyid }).populate(
     'subscriptionId'
   )
+  if (!companyPaymentHistory) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   return companyPaymentHistory
 }

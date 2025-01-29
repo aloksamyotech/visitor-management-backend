@@ -1,8 +1,8 @@
 import { Payment } from '../models/paymentHistory.js'
 import { Message, errorCodes, statusCodes } from '../core/common/constant.js'
+import CustomError from '../utils/exception.js'
 
 export const createPaymentFunction = async (data) => {
-
   const { companyId, subscriptionId } = data || {}
   if (!companyId || !subscriptionId) {
     throw new CustomError(
@@ -27,7 +27,6 @@ export const createPaymentFunction = async (data) => {
 }
 
 export const createPayment = async (req) => {
-
   const { companyId, subscriptionId } = req?.body || {}
   if (!companyId || !subscriptionId) {
     throw new CustomError(
@@ -49,7 +48,6 @@ export const createPayment = async (req) => {
       errorCodes?.not_created
     )
   }
-
 }
 
 export const getAllPaymentHistory = async () => {

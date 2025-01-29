@@ -77,7 +77,8 @@ router.get(
   asyncHandler(employeeAuth),
   asyncHandler(getUserDetailsById)
 )
-router.put('/updateactivestatus',
+router.put(
+  '/updateactivestatus',
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(updateActiveStatus)

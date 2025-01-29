@@ -25,7 +25,6 @@ export const createSubscription = async (req) => {
 }
 
 export const updateSubscription = async (req) => {
-
   const { id } = req?.params || {}
   const { title, description, duration, price } = req?.body || {}
   if (!id) {
@@ -77,7 +76,6 @@ export const getAllSubscription = async () => {
 }
 
 export const upgradeCompanySubscription = async (req) => {
-
   const { companyId, subscriptionId } = req?.body || {}
   if (!companyId || !subscriptionId) {
     throw new CustomError(
@@ -95,13 +93,13 @@ export const upgradeCompanySubscription = async (req) => {
       errorCodes?.not_found
     )
   }
-  const expiryDate = moment().add(subscription?.duration, "days").toDate()
+  const expiryDate = moment().add(subscription?.duration, 'days').toDate()
   const updatedUser = await User.findByIdAndUpdate(
     companyId,
     {
       subscriptionDetails: subscriptionId,
       expiryDate,
-      active: true
+      active: true,
     },
     { new: true }
   )
@@ -118,7 +116,6 @@ export const upgradeCompanySubscription = async (req) => {
 }
 
 export const updateSubscriptionActiveStatus = async (req) => {
-
   const { id } = req?.body || {}
   if (!id) {
     throw new CustomError(
@@ -136,7 +133,11 @@ export const updateSubscriptionActiveStatus = async (req) => {
     )
   }
   const status = subscription.active
-  const updatedStatus = await Subscription.findByIdAndUpdate(id, { active: !status }, { new: true })
+  const updatedStatus = await Subscription.findByIdAndUpdate(
+    id,
+    { active: !status },
+    { new: true }
+  )
   if (!updatedStatus) {
     throw new CustomError(
       statusCodes?.notFound,

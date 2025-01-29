@@ -277,7 +277,10 @@ export const getAllUser = async (req) => {
 }
 
 export const getAllCompany = async () => {
-  const AllUser = await User.find().populate('subscriptionDetails').select('-password').sort({ createdAt: -1 })
+  const AllUser = await User.find()
+    .populate('subscriptionDetails')
+    .select('-password')
+    .sort({ createdAt: -1 })
   const allUser = AllUser.filter((user) => user?.role === 'admin')
   if (!allUser) {
     throw new CustomError(
@@ -339,7 +342,6 @@ export const updateUserPassword = async (req) => {
 }
 
 export const updateActiveStatus = async (req) => {
-
   const { userid } = req?.body || {}
   if (!userid) {
     throw new CustomError(
@@ -357,7 +359,11 @@ export const updateActiveStatus = async (req) => {
     )
   }
   const status = user.active
-  const updatedStatus = await User.findByIdAndUpdate(userid, { active: !status }, { new: true })
+  const updatedStatus = await User.findByIdAndUpdate(
+    userid,
+    { active: !status },
+    { new: true }
+  )
   if (!updatedStatus) {
     throw new CustomError(
       statusCodes?.notFound,

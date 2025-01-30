@@ -27,8 +27,10 @@ export const createPaymentFunction = async (data) => {
 }
 
 export const createPayment = async (req) => {
-  const { companyId, subscriptionId } = req?.body || {}
-  if (!companyId || !subscriptionId) {
+
+  const { companyId, packageId, transactionId, paymentMethod } = req?.body || {}
+
+  if (!companyId || !packageId) {
     throw new CustomError(
       statusCodes?.notFound,
       Message?.notFound,
@@ -38,9 +40,12 @@ export const createPayment = async (req) => {
 
   const payment = await Payment.create({
     companyId,
-    subscriptionId,
-    paymentStatus: '',
+    subscriptionId: packageId,
+    transactionId,
+    paymentType: paymentMethod,
+    paymentStatus:'completed'
   })
+
   if (!payment) {
     throw new CustomError(
       statusCodes?.badRequest,
@@ -48,13 +53,15 @@ export const createPayment = async (req) => {
       errorCodes?.not_created
     )
   }
+  return payment
 }
 
 export const getAllPaymentHistory = async () => {
   const getAllPaymentHistory = await Payment.find().populate([
     { path: 'companyId' },
     { path: 'subscriptionId' },
-  ])
+  ]).sort({ createdAt: -1 })
+
   if (!getAllPaymentHistory) {
     throw new CustomError(
       statusCodes?.notFound,

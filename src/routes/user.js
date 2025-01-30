@@ -8,6 +8,7 @@ import {
   getUserDetailsById,
   logoUpdate,
   manageUserPermission,
+  updateActiveStatus,
   updateUserPassword,
   userDetails,
   userLogin,
@@ -75,5 +76,11 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(getUserDetailsById)
+)
+router.put(
+  '/updateactivestatus',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updateActiveStatus)
 )
 export default router

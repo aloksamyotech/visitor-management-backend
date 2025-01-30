@@ -277,7 +277,10 @@ export const getAllUser = async (req) => {
 }
 
 export const getAllCompany = async () => {
-  const AllUser = await User.find().select('-password').sort({ createdAt: -1 })
+  const AllUser = await User.find()
+    .populate('subscriptionDetails')
+    .select('-password')
+    .sort({ createdAt: -1 })
   const allUser = AllUser.filter((user) => user?.role === 'admin')
   if (!allUser) {
     throw new CustomError(
@@ -336,4 +339,37 @@ export const updateUserPassword = async (req) => {
   const updatedData = await User.findByIdAndUpdate(userid, { password })
 
   return updatedData
+}
+
+export const updateActiveStatus = async (req) => {
+  const { userid } = req?.body || {}
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.user_not_found
+    )
+  }
+  const user = await User.findById(userid)
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotFound,
+      errorCodes?.user_not_found
+    )
+  }
+  const status = user.active
+  const updatedStatus = await User.findByIdAndUpdate(
+    userid,
+    { active: !status },
+    { new: true }
+  )
+  if (!updatedStatus) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
+  return updatedStatus
 }

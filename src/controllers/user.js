@@ -62,3 +62,12 @@ export const getAllCompany = async (req, res, next) => {
   const getAllCompany = await userService.getAllCompany(req, res, next)
   res.status(statusCodes?.ok).send(getAllCompany)
 }
+
+export const updateActiveStatus = async (req, res, next) => {
+  const updateActiveStatus = await userService.updateActiveStatus(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(updateActiveStatus)
+}

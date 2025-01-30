@@ -27,7 +27,6 @@ export const createPaymentFunction = async (data) => {
 }
 
 export const createPayment = async (req) => {
-
   const { companyId, packageId, transactionId, paymentMethod } = req?.body || {}
 
   if (!companyId || !packageId) {
@@ -43,7 +42,7 @@ export const createPayment = async (req) => {
     subscriptionId: packageId,
     transactionId,
     paymentType: paymentMethod,
-    paymentStatus:'completed'
+    paymentStatus: 'completed',
   })
 
   if (!payment) {
@@ -57,10 +56,9 @@ export const createPayment = async (req) => {
 }
 
 export const getAllPaymentHistory = async () => {
-  const getAllPaymentHistory = await Payment.find().populate([
-    { path: 'companyId' },
-    { path: 'subscriptionId' },
-  ]).sort({ createdAt: -1 })
+  const getAllPaymentHistory = await Payment.find()
+    .populate([{ path: 'companyId' }, { path: 'subscriptionId' }])
+    .sort({ createdAt: -1 })
 
   if (!getAllPaymentHistory) {
     throw new CustomError(

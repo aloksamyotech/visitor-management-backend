@@ -3,10 +3,11 @@ import { database_urls } from '../common/constant.js'
 import 'dotenv/config'
 import process from 'node:process'
 import { User } from '../../models/user.js'
+import { Subscription } from '../../models/subscription.js'
 
 const connectDB = async () => {
   try {
-    ;(async function () {
+    ; (async function () {
       const dbUri = database_urls?.connection + database_urls?.db_name
       const dbConnect = await mongoose.connect(dbUri, {})
       if (dbConnect) {
@@ -26,6 +27,19 @@ const connectDB = async () => {
           })
           await userData.save()
           console.log(`New Admin is Created`)
+        }
+        const checkPackage = await Subscription.findOne({
+          title: 'Free Trial',
+        })
+        if (!checkPackage) {
+          const subscription = new Subscription({
+            title: 'Free Trial',
+            price: 0,
+            description: 'Enjoy a FREE trial with full access to features',
+            duration: 30
+          })
+          await subscription.save()
+          console.log(`Free Trial Subscription Added`)
         }
       }
     })()

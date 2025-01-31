@@ -114,7 +114,7 @@ export const loginUser = async (req) => {
   }
 
   const loginUser = await User.findById(user._id).select('-password')
-  const companyLogo = await User.findById(user._id)
+  const company = await User.findById(user._id)
     .select('companyId')
     .populate('companyId')
 
@@ -123,7 +123,7 @@ export const loginUser = async (req) => {
     user: loginUser,
     role: loginUser?.role,
     permission: loginUser?.permissions,
-    logo: companyLogo?.companyId?.companyLogo,
+    company: company?.companyId,
   }
   const key = process.env?.ACCESS_TOKEN_SECRET
   const expiresIn = process.env?.ACCESS_TOKEN_EXPIRY

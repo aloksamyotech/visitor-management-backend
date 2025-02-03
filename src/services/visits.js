@@ -643,22 +643,29 @@ export const companyEmpCount = async () => {
 }
 
 export const superAdminReport = async () => {
-
   const companycount = await User.find()
   const subscription = await Subscription.find()
 
   const companyCount = companycount.filter(
     (company) => company.role == 'admin'
   ).length
-  const activeSubscription = subscription.filter(active => active?.active === true).length
-  const totalSubscriptions = subscription.reduce((acc, curr) => acc + curr?.company, 0);
-  const totalRevenue = subscription.reduce((acc, curr) => acc + (curr?.company * curr?.price), 0);
+  const activeSubscription = subscription.filter(
+    (active) => active?.active === true
+  ).length
+  const totalSubscriptions = subscription.reduce(
+    (acc, curr) => acc + curr?.company,
+    0
+  )
+  const totalRevenue = subscription.reduce(
+    (acc, curr) => acc + curr?.company * curr?.price,
+    0
+  )
 
   const reprtData = {
     activeSubscription,
     totalSubscriptions,
     companyCount,
-    totalRevenue
+    totalRevenue,
   }
   return reprtData
 }

@@ -1,5 +1,6 @@
 import cron from 'node-cron'
 import { Pass } from '../models/pass.js'
+import { User } from '../models/user.js'
 
 export const ResetDailyLimit = async () => {
   cron.schedule('0 0 * * *', async () => {
@@ -18,9 +19,9 @@ export const CheckCompanySubscriptionExpiry = async () => {
       await User.updateMany(
         { expiryDate: { $lt: today }, active: true },
         { $set: { active: false } }
-      );
+      )
     } catch (error) {
-      console.error("Error updating active :", error);
+      console.error('Error updating active :', error)
     }
   })
 }

@@ -10,3 +10,17 @@ export const ResetDailyLimit = async () => {
     }
   })
 }
+
+export const CheckCompanySubscriptionExpiry = async () => {
+  cron.schedule('0 0 * * *', async () => {
+    try {
+      const today = new Date()
+      await User.updateMany(
+        { expiryDate: { $lt: today }, active: true },
+        { $set: { active: false } }
+      );
+    } catch (error) {
+      console.error("Error updating active :", error);
+    }
+  })
+}

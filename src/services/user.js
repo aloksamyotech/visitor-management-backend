@@ -153,7 +153,7 @@ export const getUserDetails = async (req) => {
     )
   }
 
-  const userData = await User.findById(userid).select('-password')
+  const userData = await User.findById(userid).select('-password').populate('subscriptionDetails')
 
   if (!userData) {
     throw new CustomError(

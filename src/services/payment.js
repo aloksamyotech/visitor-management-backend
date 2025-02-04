@@ -1,8 +1,10 @@
 import { Payment } from '../models/paymentHistory.js'
 import { Message, errorCodes, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
-import Stripe from "stripe";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+import Stripe from 'stripe'
+import process from 'node:process'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createPaymentFunction = async (data) => {
   const { companyId, subscriptionId } = data || {}
@@ -95,16 +97,15 @@ export const companyPaymentHistory = (req) => {
 }
 
 export const createCheckoutSession = async (req) => {
-
-  const { items, userId } = req.body;
+  const { items, userId } = req.body
 
   const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    mode: "payment",
+    payment_method_types: ['card'],
+    mode: 'payment',
     line_items: [
       {
         price_data: {
-          currency: "inr",
+          currency: 'inr',
           product_data: {
             name: `Package Name: ${items?.title}`,
             description: `Duration: ${items.duration} |  Description: ${items.description}`,
@@ -117,6 +118,6 @@ export const createCheckoutSession = async (req) => {
     success_url: `${process.env.CLIENT_URL}/success`,
     cancel_url: `${process.env.CLIENT_URL}/cancel`,
     metadata: { userId },
-  });
+  })
   return session.id
 }

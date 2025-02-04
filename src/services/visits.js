@@ -595,6 +595,26 @@ export const adminDashboardData = async () => {
   const passcount = await Pass.find()
   const passCount = passcount.length
 
+  const result = await User.aggregate([
+    { $match: { companyId: { $ne: null } } },
+    {
+      $group: {
+        _id: '$companyId',
+        employeeCount: { $sum: 1 },
+      },
+    },
+  ])
+
+  const Result = []
+
+  for (let item of result) {
+    const populatedItem = await User.populate(item, {
+      path: '_id',
+      select: 'firstName',
+    })
+    Result.push(populatedItem)
+  }
+
   const allTypeCount = {
     visitorCount,
     apnCount,
@@ -603,6 +623,7 @@ export const adminDashboardData = async () => {
   }
   return {
     allTypeCount,
+    Result,
   }
 }
 

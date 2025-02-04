@@ -23,3 +23,11 @@ export const companyPaymentHistory = async (req, res, next) => {
   )
   res.status(statusCodes?.ok).send(companyPaymentHistory)
 }
+export const createCheckoutSession = async (req, res, next) => {
+  const createCheckoutSession = await paymentService.createCheckoutSession(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(createCheckoutSession)
+}

@@ -4,6 +4,7 @@ const router = Router()
 import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 import {
   companyPaymentHistory,
+  createCheckoutSession,
   createPayment,
   getAllPaymentHistory,
 } from '../controllers/payment.js'
@@ -27,4 +28,10 @@ router.get(
   asyncHandler(companyPaymentHistory)
 )
 
+router.post(
+  '/createcheckoutsession',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(createCheckoutSession)
+)
 export default router

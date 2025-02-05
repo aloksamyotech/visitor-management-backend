@@ -1,5 +1,10 @@
 import { Payment } from '../models/paymentHistory.js'
-import { Message, errorCodes, statusCodes, urls } from '../core/common/constant.js'
+import {
+  Message,
+  errorCodes,
+  statusCodes,
+  urls,
+} from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import Stripe from 'stripe'
 import process from 'node:process'
@@ -8,7 +13,13 @@ import { upgradeCompanySubscriptionFunction } from './subscription.js'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 export const createPaymentFunction = async (data) => {
-  const { companyId, subscriptionId, paymentStatus, transactionId, paymentType } = data || {}
+  const {
+    companyId,
+    subscriptionId,
+    paymentStatus,
+    transactionId,
+    paymentType,
+  } = data || {}
   if (!companyId || !subscriptionId) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -22,7 +33,7 @@ export const createPaymentFunction = async (data) => {
     subscriptionId,
     paymentStatus,
     transactionId,
-    paymentType
+    paymentType,
   })
   if (!payment) {
     throw new CustomError(
@@ -87,9 +98,9 @@ export const companyPaymentHistory = (req) => {
       errorCodes?.not_found
     )
   }
-  const companyPaymentHistory = Payment.find({ companyId: companyid }).populate(
-    'subscriptionId'
-  ).sort({ createdAt: -1 })
+  const companyPaymentHistory = Payment.find({ companyId: companyid })
+    .populate('subscriptionId')
+    .sort({ createdAt: -1 })
   if (!companyPaymentHistory) {
     throw new CustomError(
       statusCodes?.notFound,
@@ -122,7 +133,7 @@ export const createCheckoutSession = async (req) => {
     ],
     metadata: {
       subscriptionId: items?.id,
-      userid: userid
+      userid: userid,
     },
     success_url: `${urls?.success}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: urls?.cancel,
@@ -130,11 +141,11 @@ export const createCheckoutSession = async (req) => {
   return session.id
 }
 
-export const getCheckoutSessionDetails = async (req, res) => {
-  const { sessionId } = req.params;
+export const getCheckoutSessionDetails = async (req) => {
+  const { sessionId } = req.params
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
-    expand: ["payment_intent"],
-  });
+    expand: ['payment_intent'],
+  })
 
   const data = {
     companyId: session?.metadata?.userid,
@@ -142,10 +153,10 @@ export const getCheckoutSessionDetails = async (req, res) => {
     paymentStatus: session?.payment_intent?.status,
     transactionId: session?.payment_intent?.id,
     paymentType: session?.payment_intent?.payment_method_types[0],
-    amount: session?.amount_total
+    amount: session?.amount_total,
   }
   await createPaymentFunction(data)
   await upgradeCompanySubscriptionFunction(data)
 
-  return data;
-};
+  return data
+}

@@ -33,10 +33,7 @@ export const createCheckoutSession = async (req, res, next) => {
 }
 
 export const getCheckoutSessionDetails = async (req, res, next) => {
-  const getCheckoutSessionDetails = await paymentService.getCheckoutSessionDetails(
-    req,
-    res,
-    next
-  )
+  const getCheckoutSessionDetails =
+    await paymentService.getCheckoutSessionDetails(req, res, next)
   res.status(statusCodes?.ok).send(getCheckoutSessionDetails)
 }

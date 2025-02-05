@@ -151,10 +151,8 @@ export const checkRole = {
   guard: 'guard',
   receptionist: 'receptionist',
 }
-const FE_URL = `http://localhost:3000`
-// const FE_URL = `http://134.209.152.97`
 
 export const urls = {
-  success: `${FE_URL}/dashboard/payment/success`,
-  cancel: `${FE_URL}/dashboard/upgradepackage`,
+  success: `${process.env.FE_URL}/dashboard/payment/success`,
+  cancel: `${process.env.FE_URL}/dashboard/upgradepackage`,
 }

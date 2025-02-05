@@ -7,6 +7,7 @@ import {
   createCheckoutSession,
   createPayment,
   getAllPaymentHistory,
+  getCheckoutSessionDetails,
 } from '../controllers/payment.js'
 
 router.post(
@@ -33,5 +34,11 @@ router.post(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(createCheckoutSession)
+)
+router.get(
+  '/getcheckoutsessiondetails/:sessionId',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getCheckoutSessionDetails)
 )
 export default router

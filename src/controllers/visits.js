@@ -51,3 +51,8 @@ export const companyEmpCount = async (req, res, next) => {
   const companyEmpCount = await visitsService.companyEmpCount(req, res, next)
   res.status(statusCodes?.ok).send(companyEmpCount)
 }
+
+export const superAdminReport = async (req, res, next) => {
+  const superAdminReport = await visitsService.superAdminReport(req, res, next)
+  res.status(statusCodes?.ok).send(superAdminReport)
+}

@@ -147,3 +147,43 @@ export const updateSubscriptionActiveStatus = async (req) => {
   }
   return updatedStatus
 }
+
+export const upgradeCompanySubscriptionFunction = async (data) => {
+  const { companyId, subscriptionId } = data || {}
+  if (!companyId || !subscriptionId) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+
+  const subscription = await Subscription.findById({ _id: subscriptionId })
+  if (!subscription) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  const expiryDate = moment().add(subscription?.duration, 'days').toDate()
+  const updatedUser = await User.findByIdAndUpdate(
+    companyId,
+    {
+      subscriptionDetails: subscriptionId,
+      expiryDate,
+      active: true,
+    },
+    { new: true }
+  )
+  if (!updatedUser) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  subscription.company += 1
+  await subscription.save()
+  return updatedUser
+}

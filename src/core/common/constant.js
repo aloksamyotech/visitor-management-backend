@@ -151,3 +151,8 @@ export const checkRole = {
   guard: 'guard',
   receptionist: 'receptionist',
 }
+
+export const urls = {
+  success: `${process.env.FE_URL}/dashboard/payment/success`,
+  cancel: `${process.env.FE_URL}/dashboard/upgradepackage`,
+}

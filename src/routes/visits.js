@@ -13,6 +13,7 @@ import {
   getAllEntry,
   getDashboardData,
   getEntryByDate,
+  superAdminReport,
 } from '../controllers/visits.js'
 import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
 
@@ -80,6 +81,13 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(companyEmpCount)
+)
+
+router.get(
+  '/superadminreport',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(superAdminReport)
 )
 
 export default router

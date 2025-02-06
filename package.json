@@ -30,6 +30,7 @@
     "path": "^0.12.7",
     "qrcode": "^1.5.4",
     "stack-trace": "^1.0.0-pre2",
+    "stripe": "^17.6.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
     "xlsx": "^0.18.5"

@@ -2,6 +2,7 @@ import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import { Visit } from '../models/visits.js'
 import { User } from '../models/user.js'
+import { Subscription } from '../models/subscription.js'
 import { VisitorHistory } from '../models/visitorHistory.js'
 import { newVisitor } from './visitor.js'
 import { Visitor } from '../models/visitor.js'
@@ -9,6 +10,7 @@ import { Appointment } from '../models/appointment.js'
 import { Pass } from '../models/pass.js'
 import { newApn } from './appointment.js'
 import { newPass } from './pass.js'
+import { Payment } from '../models/paymentHistory.js'
 
 export const createEntry = async (req) => {
   const {
@@ -594,6 +596,26 @@ export const adminDashboardData = async () => {
   const passcount = await Pass.find()
   const passCount = passcount.length
 
+  const result = await User.aggregate([
+    { $match: { companyId: { $ne: null } } },
+    {
+      $group: {
+        _id: '$companyId',
+        employeeCount: { $sum: 1 },
+      },
+    },
+  ])
+
+  const Result = []
+
+  for (let item of result) {
+    const populatedItem = await User.populate(item, {
+      path: '_id',
+      select: 'firstName',
+    })
+    Result.push(populatedItem)
+  }
+
   const allTypeCount = {
     visitorCount,
     apnCount,
@@ -602,6 +624,7 @@ export const adminDashboardData = async () => {
   }
   return {
     allTypeCount,
+    Result,
   }
 }
 
@@ -639,4 +662,36 @@ export const adminReport = async (req) => {
 export const companyEmpCount = async () => {
   const companyEmpCount = User.find()
   return companyEmpCount
+}
+
+export const superAdminReport = async () => {
+  const companycount = await User.find()
+  const subscription = await Subscription.find()
+
+  const companyCount = companycount.filter(
+    (company) => company.role == 'admin'
+  ).length
+  const activeSubscription = subscription.filter(
+    (active) => active?.active === true
+  ).length
+  const totalSubscriptions = subscription.reduce(
+    (acc, curr) => acc + curr?.company,
+    0
+  )
+  const totalRevenue = await Payment.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: '$price' },
+      },
+    },
+  ])
+
+  const reprtData = {
+    activeSubscription,
+    totalSubscriptions,
+    companyCount,
+    totalRevenue,
+  }
+  return reprtData
 }

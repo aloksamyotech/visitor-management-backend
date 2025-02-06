@@ -1,4 +1,5 @@
 import { Payment } from '../models/paymentHistory.js'
+import { Subscription } from '../models/subscription.js'
 import {
   Message,
   errorCodes,
@@ -27,10 +28,18 @@ export const createPaymentFunction = async (data) => {
       errorCodes?.not_found
     )
   }
-
+  const subscriptionDetails = await Subscription.findById(subscriptionId)
+  if (!subscriptionDetails) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
   const payment = await Payment.create({
     companyId,
     subscriptionId,
+    price: subscriptionDetails?.price,
     paymentStatus,
     transactionId,
     paymentType,
@@ -55,6 +64,14 @@ export const createPayment = async (req) => {
       errorCodes?.not_found
     )
   }
+  const subscriptionDetails = await Subscription.findById(packageId)
+  if (!subscriptionDetails) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
 
   const payment = await Payment.create({
     companyId,
@@ -62,6 +79,7 @@ export const createPayment = async (req) => {
     transactionId,
     paymentType: paymentMethod,
     paymentStatus: 'completed',
+    price: subscriptionDetails?.price,
   })
 
   if (!payment) {

@@ -27,6 +27,9 @@ const PaymentSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    price: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

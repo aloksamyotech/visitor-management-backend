@@ -10,6 +10,7 @@ import { Appointment } from '../models/appointment.js'
 import { Pass } from '../models/pass.js'
 import { newApn } from './appointment.js'
 import { newPass } from './pass.js'
+import { Payment } from '../models/paymentHistory.js'
 
 export const createEntry = async (req) => {
   const {
@@ -677,10 +678,14 @@ export const superAdminReport = async () => {
     (acc, curr) => acc + curr?.company,
     0
   )
-  const totalRevenue = subscription.reduce(
-    (acc, curr) => acc + curr?.company * curr?.price,
-    0
-  )
+  const totalRevenue = await Payment.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalAmount: { $sum: '$price' },
+      },
+    },
+  ])
 
   const reprtData = {
     activeSubscription,

@@ -67,6 +67,7 @@ export const registerUser = async (req) => {
     const paymentData = {
       companyId: user._id,
       subscriptionId: subscription._id,
+      paymentStatus: 'succeeded',
     }
     await createPaymentFunction(paymentData)
 

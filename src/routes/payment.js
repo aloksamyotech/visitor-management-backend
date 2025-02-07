@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
 import { asyncHandler } from '../utils/asyncWrapper.js'
 const router = Router()
 import { employeeAuth, userAuth } from '../middlewares/userAuth.js'
@@ -9,6 +9,7 @@ import {
   getAllPaymentHistory,
   getCheckoutSessionDetails,
 } from '../controllers/payment.js'
+import { stripeWebhookHandler } from '../services/payment.js'
 
 router.post(
   '/createpayment',
@@ -41,4 +42,11 @@ router.get(
   asyncHandler(employeeAuth),
   asyncHandler(getCheckoutSessionDetails)
 )
+
+router.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  asyncHandler(stripeWebhookHandler)
+)
+
 export default router

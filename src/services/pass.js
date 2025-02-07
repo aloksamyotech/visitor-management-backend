@@ -215,7 +215,7 @@ export const newPass = async (data) => {
 
   const isExist = await Pass.findOne({ visitor: visitor })
   if (isExist) {
-    return new CustomError(
+    throw new CustomError(
       statusCodes?.conflict,
       Message?.alreadyExist,
       errorCodes?.already_exist

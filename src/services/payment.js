@@ -156,6 +156,15 @@ export const createCheckoutSession = async (req) => {
     success_url: `${urls?.success}?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: urls?.cancel,
   })
+
+  await Payment.create({
+    companyId: userid,
+    subscriptionId: items?.id,
+    price: items?.price,
+    paymentStatus: 'pending',
+    sessionId: session.id,
+  })
+
   return session.id
 }
 
@@ -164,7 +173,6 @@ export const getCheckoutSessionDetails = async (req) => {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['payment_intent'],
   })
-
   const data = {
     companyId: session?.metadata?.userid,
     subscriptionId: session?.metadata?.subscriptionId,
@@ -177,4 +185,31 @@ export const getCheckoutSessionDetails = async (req) => {
   await upgradeCompanySubscriptionFunction(data)
 
   return data
+}
+
+export const stripeWebhookHandler = async (req, res) => {
+  const sig = req.headers['stripe-signature']
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+
+  let event
+
+  event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
+
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object
+    await Payment.findOneAndUpdate(
+      { sessionId: session.id },
+      { $set: { paymentStatus: 'completed' } }
+    )
+  } else if (
+    event.type === 'checkout.session.async_payment_failed' ||
+    event.type === 'payment_intent.payment_failed'
+  ) {
+    const session = event.data.object
+    await Payment.findOneAndUpdate(
+      { sessionId: session.id },
+      { $set: { paymentStatus: 'cancelled' } }
+    )
+  }
+  res.json({ received: true })
 }

@@ -16,7 +16,7 @@ const PORT = (() => {
 
     return env === 'development' ? 7200 : 4545;
 })();
-
+app.use('/api/v1/payment/webhook', express.raw({ type: "application/json" }))
 app.use(express.json());
 app.use(corsConfig);
 app.use(passport.initialize());

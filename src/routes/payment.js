@@ -8,6 +8,7 @@ import {
   createPayment,
   getAllPaymentHistory,
   getCheckoutSessionDetails,
+  getPaymentHistoryById,
 } from '../controllers/payment.js'
 import { stripeWebhookHandler } from '../services/payment.js'
 
@@ -49,4 +50,10 @@ router.post(
   asyncHandler(stripeWebhookHandler)
 )
 
+router.get(
+  '/getpaymenthistorybyid/:id',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(getPaymentHistoryById)
+)
 export default router

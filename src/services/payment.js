@@ -213,3 +213,20 @@ export const stripeWebhookHandler = async (req, res) => {
   }
   res.json({ received: true })
 }
+
+export const getPaymentHistoryById = async (req) => {
+  const { id } = req?.params || {}
+
+  const getPaymentHistoryById = await Payment.findById(id)
+    .populate('companyId')
+    .populate('subscriptionId')
+
+  if (!getPaymentHistoryById) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.notFound,
+      errorCodes?.not_found
+    )
+  }
+  return getPaymentHistoryById
+}

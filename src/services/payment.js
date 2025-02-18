@@ -194,8 +194,8 @@ export const stripeWebhookHandler = async (req, res) => {
   let event
 
   event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
-  const paymentIntentId = event.data.object.payment_intent;
-  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+  const paymentIntentId = event.data.object.payment_intent
+  const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object
@@ -206,7 +206,7 @@ export const stripeWebhookHandler = async (req, res) => {
           paymentStatus: 'completed',
           transactionId: paymentIntent?.id,
           paymentType: paymentIntent?.payment_method_types[0],
-        }
+        },
       }
     )
   } else if (

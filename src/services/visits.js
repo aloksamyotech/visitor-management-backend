@@ -680,6 +680,9 @@ export const superAdminReport = async () => {
   )
   const totalRevenue = await Payment.aggregate([
     {
+      $match: { paymentStatus: 'completed' },
+    },
+    {
       $group: {
         _id: null,
         totalAmount: { $sum: '$price' },

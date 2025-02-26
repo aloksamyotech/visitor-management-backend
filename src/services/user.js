@@ -4,7 +4,7 @@ import CustomError from '../utils/exception.js'
 import { createToken } from '../core/helpers/createToken.js'
 import process from 'node:process'
 import { Subscription } from '../models/subscription.js'
-import { createPaymentFunction } from './payment.js'
+// import { createPaymentFunction } from './payment.js'
 
 const checkUserExist = async (email, phone) => {
   const isEmail = await User.findOne({ emailAddress: email })
@@ -64,12 +64,12 @@ export const registerUser = async (req) => {
     subscription.company += 1
     await subscription.save()
 
-    const paymentData = {
-      companyId: user._id,
-      subscriptionId: subscription._id,
-      paymentStatus: 'succeeded',
-    }
-    await createPaymentFunction(paymentData)
+    // const paymentData = {
+    //   companyId: user._id,
+    //   subscriptionId: subscription._id,
+    //   paymentStatus: 'succeeded',
+    // }
+    // await createPaymentFunction(paymentData)
 
     const expiryDate = new Date()
     expiryDate.setMonth(expiryDate.getMonth() + 1)

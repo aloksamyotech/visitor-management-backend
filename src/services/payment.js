@@ -181,7 +181,7 @@ export const getCheckoutSessionDetails = async (req) => {
     paymentType: session?.payment_intent?.payment_method_types[0],
     amount: session?.amount_total,
   }
-  await createPaymentFunction(data)
+  // await createPaymentFunction(data)
   await upgradeCompanySubscriptionFunction(data)
 
   return data
@@ -217,6 +217,12 @@ export const stripeWebhookHandler = async (req, res) => {
     await Payment.findOneAndUpdate(
       { sessionId: session.id },
       { $set: { paymentStatus: 'cancelled' } }
+    )
+  } else if (event.type === 'checkout.session.expired') {
+    const session = event.data.object
+    await Payment.findOneAndUpdate(
+      { sessionId: session.id },
+      { $set: { paymentStatus: 'failed' } }
     )
   }
   res.json({ received: true })

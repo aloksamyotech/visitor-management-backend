@@ -188,17 +188,14 @@ export const getCheckoutSessionDetails = async (req) => {
 }
 
 export const stripeWebhookHandler = async (req, res) => {
-  console.log("Reveived request");
   const sig = req.headers['stripe-signature']
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
-  console.log("webhookSecret=====>",webhookSecret);
 
   let event
 
   event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret)
   const paymentIntentId = event.data.object.payment_intent
 
-  console.log("evet type======",event.type);
   const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
   if (event.type === 'checkout.session.completed') {

@@ -71,3 +71,9 @@ export const updateActiveStatus = async (req, res, next) => {
   )
   res.status(statusCodes?.ok).send(updateActiveStatus)
 }
+
+export const updateUserPasswordBySuperAdmin = async (req, res, next) => {
+  const updateUserPasswordBySuperAdmin =
+    await userService.updateUserPasswordBySuperAdmin(req, res, next)
+  res.status(statusCodes?.ok).send(updateUserPasswordBySuperAdmin)
+}

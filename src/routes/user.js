@@ -10,6 +10,7 @@ import {
   manageUserPermission,
   updateActiveStatus,
   updateUserPassword,
+  updateUserPasswordBySuperAdmin,
   userDetails,
   userLogin,
   userRegistration,
@@ -82,5 +83,11 @@ router.put(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(updateActiveStatus)
+)
+router.put(
+  '/updateuserpasswordbysuperadmin/:userid',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(updateUserPasswordBySuperAdmin)
 )
 export default router

@@ -376,3 +376,26 @@ export const updateActiveStatus = async (req) => {
   }
   return updatedStatus
 }
+
+export const updateUserPasswordBySuperAdmin = async (req) => {
+  const { userid } = req?.params || {}
+  const { password } = req?.body || {}
+  const user = await User.findOne({ _id: userid })
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
+
+  const updatedData = await User.findByIdAndUpdate(userid, { password })
+  if (!updatedData) {
+    throw new CustomError(
+      statusCodes?.notModified,
+      Message?.notUpdate,
+      errorCodes?.not_updated
+    )
+  }
+  return updatedData
+}

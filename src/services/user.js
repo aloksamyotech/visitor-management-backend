@@ -4,7 +4,7 @@ import CustomError from '../utils/exception.js'
 import { createToken } from '../core/helpers/createToken.js'
 import process from 'node:process'
 import { Subscription } from '../models/subscription.js'
-import { createPaymentFunction } from './payment.js'
+// import { createPaymentFunction } from './payment.js'
 
 const checkUserExist = async (email, phone) => {
   const isEmail = await User.findOne({ emailAddress: email })
@@ -64,12 +64,12 @@ export const registerUser = async (req) => {
     subscription.company += 1
     await subscription.save()
 
-    const paymentData = {
-      companyId: user._id,
-      subscriptionId: subscription._id,
-      paymentStatus: 'succeeded',
-    }
-    await createPaymentFunction(paymentData)
+    // const paymentData = {
+    //   companyId: user._id,
+    //   subscriptionId: subscription._id,
+    //   paymentStatus: 'succeeded',
+    // }
+    // await createPaymentFunction(paymentData)
 
     const expiryDate = new Date()
     expiryDate.setMonth(expiryDate.getMonth() + 1)
@@ -375,4 +375,27 @@ export const updateActiveStatus = async (req) => {
     )
   }
   return updatedStatus
+}
+
+export const updateUserPasswordBySuperAdmin = async (req) => {
+  const { userid } = req?.params || {}
+  const { password } = req?.body || {}
+  const user = await User.findOne({ _id: userid })
+  if (!user) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotGet,
+      errorCodes?.user_not_found
+    )
+  }
+
+  const updatedData = await User.findByIdAndUpdate(userid, { password })
+  if (!updatedData) {
+    throw new CustomError(
+      statusCodes?.notModified,
+      Message?.notUpdate,
+      errorCodes?.not_updated
+    )
+  }
+  return updatedData
 }

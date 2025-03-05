@@ -37,3 +37,12 @@ export const getCheckoutSessionDetails = async (req, res, next) => {
     await paymentService.getCheckoutSessionDetails(req, res, next)
   res.status(statusCodes?.ok).send(getCheckoutSessionDetails)
 }
+
+export const getPaymentHistoryById = async (req, res, next) => {
+  const getPaymentHistoryById = await paymentService.getPaymentHistoryById(
+    req,
+    res,
+    next
+  )
+  res.status(statusCodes?.ok).send(getPaymentHistoryById)
+}

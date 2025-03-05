@@ -30,6 +30,9 @@ const PaymentSchema = new mongoose.Schema(
     price: {
       type: Number,
     },
+    sessionId: {
+      type: String,
+    },
   },
   {
     timestamps: true,

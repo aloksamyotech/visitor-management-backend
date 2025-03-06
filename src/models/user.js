@@ -78,6 +78,13 @@ const userSchema = new Schema(
     expiryDate: {
       type: Date,
     },
+    manageMail: {
+      visitor: { type: Boolean, default: true },
+      appointment: { type: Boolean, default: true },
+      entry: { type: Boolean, default: true },
+      exit: { type: Boolean, default: true },
+      pass: { type: Boolean, default: true },
+    },
   },
   { timestamps: true }
 )

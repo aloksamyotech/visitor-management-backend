@@ -3,6 +3,9 @@ import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import moment from 'moment'
 import { newVisitor } from './visitor.js'
+import { scheduleApnTemplate } from '../core/helpers/template/scheduleApnTemplate.js'
+import { Visitor } from '../models/visitor.js'
+import { User } from '../models/user.js'
 
 export const scheduleAppointment = async (req) => {
   const {
@@ -94,6 +97,15 @@ export const scheduleAppointment = async (req) => {
       errorCodes?.bad_request
     )
   }
+
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.appointment) {
+    const visitorDetails = await Visitor.findById(visitor)
+    if (visitorDetails?.emailAddress) {
+      scheduleApnTemplate(visitorDetails)
+    }
+  }
+
   return { newAppointment }
 }
 
@@ -301,5 +313,14 @@ export const newApn = async (data) => {
       errorCodes?.bad_request
     )
   }
+
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.appointment) {
+    const visitorDetails = await Visitor.findById(visitor)
+    if (visitorDetails?.emailAddress) {
+      scheduleApnTemplate(visitorDetails)
+    }
+  }
+
   return newAppointment
 }

@@ -3,7 +3,8 @@ import { VisitorHistory } from '../models/visitorHistory.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import XLSX from 'xlsx'
-
+import { createVisitorTemplate } from '../core/helpers/template/createVisitorTemplate.js'
+import { User } from '../models/user.js'
 const checkVisitorExist = async (email, phone) => {
   const isPhone = await Visitor.findOne({ phoneNumber: phone })
   if (isPhone) {
@@ -68,6 +69,13 @@ export const createVisitor = async (req) => {
       Message?.visitHistoryNotCreated,
       errorCodes?.not_created
     )
+  }
+
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.visitor) {
+    if (visitor?.emailAddress) {
+      createVisitorTemplate(visitor)
+    }
   }
 
   return { visitor }
@@ -270,6 +278,13 @@ export const newVisitor = async (data) => {
     )
   }
 
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.visitor) {
+    if (visitor?.emailAddress) {
+      createVisitorTemplate(visitor)
+    }
+  }
+
   return visitor
 }
 
@@ -318,7 +333,6 @@ export const bulkUploadVisitor = async (req) => {
           errorCodes?.not_created
         )
       }
-
       const visitoryHistory = await VisitorHistory.create({
         visitor: newVisitor._id,
       })
@@ -328,6 +342,12 @@ export const bulkUploadVisitor = async (req) => {
           Message?.visitHistoryNotCreated,
           errorCodes?.not_created
         )
+      }
+      const mail = await User.findById(companyId)
+      if (mail?.manageMail?.visitor) {
+        if (visitor?.emailAddress) {
+          createVisitorTemplate(visitor)
+        }
       }
     } catch (error) {
       //handles duplicate visitor

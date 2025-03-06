@@ -77,3 +77,8 @@ export const updateUserPasswordBySuperAdmin = async (req, res, next) => {
     await userService.updateUserPasswordBySuperAdmin(req, res, next)
   res.status(statusCodes?.ok).send(updateUserPasswordBySuperAdmin)
 }
+
+export const manageMail = async (req, res, next) => {
+  const manageMail = await userService.manageMail(req, res, next)
+  res.status(statusCodes?.ok).send(manageMail)
+}

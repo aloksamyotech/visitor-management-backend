@@ -3,6 +3,7 @@ import { User } from '../models/user.js'
 import { errorCodes, Message, statusCodes } from '../core/common/constant.js'
 import CustomError from '../utils/exception.js'
 import moment from 'moment'
+import { upgradeSubscriptionTemplate } from '../core/helpers/template/upgradeSubscriptionTemplate.js'
 
 export const createSubscription = async (req) => {
   const { title, description, duration, price } = req?.body || {}
@@ -112,6 +113,9 @@ export const upgradeCompanySubscription = async (req) => {
   }
   subscription.company += 1
   await subscription.save()
+
+  upgradeSubscriptionTemplate(updatedUser)
+
   return updatedUser
 }
 
@@ -185,5 +189,8 @@ export const upgradeCompanySubscriptionFunction = async (data) => {
   }
   subscription.company += 1
   await subscription.save()
+
+  upgradeSubscriptionTemplate(updatedUser)
+
   return updatedUser
 }

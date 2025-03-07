@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer'
 import process from 'node:process'
 
-export const sendMail = async (details, html) => {
+export const sendMail = async (mail, html) => {
   const email = process.env.EMAIL
   const pass = process.env.EMAIL_KEY
   try {
@@ -17,7 +17,7 @@ export const sendMail = async (details, html) => {
 
     const mailOptions = {
       from: email,
-      to: details?.emailAddress,
+      to: mail,
       subject: 'Samyotech Solution Pvt. Ltd.',
       // text: `Hello, mail received`,
       html,

@@ -114,7 +114,7 @@ export const upgradeCompanySubscription = async (req) => {
   subscription.company += 1
   await subscription.save()
 
-  upgradeSubscriptionTemplate(updatedUser)
+  upgradeSubscriptionTemplate(updatedUser, subscription)
 
   return updatedUser
 }
@@ -190,7 +190,7 @@ export const upgradeCompanySubscriptionFunction = async (data) => {
   subscription.company += 1
   await subscription.save()
 
-  upgradeSubscriptionTemplate(updatedUser)
+  upgradeSubscriptionTemplate(updatedUser, subscription)
 
   return updatedUser
 }

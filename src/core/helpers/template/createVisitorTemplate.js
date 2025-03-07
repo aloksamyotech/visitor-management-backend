@@ -8,5 +8,5 @@ export const createVisitorTemplate = (details) => {
         <p style="margin-top: 20px;">Best Regards,<br/>Visitor Management Team</p>
       </div>`
 
-  sendMail(details, html)
+  sendMail(details?.emailAddress, html)
 }

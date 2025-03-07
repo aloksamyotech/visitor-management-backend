@@ -14,5 +14,5 @@ export const scheduleApnTemplate = (details) => {
         <p>We look forward to welcoming you!</p>
         <p style="margin-top: 20px;">Best Regards,<br/>Visitor Management Team</p>
       </div>`
-  sendMail(details, html)
+  sendMail(details?.emailAddress, html)
 }

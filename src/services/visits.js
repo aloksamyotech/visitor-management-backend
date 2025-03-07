@@ -11,6 +11,8 @@ import { Pass } from '../models/pass.js'
 import { newApn } from './appointment.js'
 import { newPass } from './pass.js'
 import { Payment } from '../models/paymentHistory.js'
+import { entryVisitorTemplate } from '../core/helpers/template/entryVisitorTemplate.js'
+import { exitVisitorTemplate } from '../core/helpers/template/exitVisitorTemplate.js'
 
 export const createEntry = async (req) => {
   const {
@@ -106,7 +108,12 @@ export const createEntry = async (req) => {
       errorCodes?.not_created
     )
   }
-
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.entry) {
+    if (updateCount?.emailAddress) {
+      entryVisitorTemplate(updateCount)
+    }
+  }
   return { entryData }
 }
 
@@ -239,7 +246,12 @@ export const createEntryUsingApn = async (req) => {
       )
     }
   }
-
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.entry) {
+    if (updateCount?.emailAddress) {
+      entryVisitorTemplate(updateCount)
+    }
+  }
   return { entryData }
 }
 
@@ -393,11 +405,20 @@ export const createEntryUsingPass = async (req) => {
     )
   }
 
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.entry) {
+    if (updateCount?.emailAddress) {
+      entryVisitorTemplate(updateCount)
+    }
+  }
+
   return { entryData }
 }
 
 export const exitVisitor = async (req) => {
   const { visitid } = req?.params || {}
+  const { user } = req?.user || {}
+  const companyId = user?.companyId
 
   if (!visitid) {
     throw new CustomError(
@@ -436,6 +457,15 @@ export const exitVisitor = async (req) => {
       }
     )
   }
+
+  const visitorDetails = await Visitor.findById(visit?.visitor)
+  const mail = await User.findById(companyId)
+  if (mail?.manageMail?.exit) {
+    if (visitorDetails?.emailAddress) {
+      exitVisitorTemplate(visitorDetails)
+    }
+  }
+
   return { visit }
 }
 

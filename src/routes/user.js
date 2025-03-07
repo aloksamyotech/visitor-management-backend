@@ -7,6 +7,7 @@ import {
   getAllUser,
   getUserDetailsById,
   logoUpdate,
+  manageMail,
   manageUserPermission,
   updateActiveStatus,
   updateUserPassword,
@@ -89,5 +90,11 @@ router.put(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(updateUserPasswordBySuperAdmin)
+)
+router.put(
+  '/managemail',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(manageMail)
 )
 export default router

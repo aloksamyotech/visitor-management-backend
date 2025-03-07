@@ -4,6 +4,7 @@ import CustomError from '../utils/exception.js'
 import { createToken } from '../core/helpers/createToken.js'
 import process from 'node:process'
 import { Subscription } from '../models/subscription.js'
+import { createCompanyTemplate } from '../core/helpers/template/createCompanyTemplate.js'
 // import { createPaymentFunction } from './payment.js'
 
 const checkUserExist = async (email, phone) => {
@@ -78,6 +79,7 @@ export const registerUser = async (req) => {
     user.startDate = new Date()
     user.expiryDate = expiryDate
     await user.save()
+    createCompanyTemplate(user)
   }
   const createdUser = await User.findById(user._id).select('-password')
 
@@ -398,4 +400,22 @@ export const updateUserPasswordBySuperAdmin = async (req) => {
     )
   }
   return updatedData
+}
+
+export const manageMail = async (req) => {
+  const { userid } = req?.user || {}
+  const manageMail = req?.body || {}
+  const updatedUser = await User.findByIdAndUpdate(
+    userid,
+    { $set: { manageMail } },
+    { new: true }
+  )
+  if (!updatedUser) {
+    throw new CustomError(
+      statusCodes?.notUpdate,
+      Message?.notUpdate,
+      errorCodes?.not_updated
+    )
+  }
+  return updatedUser
 }

@@ -102,7 +102,7 @@ export const scheduleAppointment = async (req) => {
   if (mail?.manageMail?.appointment) {
     const visitorDetails = await Visitor.findById(visitor)
     if (visitorDetails?.emailAddress) {
-      scheduleApnTemplate(visitorDetails)
+      scheduleApnTemplate(visitorDetails, newAppointment)
     }
   }
 

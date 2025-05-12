@@ -419,3 +419,26 @@ export const manageMail = async (req) => {
   }
   return updatedUser
 }
+
+export const fetchLogo = async (req) => {
+  const { userid } = req?.user || {}
+  
+  if (!userid) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userIdNotFound,
+      errorCodes?.user_not_found
+    )
+  }
+
+  const userData = await User.findById(userid).populate('companyId').select('companyId')
+  
+  if (!userData) {
+    throw new CustomError(
+      statusCodes?.notFound,
+      Message?.userNotFound,
+      errorCodes?.user_not_found
+    )
+  }
+  return userData
+}

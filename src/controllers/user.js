@@ -82,3 +82,8 @@ export const manageMail = async (req, res, next) => {
   const manageMail = await userService.manageMail(req, res, next)
   res.status(statusCodes?.ok).send(manageMail)
 }
+
+export const fetchLogo = async (req, res, next) => {
+  const fetchLogo = await userService.fetchLogo(req, res, next)
+  res.status(statusCodes?.ok).send(fetchLogo)
+}

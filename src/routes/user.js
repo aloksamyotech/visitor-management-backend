@@ -3,6 +3,7 @@ import { asyncHandler } from '../utils/asyncWrapper.js'
 const router = Router()
 
 import {
+  fetchLogo,
   getAllCompany,
   getAllUser,
   getUserDetailsById,
@@ -33,6 +34,12 @@ router.get(
   asyncHandler(userAuth),
   asyncHandler(employeeAuth),
   asyncHandler(userDetails)
+)
+router.get(
+  '/fetchlogo',
+  asyncHandler(userAuth),
+  asyncHandler(employeeAuth),
+  asyncHandler(fetchLogo)
 )
 router.put(
   '/updateuserdetails',
